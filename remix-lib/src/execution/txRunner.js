@@ -12,10 +12,6 @@ class TxRunner {
     this._api = api
     this.blockNumber = 0
     this.runAsync = true
-    if (executionContext.isVM()) {
-      this.blockNumber = 1150000 // The VM is running in Homestead mode, which started at this block.
-      this.runAsync = false // We have to run like this cause the VM Event Manager does not support running multiple txs at the same time.
-    }
     this.pendingTxs = {}
     this.vmaccounts = vmaccounts
     this.queusTxs = []
@@ -30,18 +26,18 @@ class TxRunner {
   }
 
   _executeTx (tx, gasPrice, api, promptCb, callback) {
-    if (gasPrice) tx.gasPrice = executionContext.web3().toHex(gasPrice)
+    if (gasPrice) tx.gasPrice = executionContext.echojslib().toHex(gasPrice)
     if (api.personalMode()) {
       promptCb(
         (value) => {
-          this._sendTransaction(executionContext.web3().personal.sendTransaction, tx, value, callback)
+          this._sendTransaction(executionContext.echojslib().personal.sendTransaction, tx, value, callback)
         },
         () => {
           return callback('Canceled by user.')
         }
       )
     } else {
-      this._sendTransaction(executionContext.web3().eth.sendTransaction, tx, null, callback)
+      this._sendTransaction(executionContext.echojslib().eth.sendTransaction, tx, null, callback)
     }
   }
 
@@ -74,22 +70,52 @@ class TxRunner {
   }
 
   execute (args, confirmationCb, gasEstimationForceSend, promptCb, callback) {
+    console.log('u are sooo exeCUUUUUTE!!!')
     var self = this
 
     var data = args.data
-    if (data.slice(0, 2) !== '0x') {
-      data = '0x' + data
-    }
+    const wif = args.wif
 
-    if (!executionContext.isVM()) {
-      self.runInNode(args.from, args.to, data, args.value, args.gasLimit, args.useCall, confirmationCb, gasEstimationForceSend, promptCb, callback)
-    } else {
-      try {
-        self.runInVm(args.from, args.to, data, args.value, args.gasLimit, args.useCall, args.timestamp, callback)
-      } catch (e) {
-        callback(e, null)
+    try {
+      if (executionContext.getProvider() === 'echojslib') {
+        self.runInEchoNode(args.from, args.to, args.asset, wif, data, args.value, args.useCall, args.timestamp, callback)
       }
+    } catch (e) {
+      callback(e, null)
     }
+  }
+
+  runInEchoNode(from, to, asset, wif, data, value, useCall, timestamp, callback) {
+    const echojslib = executionContext.echojslib()
+    const privateKey = echojslib.PrivateKey
+    .fromWif(wif);
+
+    const options = {
+      fee: { // optional, default fee asset: 1.3.0, amount: will be calculated
+          asset_id: asset        
+      },
+      registrar: from,
+      value: { asset_id: asset, amount: value }, // transfer asset to contract
+      code: data,
+      eth_accuracy: false,
+    };
+
+    const connection = executionContext.echoConnection();
+
+    connection
+    .createTransaction()
+    .addOperation(echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT, options)
+    .addSigner(privateKey)
+    .broadcast((d) => {
+      console.log(12345, d)
+    })
+    .then(tx => {
+
+      callback(null, tx)
+    }, (error) => {
+      callback(error);
+    });
+
   }
 
   runInVm (from, to, data, value, gasLimit, useCall, timestamp, callback) {
@@ -149,14 +175,14 @@ class TxRunner {
 
     if (useCall) {
       tx.gas = gasLimit
-      return executionContext.web3().eth.call(tx, function (error, result) {
+      return executionContext.echojslib().eth.call(tx, function (error, result) {
         callback(error, {
           result: result,
           transactionHash: result ? result.transactionHash : null
         })
       })
     }
-    executionContext.web3().eth.estimateGas(tx, function (err, gasEstimation) {
+    executionContext.echojslib().eth.estimateGas(tx, function (err, gasEstimation) {
       gasEstimationForceSend(err, () => {
         // callback is called whenever no error
         tx.gas = !gasEstimation ? gasLimit : gasEstimation
@@ -199,7 +225,7 @@ class TxRunner {
 
 async function tryTillReceiptAvailable (txhash, done) {
   return new Promise((resolve, reject) => {
-    executionContext.web3().eth.getTransactionReceipt(txhash, async (err, receipt) => {
+    executionContext.echojslib().eth.getTransactionReceipt(txhash, async (err, receipt) => {
       if (err || !receipt) {
         // Try again with a bit of delay if error or if result still null
         await pause()
@@ -213,7 +239,7 @@ async function tryTillReceiptAvailable (txhash, done) {
 
 async function tryTillTxAvailable (txhash, done) {
   return new Promise((resolve, reject) => {
-    executionContext.web3().eth.getTransaction(txhash, async (err, tx) => {
+    executionContext.echojslib().eth.getTransaction(txhash, async (err, tx) => {
       if (err || !tx) {
         // Try again with a bit of delay if error or if result still null
         await pause()

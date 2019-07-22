@@ -38,7 +38,7 @@ Transactions.prototype.eth_sendTransaction = function (payload, cb) {
 }
 
 Transactions.prototype.eth_getTransactionReceipt = function (payload, cb) {
-  executionContext.web3().eth.getTransactionReceipt(payload.params[0], (error, receipt) => {
+  executionContext.echojslib().eth.getTransactionReceipt(payload.params[0], (error, receipt) => {
     if (error) {
       return cb(error)
     }
@@ -92,7 +92,7 @@ Transactions.prototype.eth_getTransactionCount = function (payload, cb) {
 Transactions.prototype.eth_getTransactionByHash = function (payload, cb) {
   const address = payload.params[0]
 
-  executionContext.web3().eth.getTransactionReceipt(address, (error, receipt) => {
+  executionContext.echojslib().eth.getTransactionReceipt(address, (error, receipt) => {
     if (error) {
       return cb(error)
     }

@@ -98,7 +98,7 @@ Ethdebugger.prototype.switchProvider = function (type) {
     if (error) {
       console.log('provider ' + type + ' not defined')
     } else {
-      global.web3 = obj
+      global.echojslib = obj
       executionContext.detectNetwork((error, network) => {
         if (error || !network) {
           global.web3Debug = obj

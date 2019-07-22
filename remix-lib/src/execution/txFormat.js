@@ -169,6 +169,7 @@ module.exports = {
   * @param {Function} callbackDeployLibrary  - callbackDeployLibrary
   */
   buildData: function (contractName, contract, contracts, isConstructor, funAbi, params, callback, callbackStep, callbackDeployLibrary) {
+    console.log('BUILD DATA')
     var funArgs = ''
     var data = ''
     var dataHex = ''
@@ -289,6 +290,7 @@ module.exports = {
   },
 
   linkBytecode: function (contract, contracts, callback, callbackStep, callbackDeployLibrary) {
+    console.log('LINK_BYTE_CODE')
     if (contract.evm.bytecode.object.indexOf('_') < 0) {
       return callback(null, contract.evm.bytecode.object)
     }

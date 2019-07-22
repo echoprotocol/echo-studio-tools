@@ -9,7 +9,7 @@ var init = remixLib.init
 class ContextManager {
   constructor () {
     this.executionContext = executionContext
-    this.web3 = this.executionContext.web3()
+    this.web3 = this.executionContext.echojslib()
     this.event = new EventManager()
   }
 
@@ -18,9 +18,8 @@ class ContextManager {
     this.addProvider('DUMMYWEB3', new DummyProvider())
     this.switchProvider('DUMMYWEB3')
 
-    this.addProvider('vm', this.executionContext.vm())
-    this.addProvider('injected', this.executionContext.internalWeb3())
-    this.addProvider('web3', this.executionContext.internalWeb3())
+    this.addProvider('injected', this.executionContext.echojslib())
+    this.addProvider('echojslib', this.executionContext.echoConnection())
     this.switchProvider(this.executionContext.getProvider())
   }
 

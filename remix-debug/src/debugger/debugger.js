@@ -65,7 +65,7 @@ Debugger.prototype.registerAndHighlightCodeItem = function (index) {
 }
 
 Debugger.prototype.updateWeb3 = function (web3) {
-  this.debugger.web3 = web3
+  this.debugger.echojslib = web3
 }
 
 Debugger.prototype.debug = function (blockNumber, txNumber, tx, loadingCb) {

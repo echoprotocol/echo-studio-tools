@@ -47,7 +47,8 @@ class TxListener {
         input: data,
         hash: txResult.transactionHash ? txResult.transactionHash : 'call' + (from || '') + to + data,
         isCall: true,
-        returnValue: executionContext.isVM() ? txResult.result.vm.return : ethJSUtil.toBuffer(txResult.result),
+        //TODO eth
+        returnValue: ethJSUtil.toBuffer(txResult.result),
         envMode: executionContext.getProvider()
       }
 
@@ -67,15 +68,19 @@ class TxListener {
       // in web3 mode && listen remix txs only
       if (!this._isListening) return // we don't listen
       if (this._loopId && executionContext.getProvider() !== 'vm') return // we seems to already listen on a "web3" network
-      executionContext.web3().eth.getTransaction(txResult.transactionHash, (error, tx) => {
-        if (error) return console.log(error)
 
-        addExecutionCosts(txResult, tx)
-        tx.envMode = executionContext.getProvider()
-        tx.status = txResult.result.status // 0x0 or 0x1
-        this._resolve([tx], () => {
-        })
-      })
+
+      // executionContext.echojslib().eth.getTransaction(txResult.transactionHash, (error, tx) => {
+      //   if (error) return console.log(error)
+
+      //   addExecutionCosts(txResult, tx)
+      //   tx.envMode = executionContext.getProvider()
+      //   tx.status = txResult.result.status // 0x0 or 0x1
+      //   this._resolve([tx], () => {
+      //   })
+      // })
+
+      this._resolve(txResult, () => {});
     })
 
     function addExecutionCosts (txResult, tx) {
@@ -143,7 +148,7 @@ class TxListener {
   _startListenOnNetwork () {
     this._loopId = setInterval(() => {
       var currentLoopId = this._loopId
-      executionContext.web3().eth.getBlockNumber((error, blockNumber) => {
+      executionContext.echojslib().eth.getBlockNumber((error, blockNumber) => {
         if (this._loopId === null) return
         if (error) return console.log(error)
         if (currentLoopId === this._loopId && (!this.lastBlock || blockNumber > this.lastBlock)) {
@@ -164,7 +169,7 @@ class TxListener {
   }
 
   _manageBlock (blockNumber) {
-    executionContext.web3().eth.getBlock(blockNumber, true, (error, result) => {
+    executionContext.echojslib().eth.getBlock(blockNumber, true, (error, result) => {
       if (!error) {
         this._newBlock(Object.assign({type: 'web3'}, result))
       }
@@ -200,67 +205,99 @@ class TxListener {
 
   _resolve (transactions, callback) {
     async.each(transactions, (tx, cb) => {
-      this._api.resolveReceipt(tx, (error, receipt) => {
-        if (error) return cb(error)
-        this._resolveTx(tx, receipt, (error, resolvedData) => {
-          if (error) cb(error)
-          if (resolvedData) {
-            this.event.trigger('txResolved', [tx, receipt, resolvedData])
-          }
-          this.event.trigger('newTransaction', [tx, receipt])
-          cb()
-        })
+      // this._api.resolveReceipt(tx, (error, receipt) => {
+      //   console.log('=======')
+      //   console.log(error)
+      //   console.log('=======')
+
+      //   if (error) return cb(error)
+        
+      // })
+
+      this._resolveTx(tx, null, (error, resolvedData) => {
+        if (error) cb(error)
+
+        if (resolvedData) {
+          this.event.trigger('txResolved', [tx, null, resolvedData])
+        }
+
+        this.event.trigger('newTransaction', [tx, null])
+        cb()
       })
+      
     }, () => {
       callback()
     })
   }
 
-  _resolveTx (tx, receipt, cb) {
+  async _resolveTx (tx, receipt, cb) {
     var contracts = this._api.contracts()
     if (!contracts) return cb()
     var contractName
     var fun
-    if (!tx.to || tx.to === '0x0') { // testrpc returns 0x0 in that case
-      // contract creation / resolve using the creation bytes code
-      // if web3: we have to call getTransactionReceipt to get the created address
-      // if VM: created address already included
-      var code = tx.input
-      contractName = this._tryResolveContract(code, contracts, true)
-      if (contractName) {
-        var address = receipt.contractAddress
-        this._resolvedContracts[address] = contractName
-        fun = this._resolveFunction(contractName, contracts, tx, true)
-        if (this._resolvedTransactions[tx.hash]) {
-          this._resolvedTransactions[tx.hash].contractAddress = address
-        }
-        return cb(null, {to: null, contractName: contractName, function: fun, creationAddress: address})
+    var code = tx.trx.operations[0][1].code;
+    contractName = this._tryResolveContract(code, contracts, true)
+    if (contractName) {
+      const operationResultId = await tx.trx.operation_results[0][1];
+      const contract = await executionContext.echojslib().echo.api.getContractResult(operationResultId).then((res) => res).catch((e) => console.log(e));
+
+      const address = contract[1].exec_res.new_address
+      const status = contract[1].exec_res.code_deposit
+      const gasUsed = contract[1].tr_receipt.gas_used
+      const logs = contract[1].tr_receipt.log.length
+      console.log('====================')
+      console.log(contract)
+      console.log('====================')
+      fun = this._resolveFunction(contractName, contracts, tx, true)
+      if (this._resolvedTransactions[tx.id]) {
+        this._resolvedTransactions[tx.id].contractAddress = address
+        this._resolvedTransactions[tx.id].status = status
+        this._resolvedTransactions[tx.id].gasUsed = gasUsed
+        this._resolvedTransactions[tx.id].logs = logs
       }
-      return cb()
-    } else {
-      // first check known contract, resolve against the `runtimeBytecode` if not known
-      contractName = this._resolvedContracts[tx.to]
-      if (!contractName) {
-        executionContext.web3().eth.getCode(tx.to, (error, code) => {
-          if (error) return cb(error)
-          if (code) {
-            var contractName = this._tryResolveContract(code, contracts, false)
-            if (contractName) {
-              this._resolvedContracts[tx.to] = contractName
-              var fun = this._resolveFunction(contractName, contracts, tx, false)
-              return cb(null, {to: tx.to, contractName: contractName, function: fun})
-            }
-          }
-          return cb()
-        })
-        return
-      }
-      if (contractName) {
-        fun = this._resolveFunction(contractName, contracts, tx, false)
-        return cb(null, {to: tx.to, contractName: contractName, function: fun})
-      }
-      return cb()
+
+      cb(null, {to: null, contractName: contractName, function: fun, creationAddress: address, status, gasUsed, logs })
     }
+        // if (!tx.to || tx.to === '0x0') { // testrpc returns 0x0 in that case
+    //   // contract creation / resolve using the creation bytes code
+    //   // if web3: we have to call getTransactionReceipt to get the created address
+    //   // if VM: created address already included
+    //   var code = tx.input
+    //   contractName = this._tryResolveContract(code, contracts, true)
+    //   if (contractName) {
+    //     var address = receipt.contractAddress
+    //     this._resolvedContracts[address] = contractName
+    //     fun = this._resolveFunction(contractName, contracts, tx, true)
+    //     if (this._resolvedTransactions[tx.hash]) {
+    //       this._resolvedTransactions[tx.hash].contractAddress = address
+    //     }
+    //     return cb(null, {to: null, contractName: contractName, function: fun, creationAddress: address})
+    //   }
+    //   return cb()
+    // } else {
+    //   // first check known contract, resolve against the `runtimeBytecode` if not known
+    //   contractName = this._resolvedContracts[tx.to]
+    //   if (!contractName) {
+    //     executionContext.echojslib().eth.getCode(tx.to, (error, code) => {
+    //       if (error) return cb(error)
+    //       if (code) {
+    //         var contractName = this._tryResolveContract(code, contracts, false)
+    //         if (contractName) {
+    //           this._resolvedContracts[tx.to] = contractName
+    //           var fun = this._resolveFunction(contractName, contracts, tx, false)
+    //           return cb(null, {to: tx.to, contractName: contractName, function: fun})
+    //         }
+    //       }
+    //       return cb()
+    //     })
+    //     return
+    //   }
+    //   if (contractName) {
+    //     fun = this._resolveFunction(contractName, contracts, tx, false)
+    //     return cb(null, {to: tx.to, contractName: contractName, function: fun})
+    //   }
+    //   return cb()
+    // }
   }
 
   _resolveFunction (contractName, compiledContracts, tx, isCtor) {
@@ -270,22 +307,21 @@ class TxListener {
       return
     }
     var abi = contract.object.abi
-    var inputData = tx.input.replace('0x', '')
+    var inputData = tx.trx.operations[0][1].code
     if (!isCtor) {
       var methodIdentifiers = contract.object.evm.methodIdentifiers
       for (var fn in methodIdentifiers) {
         if (methodIdentifiers[fn] === inputData.substring(0, 8)) {
           var fnabi = txHelper.getFunction(abi, fn)
-          this._resolvedTransactions[tx.hash] = {
+          this._resolvedTransactions[tx.id] = {
             contractName: contractName,
-            to: tx.to,
             fn: fn,
             params: this._decodeInputParams(inputData.substring(8), fnabi)
           }
-          if (tx.returnValue) {
-            this._resolvedTransactions[tx.hash].decodedReturnValue = txFormat.decodeResponse(tx.returnValue, fnabi)
-          }
-          return this._resolvedTransactions[tx.hash]
+          // if (tx.returnValue) {
+          //   this._resolvedTransactions[tx.hash].decodedReturnValue = txFormat.decodeResponse(tx.returnValue, fnabi)
+          // }
+          return this._resolvedTransactions[tx.id]
         }
       }
       // fallback function
@@ -301,21 +337,23 @@ class TxListener {
       if (bytecode && bytecode.length) {
         params = this._decodeInputParams(inputData.substring(bytecode.length), txHelper.getConstructorInterface(abi))
       }
-      this._resolvedTransactions[tx.hash] = {
+
+      this._resolvedTransactions[tx.id] = {
         contractName: contractName,
         to: null,
         fn: '(constructor)',
         params: params
       }
     }
-    return this._resolvedTransactions[tx.hash]
+
+    return this._resolvedTransactions[tx.id]
   }
 
   _tryResolveContract (codeToResolve, compiledContracts, isCreation) {
     var found = null
     txHelper.visitContracts(compiledContracts, (contract) => {
       var bytes = isCreation ? contract.object.evm.bytecode.object : contract.object.evm.deployedBytecode.object
-      if (codeUtil.compareByteCode(codeToResolve, '0x' + bytes)) {
+      if (codeUtil.compareByteCode(codeToResolve, bytes)) {
         found = contract.name
         return true
       }

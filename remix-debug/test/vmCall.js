@@ -59,7 +59,7 @@ function initVM (st, privateKey) {
       console.log(mes)
       st.fail(mes)
     } else {
-      vm.web3 = obj
+      vm.echojslib = obj
     }
   })
   return vm
