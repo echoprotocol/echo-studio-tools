@@ -1,6 +1,7 @@
 {
   "lerna": "2.10.2",
   "packages": [
+    "ethers",
     "remix-debug",
     "remix-lib",
     "remix-solidity",
