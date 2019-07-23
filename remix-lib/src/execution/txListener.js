@@ -238,22 +238,20 @@ class TxListener {
     var code = tx.trx.operations[0][1].code;
     contractName = this._tryResolveContract(code, contracts, true)
     if (contractName) {
-      const operationResultId = await tx.trx.operation_results[0][1];
-      const contract = await executionContext.echojslib().echo.api.getContractResult(operationResultId).then((res) => res).catch((e) => console.log(e));
+      const contractResult = tx.contractResult
 
-      const address = contract[1].exec_res.new_address
-      const status = contract[1].exec_res.code_deposit
-      const gasUsed = contract[1].tr_receipt.gas_used
-      const logs = contract[1].tr_receipt.log.length
-      console.log('====================')
-      console.log(contract)
-      console.log('====================')
+      const address = contractResult[1].exec_res.new_address
+      const status = contractResult[1].exec_res.excepted === "None" ? "Success" : "Fail"
+      const gasUsed = contractResult[1].tr_receipt.gas_used
+      const logs = contractResult[1].tr_receipt.log.length
+
       fun = this._resolveFunction(contractName, contracts, tx, true)
       if (this._resolvedTransactions[tx.id]) {
         this._resolvedTransactions[tx.id].contractAddress = address
         this._resolvedTransactions[tx.id].status = status
         this._resolvedTransactions[tx.id].gasUsed = gasUsed
         this._resolvedTransactions[tx.id].logs = logs
+        this._resolvedTransactions[tx.id].contractResult = contractResult
       }
 
       cb(null, {to: null, contractName: contractName, function: fun, creationAddress: address, status, gasUsed, logs })

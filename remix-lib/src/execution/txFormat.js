@@ -169,7 +169,6 @@ module.exports = {
   * @param {Function} callbackDeployLibrary  - callbackDeployLibrary
   */
   buildData: function (contractName, contract, contracts, isConstructor, funAbi, params, callback, callbackStep, callbackDeployLibrary) {
-    console.log('BUILD DATA')
     var funArgs = ''
     var data = ''
     var dataHex = ''

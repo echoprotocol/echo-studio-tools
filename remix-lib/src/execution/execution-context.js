@@ -199,8 +199,6 @@ function ExecutionContext () {
 
   // TODO: not used here anymore and needs to be moved
   this.setProviderFromEndpoint = async function (endpoint, context, infoCb, cb) {
-    console.log('SET_PROVIDER_FROM_ENDPOINT')
-
     if (!this.echoconnection || !this.echoconnection.isConnected) {
       this.executionContext = context
       await this.initExternalConnection(endpoint, cb)

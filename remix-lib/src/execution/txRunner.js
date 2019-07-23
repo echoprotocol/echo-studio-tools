@@ -70,7 +70,6 @@ class TxRunner {
   }
 
   execute (args, confirmationCb, gasEstimationForceSend, promptCb, callback) {
-    console.log('u are sooo exeCUUUUUTE!!!')
     var self = this
 
     var data = args.data
@@ -107,11 +106,14 @@ class TxRunner {
     .addOperation(echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT, options)
     .addSigner(privateKey)
     .broadcast((d) => {
-      console.log(12345, d)
+      console.log(d)
     })
-    .then(tx => {
-
-      callback(null, tx)
+    .then(async tx => {
+      const operationResultId = tx[0].trx.operation_results[0][1];
+        executionContext.echojslib().echo.api.getContractResult(operationResultId).then((res) => res).catch((e) => console.log(e)).then(contractResult => {
+        tx[0].contractResult = contractResult
+        callback(null, tx)
+      });   
     }, (error) => {
       callback(error);
     });
