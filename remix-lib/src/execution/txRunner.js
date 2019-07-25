@@ -74,9 +74,9 @@ class TxRunner {
     const data = args.data
     try {
       if (executionContext.getProvider() === constnts.EXECUTION_CONTEXTS.EXTERNAL) {
-        this.runInEchoNode(args.from, args.to, args.feeAsset, args.amountAsset, args.wif, data, args.value, args.useCall, args.contractMethod, args.timestamp, callback)
+        this.runInEchoNode(args.from, args.to, args.feeAsset, args.amountAsset, args.ethAccuracy, args.wif,  data, args.value, args.useCall, args.contractMethod, args.timestamp, callback)
       } else if (executionContext.getProvider() === constnts.EXECUTION_CONTEXTS.INJECTED) {
-        this.runViaBridge(args.from, args.to, args.feeAsset, args.amountAsset, data, args.value, args.useCall, args.contractMethod, args.timestamp, callback)
+        this.runViaBridge(args.from, args.to, args.feeAsset, args.amountAsset, args.ethAccuracy, data, args.value, args.useCall, args.contractMethod, args.timestamp, callback)
       }
     } catch (e) {
       console.error(e)
@@ -84,7 +84,7 @@ class TxRunner {
     }
   }
 
-  runInEchoNode(from, to, feeAsset, amountAsset, wif, data, value, useCall, contractMethod, timestamp, callback) {
+  runInEchoNode(from, to, feeAsset, amountAsset, ethAccuracy, wif, data, value, useCall, contractMethod, timestamp, callback) {
     const echojslib = executionContext.echojslib()
     const connection = executionContext.echoConnection()
     if (useCall) {
@@ -104,7 +104,7 @@ class TxRunner {
             registrar: from,
             value: { asset_id: amountAsset, amount: value }, // transfer asset to contract
             code: data,
-            eth_accuracy: false
+            eth_accuracy: ethAccuracy
           }
           break
         }
@@ -121,7 +121,7 @@ class TxRunner {
           break
         }
       }
-      //HrKbFniKDKRT7cboJTKriGmpNMQ3vprHbQgG54et9zJf
+
       const privateKey = echojslib.PrivateKey
       .fromWif(wif)
 
@@ -143,7 +143,7 @@ class TxRunner {
     }
   }
 
-  runViaBridge(from, to, feeAsset, amountAsset, data, value, useCall, contractMethod, timestamp, callback) {
+  runViaBridge(from, to, feeAsset, amountAsset, ethAccuracy,  data, value, useCall, contractMethod, timestamp, callback) {
 
     if (useCall) {
      executionContext.getEchoApi().callContractNoChangingState(to, from, amountAsset, data.replace('0x', '')).then(res => {
@@ -167,7 +167,7 @@ class TxRunner {
 
      switch (contractMethod) {
        case echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT: {
-         options.eth_accuracy = false
+         options.eth_accuracy = ethAccuracy
          break
        }
        case echojslib.constants.OPERATIONS_IDS.CALL_CONTRACT: {
@@ -175,8 +175,7 @@ class TxRunner {
          break
        }
      }
-
-      tr.addOperation(contractMethod, options)
+     tr.addOperation(contractMethod, options)
 
      tr.signWithBridge()
      .then((result) => {
