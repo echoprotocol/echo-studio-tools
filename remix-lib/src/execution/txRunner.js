@@ -102,7 +102,7 @@ class TxRunner {
                 asset_id: feeAsset
             },
             registrar: from,
-            value: { asset_id: amountAsset, amount: value }, // transfer asset to contract
+            value: { asset_id: amountAsset, amount: value ? value : 0 }, // transfer asset to contract
             code: data,
             eth_accuracy: ethAccuracy
           }
@@ -114,7 +114,7 @@ class TxRunner {
                 asset_id: feeAsset
             },
             registrar: from,
-            value: { asset_id: amountAsset, amount: value }, // transfer asset to contract
+            value: { asset_id: amountAsset, amount: value ? value : 0 }, // transfer asset to contract
             code: data,
             callee: to
           }
@@ -161,10 +161,9 @@ class TxRunner {
          asset_id: feeAsset
        },
        registrar: from,
-       value: { asset_id: amountAsset, amount: value }, // transfer asset to contract
+       value: { asset_id: amountAsset, amount: value ? value : 0 }, // transfer asset to contract
        code: data
      }
-
      switch (contractMethod) {
        case echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT: {
          options.eth_accuracy = ethAccuracy

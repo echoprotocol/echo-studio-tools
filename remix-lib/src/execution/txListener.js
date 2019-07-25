@@ -60,6 +60,7 @@ class TxListener {
           isCall: false,
           contractName,
           methodName,
+          funAbi
         }
       }
 
@@ -285,11 +286,14 @@ class TxListener {
         const status = contractResult[1].exec_res.excepted === 'None' ? 'Success' : 'Fail'
         const gasUsed = contractResult[1].tr_receipt.gas_used
         const logs = contractResult[1].tr_receipt.log.length
+        const output = tx.contractResult[1].exec_res.output
         this._resolvedTransactions[tx.id].logs = logs
         this._resolvedTransactions[tx.id].gasUsed = gasUsed
         this._resolvedTransactions[tx.id].status = status
         this._resolvedTransactions[tx.id].contractAddress = address
         this._resolvedTransactions[tx.id].contractResult = contractResult
+        this._resolvedTransactions[tx.id].output = tx.contractResult[1].exec_res.output
+        this._resolvedTransactions[tx.id].decodedOutput = txFormat.decodeResponse(output, tx.funAbi)
         return cb(null, {...tx, creationAddress: address, status, gasUsed, logs })
       }
     } else {
