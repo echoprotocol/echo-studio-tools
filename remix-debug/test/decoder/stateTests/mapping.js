@@ -9,13 +9,13 @@ var vmCall = require('../vmCall')
 var StorageResolver = require('../../../src/storage/storageResolver')
 var StorageViewer = require('../../../src/storage/storageViewer')
 
-module.exports = function testMappingStorage (st, cb) {
+module.exports = function testMappingStorage(st, cb) {
   var mappingStorage = require('../contracts/mappingStorage')
   var privateKey = Buffer.from('dae9801649ba2d95a21e688b56f77905e5667c44ce868ec83f82e838712a2c7a', 'hex')
   var vm = vmCall.initVM(st, privateKey)
   var output = compiler.compile(compilerInput(mappingStorage.contract))
   output = JSON.parse(output)
-  vmCall.sendTx(vm, {nonce: 0, privateKey: privateKey}, null, 0, output.contracts['test.sol']['SimpleMappingState'].evm.bytecode.object, function (error, txHash) {
+  vmCall.sendTx(vm, {nonce: 0, privateKey: privateKey}, null, 0, output.contracts['test.sol']['SimpleMappingState'].evm.bytecode.object, function(error, txHash) {
     if (error) {
       console.log(error)
       st.end(error)
@@ -32,9 +32,9 @@ module.exports = function testMappingStorage (st, cb) {
   })
 }
 
-function testMapping (st, vm, privateKey, contractAddress, output, cb) {
+function testMapping(st, vm, privateKey, contractAddress, output, cb) {
   vmCall.sendTx(vm, {nonce: 1, privateKey: privateKey}, contractAddress, 0, '2fd0a83a00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001074686973206973206120737472696e6700000000000000000000000000000000',
-        function (error, txHash) {
+        function(error, txHash) {
           if (error) {
             console.log(error)
             st.end(error)

@@ -1,16 +1,16 @@
 'use strict'
 var tape = require('tape')
 var EventManager = require('../src/eventManager')
-tape('eventManager', function (t) {
-  t.test('eventManager', function (st) {
+tape('eventManager', function(t) {
+  t.test('eventManager', function(st) {
     var events = new EventManager()
     var listenner = {}
 
     var trace = ''
-    listenner.listen = function (data1) {
+    listenner.listen = function(data1) {
       trace += data1
     }
-    var registeredFunction = function (data) {
+    var registeredFunction = function(data) {
       trace += data
     }
     events.register('event1', listenner, listenner.listen)

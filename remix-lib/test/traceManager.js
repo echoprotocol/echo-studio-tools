@@ -6,13 +6,13 @@ var web3Test = require('./resources/testWeb3')
 
 let web3 = null
 
-tape('TraceManager', function (t) {
+tape('TraceManager', function(t) {
   var traceManager
 
-  t.test('TraceManager.init', function (st) {
+  t.test('TraceManager.init', function(st) {
     var web3Providers = new Web3Providers()
     web3Providers.addProvider('TEST', web3Test)
-    web3Providers.get('TEST', function (error, obj) {
+    web3Providers.get('TEST', function(error, obj) {
       if (error) {
         var mes = 'provider TEST not defined'
         console.log(mes)
@@ -25,9 +25,9 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.resolveTrace', function (st) {
+  t.test('TraceManager.resolveTrace', function(st) {
     var tx = web3.eth.getTransaction('0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51')
-    traceManager.resolveTrace(tx, function (error, result) {
+    traceManager.resolveTrace(tx, function(error, result) {
       if (error) {
         st.fail(' - traceManager.resolveTrace - failed ' + result)
       } else {
@@ -36,8 +36,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getLength ', function (st) {
-    traceManager.getLength(function (error, result) {
+  t.test('TraceManager.getLength ', function(st) {
+    traceManager.getLength(function(error, result) {
       if (error) {
         st.fail(error)
       } else {
@@ -46,7 +46,7 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.inRange ', function (st) {
+  t.test('TraceManager.inRange ', function(st) {
     st.notOk(traceManager.inRange(-1))
     st.ok(traceManager.inRange(10))
     st.notOk(traceManager.inRange(142))
@@ -54,8 +54,8 @@ tape('TraceManager', function (t) {
     st.end()
   })
 
-  t.test('TraceManager.accumulateStorageChanges', function (st) {
-    traceManager.accumulateStorageChanges(110, '0x0d3a18d64dfe4f927832ab58d6451cecc4e517c5', {}, function (error, result) {
+  t.test('TraceManager.accumulateStorageChanges', function(st) {
+    traceManager.accumulateStorageChanges(110, '0x0d3a18d64dfe4f927832ab58d6451cecc4e517c5', {}, function(error, result) {
       if (error) {
         st.fail(error)
       } else {
@@ -65,8 +65,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getCallData', function (st) {
-    traceManager.getCallDataAt(0, function (error, result) {
+  t.test('TraceManager.getCallData', function(st) {
+    traceManager.getCallDataAt(0, function(error, result) {
       if (error) {
         st.fail(error)
       } else {
@@ -76,9 +76,9 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getCallStackAt', function (st) {
+  t.test('TraceManager.getCallStackAt', function(st) {
     st.plan(3)
-    traceManager.getCallStackAt(0, function (error, result) {
+    traceManager.getCallStackAt(0, function(error, result) {
       if (error) {
         st.fail(error)
       } else {
@@ -86,7 +86,7 @@ tape('TraceManager', function (t) {
       }
     })
 
-    traceManager.getCallStackAt(64, function (error, result) {
+    traceManager.getCallStackAt(64, function(error, result) {
       if (error) {
         st.fail(error)
       } else {
@@ -96,9 +96,9 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getStackAt', function (st) {
+  t.test('TraceManager.getStackAt', function(st) {
     st.plan(3)
-    traceManager.getStackAt(0, function (error, result) {
+    traceManager.getStackAt(0, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -107,7 +107,7 @@ tape('TraceManager', function (t) {
       }
     })
 
-    traceManager.getStackAt(28, function (error, result) {
+    traceManager.getStackAt(28, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -118,9 +118,9 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getLastCallChangeSince', function (st) {
+  t.test('TraceManager.getLastCallChangeSince', function(st) {
     st.plan(3)
-    traceManager.getLastCallChangeSince(10, function (error, result) {
+    traceManager.getLastCallChangeSince(10, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -129,7 +129,7 @@ tape('TraceManager', function (t) {
       }
     })
 
-    traceManager.getLastCallChangeSince(70, function (error, result) {
+    traceManager.getLastCallChangeSince(70, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -138,7 +138,7 @@ tape('TraceManager', function (t) {
       }
     })
 
-    traceManager.getLastCallChangeSince(111, function (error, result) {
+    traceManager.getLastCallChangeSince(111, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -150,9 +150,9 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getCurrentCalledAddressAt', function (st) {
+  t.test('TraceManager.getCurrentCalledAddressAt', function(st) {
     st.plan(3)
-    traceManager.getCurrentCalledAddressAt(10, function (error, result) {
+    traceManager.getCurrentCalledAddressAt(10, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -161,7 +161,7 @@ tape('TraceManager', function (t) {
       }
     })
 
-    traceManager.getCurrentCalledAddressAt(70, function (error, result) {
+    traceManager.getCurrentCalledAddressAt(70, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -170,7 +170,7 @@ tape('TraceManager', function (t) {
       }
     })
 
-    traceManager.getCurrentCalledAddressAt(111, function (error, result) {
+    traceManager.getCurrentCalledAddressAt(111, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -180,8 +180,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getContractCreationCode', function (st) { // contract code has been retrieved from the memory
-    traceManager.getContractCreationCode('(Contract Creation - Step 63)', function (error, result) {
+  t.test('TraceManager.getContractCreationCode', function(st) { // contract code has been retrieved from the memory
+    traceManager.getContractCreationCode('(Contract Creation - Step 63)', function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -192,9 +192,9 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getMemoryAt', function (st) {
+  t.test('TraceManager.getMemoryAt', function(st) {
     st.plan(3)
-    traceManager.getMemoryAt(0, function (error, result) {
+    traceManager.getMemoryAt(0, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -203,7 +203,7 @@ tape('TraceManager', function (t) {
       }
     })
 
-    traceManager.getMemoryAt(34, function (error, result) {
+    traceManager.getMemoryAt(34, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -214,8 +214,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getCurrentPC', function (st) {
-    traceManager.getCurrentPC(13, function (error, result) {
+  t.test('TraceManager.getCurrentPC', function(st) {
+    traceManager.getCurrentPC(13, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -226,8 +226,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getCurrentStep', function (st) {
-    traceManager.getCurrentStep(66, function (error, result) {
+  t.test('TraceManager.getCurrentStep', function(st) {
+    traceManager.getCurrentStep(66, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -238,8 +238,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getMemExpand', function (st) {
-    traceManager.getMemExpand(2, function (error, result) {
+  t.test('TraceManager.getMemExpand', function(st) {
+    traceManager.getMemExpand(2, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -250,8 +250,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getStepCost', function (st) {
-    traceManager.getStepCost(34, function (error, result) {
+  t.test('TraceManager.getStepCost', function(st) {
+    traceManager.getStepCost(34, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -262,8 +262,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getRemainingGas', function (st) {
-    traceManager.getRemainingGas(55, function (error, result) {
+  t.test('TraceManager.getRemainingGas', function(st) {
+    traceManager.getRemainingGas(55, function(error, result) {
       console.log(result)
       if (error) {
         st.fail(error)
@@ -274,29 +274,29 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.findStepOverBack', function (st) {
+  t.test('TraceManager.findStepOverBack', function(st) {
     var result = traceManager.findStepOverBack(116)
     console.log(result)
     st.ok(result === 115)
     st.end()
   })
 
-  t.test('TraceManager.findStepOverForward', function (st) {
+  t.test('TraceManager.findStepOverForward', function(st) {
     var result = traceManager.findStepOverForward(66)
     console.log(result)
     st.ok(result === 67)
     st.end()
   })
 
-  t.test('TraceManager.findNextCall', function (st) {
+  t.test('TraceManager.findNextCall', function(st) {
     var result = traceManager.findNextCall(10)
     console.log(result)
     st.ok(result === 63)
     st.end()
   })
 
-  t.test('TraceManager.getAddresses', function (st) {
-    traceManager.getAddresses(function (error, result) {
+  t.test('TraceManager.getAddresses', function(st) {
+    traceManager.getAddresses(function(error, result) {
       if (error) {
         st.fail(error)
       } else {
@@ -307,8 +307,8 @@ tape('TraceManager', function (t) {
     })
   })
 
-  t.test('TraceManager.getReturnValue', function (st) {
-    traceManager.getReturnValue(108, function (error, result) {
+  t.test('TraceManager.getReturnValue', function(st) {
+    traceManager.getReturnValue(108, function(error, result) {
       if (error) {
         st.fail(error)
       } else {

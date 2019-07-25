@@ -47,7 +47,7 @@ var css = csjs`
     margin-bottom: 10px;
   }
 `
-function TxBrowser (_parent) {
+function TxBrowser(_parent) {
   this.event = new EventManager()
 
   this.blockNumber
@@ -57,7 +57,7 @@ function TxBrowser (_parent) {
   this.basicPanel = new DropdownPanel('Transaction', {json: true})
   this.basicPanel.data = {}
   var self = this
-  _parent.event.register('providerChanged', this, function (provider) {
+  _parent.event.register('providerChanged', this, function(provider) {
     self.displayConnectionSetting = provider === 'INTERNAL'
     self.setDefaultValues()
     if (self.view) {
@@ -72,7 +72,7 @@ function TxBrowser (_parent) {
 // creation: 0x72908de76f99fca476f9e3a3b5d352f350a98cd77d09cebfc59ffe32a6ecaa0b
 // invocation: 0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51
 
-TxBrowser.prototype.setDefaultValues = function () {
+TxBrowser.prototype.setDefaultValues = function() {
   this.connectInfo = ''
   this.basicPanel.update({})
   this.basicPanel.hide()
@@ -81,7 +81,7 @@ TxBrowser.prototype.setDefaultValues = function () {
   }
 }
 
-TxBrowser.prototype.submit = function () {
+TxBrowser.prototype.submit = function() {
   if (!this.txNumber) {
     return
   }
@@ -89,11 +89,11 @@ TxBrowser.prototype.submit = function () {
   try {
     var self = this
     if (this.txNumber.indexOf('0x') !== -1) {
-      global.web3.eth.getTransaction(this.txNumber, function (error, result) {
+      global.web3.eth.getTransaction(this.txNumber, function(error, result) {
         self.update(error, result)
       })
     } else {
-      global.web3.eth.getTransactionFromBlock(this.blockNumber, this.txNumber, function (error, result) {
+      global.web3.eth.getTransactionFromBlock(this.blockNumber, this.txNumber, function(error, result) {
         self.update(error, result)
       })
     }
@@ -102,7 +102,7 @@ TxBrowser.prototype.submit = function () {
   }
 }
 
-TxBrowser.prototype.update = function (error, tx) {
+TxBrowser.prototype.update = function(error, tx) {
   var info = {}
   if (error) {
     this.view.querySelector('#error').innerHTML = error
@@ -127,10 +127,10 @@ TxBrowser.prototype.update = function (error, tx) {
   this.basicPanel.update(info)
 }
 
-TxBrowser.prototype.updateWeb3Url = function (newhost) {
+TxBrowser.prototype.updateWeb3Url = function(newhost) {
   init.setProvider(global.web3, newhost)
   var self = this
-  this.checkWeb3(function (error, block) {
+  this.checkWeb3(function(error, block) {
     if (!error) {
       self.connectInfo = 'Connected to ' + global.web3.currentProvider.host + '. Current block number: ' + block
     } else {
@@ -140,9 +140,9 @@ TxBrowser.prototype.updateWeb3Url = function (newhost) {
   })
 }
 
-TxBrowser.prototype.checkWeb3 = function (callback) {
+TxBrowser.prototype.checkWeb3 = function(callback) {
   try {
-    global.web3.eth.getBlockNumber(function (error, block) {
+    global.web3.eth.getBlockNumber(function(error, block) {
       callback(error, block)
     })
   } catch (e) {
@@ -151,50 +151,50 @@ TxBrowser.prototype.checkWeb3 = function (callback) {
   }
 }
 
-TxBrowser.prototype.updateBlockN = function (ev) {
+TxBrowser.prototype.updateBlockN = function(ev) {
   this.blockNumber = ev.target.value
 }
 
-TxBrowser.prototype.updateTxN = function (ev) {
+TxBrowser.prototype.updateTxN = function(ev) {
   this.txNumber = ev.target.value
 }
 
-TxBrowser.prototype.load = function (txHash) {
+TxBrowser.prototype.load = function(txHash) {
   this.txNumber = txHash
   this.submit()
 }
 
-TxBrowser.prototype.unload = function (txHash) {
+TxBrowser.prototype.unload = function(txHash) {
   this.event.trigger('unloadRequested')
   this.init()
 }
 
-TxBrowser.prototype.init = function (ev) {
+TxBrowser.prototype.init = function(ev) {
   this.setDefaultValues()
 }
 
-TxBrowser.prototype.connectionSetting = function () {
+TxBrowser.prototype.connectionSetting = function() {
   if (this.displayConnectionSetting) {
     var self = this
-    return yo`<div class="${css.vmargin}"><span>Node URL: </span><input onkeyup=${function () { self.updateWeb3Url(arguments[0].target.value) }} value=${global.web3.currentProvider ? global.web3.currentProvider.host : ' - none - '} type='text' />
+    return yo`<div class="${css.vmargin}"><span>Node URL: </span><input onkeyup=${function() { self.updateWeb3Url(arguments[0].target.value) }} value=${global.web3.currentProvider ? global.web3.currentProvider.host : ' - none - '} type='text' />
               <span>${this.connectInfo}</span></div>`
   } else {
     return ''
   }
 }
 
-TxBrowser.prototype.render = function () {
+TxBrowser.prototype.render = function() {
   var self = this
   var view = yo`<div class="${css.container}">
         ${this.connectionSetting()}
         <div class="${css.txContainer}">
           <div class="${css.txinputs}">
-            <input class="${css.txinput}" onkeyup=${function () { self.updateBlockN(arguments[0]) }} type='text' placeholder=${'Block number'} />
-            <input class="${css.txinput}" id='txinput' onkeyup=${function () { self.updateTxN(arguments[0]) }} type='text' placeholder=${'Transaction index or hash'} />
+            <input class="${css.txinput}" onkeyup=${function() { self.updateBlockN(arguments[0]) }} type='text' placeholder=${'Block number'} />
+            <input class="${css.txinput}" id='txinput' onkeyup=${function() { self.updateTxN(arguments[0]) }} type='text' placeholder=${'Transaction index or hash'} />
           </div>
           <div class="${css.txbuttons}">
-            <button id='load' class='fa fa-play ${css.txbutton}' title='start debugging' onclick=${function () { self.submit() }}></button>
-            <button id='unload' class='fa fa-stop ${css.txbutton}' title='stop debugging' onclick=${function () { self.unload() }}></button>
+            <button id='load' class='fa fa-play ${css.txbutton}' title='start debugging' onclick=${function() { self.submit() }}></button>
+            <button id='unload' class='fa fa-stop ${css.txbutton}' title='stop debugging' onclick=${function() { self.unload() }}></button>
           </div>
         </div>
         <span id='error'></span>

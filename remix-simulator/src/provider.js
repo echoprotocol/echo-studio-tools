@@ -8,7 +8,7 @@ const Net = require('./methods/net.js')
 const Transactions = require('./methods/transactions.js')
 const Whisper = require('./methods/whisper.js')
 
-var Provider = function (options) {
+var Provider = function(options) {
   this.Accounts = new Accounts()
 
   this.methods = {}
@@ -20,7 +20,7 @@ var Provider = function (options) {
   this.methods = merge(this.methods, (new Whisper()).methods())
 }
 
-Provider.prototype.sendAsync = function (payload, callback) {
+Provider.prototype.sendAsync = function(payload, callback) {
   log.info('payload method is ', payload.method)
 
   let method = this.methods[payload.method]
@@ -36,11 +36,11 @@ Provider.prototype.sendAsync = function (payload, callback) {
   callback(new Error('unknown method ' + payload.method))
 }
 
-Provider.prototype.send = function (payload, callback) {
-  this.sendAsync(payload, callback || function () {})
+Provider.prototype.send = function(payload, callback) {
+  this.sendAsync(payload, callback || function() {})
 }
 
-Provider.prototype.isConnected = function () {
+Provider.prototype.isConnected = function() {
   return true
 }
 

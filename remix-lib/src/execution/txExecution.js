@@ -16,7 +16,7 @@ module.exports = {
     *     [personal mode enabled, need password to continue] promptCb (okCb, cancelCb)
     * @param {Function} finalCallback    - last callback.
     */
-  createContract: function (from, data, value, gasLimit, txRunner, callbacks, finalCallback) {
+  createContract: function(from, data, value, gasLimit, txRunner, callbacks, finalCallback) {
     if (!callbacks.confirmationCb || !callbacks.gasEstimationForceSend || !callbacks.promptCb) {
       return finalCallback('all the callbacks must have been defined')
     }
@@ -42,7 +42,7 @@ module.exports = {
     *     [personal mode enabled, need password to continue] promptCb (okCb, cancelCb)
     * @param {Function} finalCallback    - last callback.
     */
-  callFunction: function (from, to, data, value, gasLimit, funAbi, txRunner, callbacks, finalCallback) {
+  callFunction: function(from, to, data, value, gasLimit, funAbi, txRunner, callbacks, finalCallback) {
     var tx = { from: from, to: to, data: data, useCall: false, value: value, gasLimit: gasLimit }
     txRunner.rawRun(tx, callbacks.confirmationCb, callbacks.gasEstimationForceSend, callbacks.promptCb, (error, txResult) => {
       // see universaldapp.js line 660 => 700 to check possible values of txResult (error case)
@@ -56,7 +56,7 @@ module.exports = {
     * @param {Object} txResult    - the value returned by the vm
     * @return {Object} -  { error: true/false, message: DOMNode }
     */
-  checkVMError: function (txResult) {
+  checkVMError: function(txResult) {
     var errorCode = {
       OUT_OF_GAS: 'out of gas',
       STACK_UNDERFLOW: 'stack underflow',

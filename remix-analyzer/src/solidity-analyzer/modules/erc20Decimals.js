@@ -5,7 +5,7 @@ var common = require('./staticAnalysisCommon')
 var AbstractAst = require('./abstractAstView')
 var algo = require('./algorithmCategories')
 
-function erc20Decimals () {
+function erc20Decimals() {
   this.abstractAst = new AbstractAst()
   this.visit = this.abstractAst.build_visit(
     (node) => false
@@ -13,11 +13,11 @@ function erc20Decimals () {
   this.report = this.abstractAst.build_report(report)
 }
 
-erc20Decimals.prototype.visit = function () { throw new Error('erc20Decimals.js no visit function set upon construction') }
+erc20Decimals.prototype.visit = function() { throw new Error('erc20Decimals.js no visit function set upon construction') }
 
-erc20Decimals.prototype.report = function () { throw new Error('erc20Decimals.js no report function set upon construction') }
+erc20Decimals.prototype.report = function() { throw new Error('erc20Decimals.js no report function set upon construction') }
 
-function report (contracts, multipleContractsWithSameName) {
+function report(contracts, multipleContractsWithSameName) {
   var warnings = []
 
   contracts.forEach((contract) => {
@@ -45,7 +45,7 @@ function report (contracts, multipleContractsWithSameName) {
   return warnings
 }
 
-function isERC20 (funSignatures) {
+function isERC20(funSignatures) {
   return funSignatures.includes('totalSupply()') &&
          funSignatures.includes('balanceOf(address)') &&
          funSignatures.includes('transfer(address,uint256)') &&

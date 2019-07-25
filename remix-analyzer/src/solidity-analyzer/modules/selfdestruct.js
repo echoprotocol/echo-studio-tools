@@ -5,7 +5,7 @@ var common = require('./staticAnalysisCommon')
 var AbstractAst = require('./abstractAstView')
 var algo = require('./algorithmCategories')
 
-function selfdestruct () {
+function selfdestruct() {
   this.abstractAst = new AbstractAst()
 
   this.visit = this.abstractAst.build_visit(
@@ -16,11 +16,11 @@ function selfdestruct () {
   this.report = this.abstractAst.build_report(report)
 }
 
-selfdestruct.prototype.visit = function () { throw new Error('selfdestruct.js no visit function set upon construction') }
+selfdestruct.prototype.visit = function() { throw new Error('selfdestruct.js no visit function set upon construction') }
 
-selfdestruct.prototype.report = function () { throw new Error('selfdestruct.js no report function set upon construction') }
+selfdestruct.prototype.report = function() { throw new Error('selfdestruct.js no report function set upon construction') }
 
-function report (contracts, multipleContractsWithSameName) {
+function report(contracts, multipleContractsWithSameName) {
   var warnings = []
 
   contracts.forEach((contract) => {

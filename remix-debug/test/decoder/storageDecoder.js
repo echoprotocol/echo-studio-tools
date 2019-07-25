@@ -7,12 +7,12 @@ var remixLib = require('remix-lib')
 var compilerInput = remixLib.helpers.compiler.compilerInput
 var testMappingStorage = require('./stateTests/mapping')
 
-tape('solidity', function (t) {
-  t.test('storage decoder', function (st) {
-    testIntStorage(st, function () {
-      testByteStorage(st, function () {
-        testStructArrayStorage(st, function () {
-          testMappingStorage(st, function () {
+tape('solidity', function(t) {
+  t.test('storage decoder', function(st) {
+    testIntStorage(st, function() {
+      testByteStorage(st, function() {
+        testStructArrayStorage(st, function() {
+          testMappingStorage(st, function() {
             st.end()
           })
         })
@@ -21,7 +21,7 @@ tape('solidity', function (t) {
   })
 })
 
-function testIntStorage (st, cb) {
+function testIntStorage(st, cb) {
   var intStorage = require('./contracts/intStorage')
   var output = compiler.compile(compilerInput(intStorage.contract))
   output = JSON.parse(output)
@@ -68,7 +68,7 @@ function testIntStorage (st, cb) {
   })
 }
 
-function testByteStorage (st, cb) {
+function testByteStorage(st, cb) {
   var byteStorage = require('./contracts/byteStorage')
   var output = compiler.compile(compilerInput(byteStorage.contract))
   output = JSON.parse(output)
@@ -171,7 +171,7 @@ function testByteStorage (st, cb) {
   })
 }
 
-function shrinkStorage (storage) {
+function shrinkStorage(storage) {
   var shrinkedStorage = {}
   var regex = /0x(00)*(..)/
   for (var key in storage) {
@@ -181,7 +181,7 @@ function shrinkStorage (storage) {
   return shrinkedStorage
 }
 
-function testStructArrayStorage (st, cb) {
+function testStructArrayStorage(st, cb) {
   var structArrayStorage = require('./contracts/structArrayStorage')
   var output = compiler.compile(compilerInput(structArrayStorage.contract))
   output = JSON.parse(output)

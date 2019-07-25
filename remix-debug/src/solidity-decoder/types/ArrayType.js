@@ -7,7 +7,7 @@ var RefType = require('./RefType')
 
 class ArrayType extends RefType {
 
-  constructor (underlyingType, arraySize, location) {
+  constructor(underlyingType, arraySize, location) {
     var storageSlots = null
     if (arraySize === 'dynamic') {
       storageSlots = 1
@@ -25,7 +25,7 @@ class ArrayType extends RefType {
     this.arraySize = arraySize
   }
 
-  async decodeFromStorage (location, storageResolver) {
+  async decodeFromStorage(location, storageResolver) {
     var ret = []
     var size = null
     var slotValue
@@ -76,7 +76,7 @@ class ArrayType extends RefType {
     }
   }
 
-  decodeFromMemoryInternal (offset, memory) {
+  decodeFromMemoryInternal(offset, memory) {
     var ret = []
     var length = this.arraySize
     if (this.arraySize === 'dynamic') {

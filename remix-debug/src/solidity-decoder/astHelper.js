@@ -8,7 +8,7 @@ var AstWalker = remixLib.AstWalker
   * @param {Object} sourcesList - sources list (containing root AST node)
   * @return {Object} - returns a mapping from AST node ids to AST nodes for the contracts
   */
-function extractContractDefinitions (sourcesList) {
+function extractContractDefinitions(sourcesList) {
   var ret = {
     contractsById: {},
     contractsByName: {},
@@ -16,7 +16,7 @@ function extractContractDefinitions (sourcesList) {
   }
   var walker = new AstWalker()
   for (var k in sourcesList) {
-    walker.walk(sourcesList[k].legacyAST, { 'ContractDefinition': function (node) {
+    walker.walk(sourcesList[k].legacyAST, { 'ContractDefinition': function(node) {
       ret.contractsById[node.id] = node
       ret.sourcesByContract[node.id] = k
       ret.contractsByName[k + ':' + node.attributes.name] = node
@@ -33,8 +33,8 @@ function extractContractDefinitions (sourcesList) {
   * @param {Map} contracts  - all contracts defined in the current context
   * @return {Array} - array of base contracts in derived to base order as AST nodes.
   */
-function getLinearizedBaseContracts (id, contractsById) {
-  return contractsById[id].attributes.linearizedBaseContracts.map(function (id) { return contractsById[id] })
+function getLinearizedBaseContracts(id, contractsById) {
+  return contractsById[id].attributes.linearizedBaseContracts.map(function(id) { return contractsById[id] })
 }
 
 /**
@@ -46,7 +46,7 @@ function getLinearizedBaseContracts (id, contractsById) {
   * @return {Object} - return an object containing: stateItems - list of all the children node of the @arg contractName
   *                                                 stateVariables - list of all the variable declaration of the @arg contractName
   */
-function extractStateDefinitions (contractName, sourcesList, contracts) {
+function extractStateDefinitions(contractName, sourcesList, contracts) {
   if (!contracts) {
     contracts = extractContractDefinitions(sourcesList)
   }
@@ -81,7 +81,7 @@ function extractStateDefinitions (contractName, sourcesList, contracts) {
   * @param {Object} [contracts] - map of contract definitions (contains contractsById, contractsByName)
   * @return {Object} - returns a mapping between contract name and contract state
   */
-function extractStatesDefinitions (sourcesList, contracts) {
+function extractStatesDefinitions(sourcesList, contracts) {
   if (!contracts) {
     contracts = extractContractDefinitions(sourcesList)
   }

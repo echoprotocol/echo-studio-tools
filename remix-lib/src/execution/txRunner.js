@@ -5,9 +5,10 @@ var ethJSUtil = require('ethereumjs-util')
 var BN = ethJSUtil.BN
 var executionContext = require('./execution-context')
 var EventManager = require('../eventManager')
+const constnts = require('../constants')
 
 class TxRunner {
-  constructor (vmaccounts, api) {
+  constructor(vmaccounts, api) {
     this.event = new EventManager()
     this._api = api
     this.blockNumber = 0
@@ -17,7 +18,7 @@ class TxRunner {
     this.queusTxs = []
   }
 
-  rawRun (args, confirmationCb, gasEstimationForceSend, promptCb, cb) {
+  rawRun(args, confirmationCb, gasEstimationForceSend, promptCb, cb) {
     var timestamp = Date.now()
     if (args.timestamp) {
       timestamp = args.timestamp
@@ -25,7 +26,7 @@ class TxRunner {
     run(this, args, timestamp, confirmationCb, gasEstimationForceSend, promptCb, cb)
   }
 
-  _executeTx (tx, gasPrice, api, promptCb, callback) {
+  _executeTx(tx, gasPrice, api, promptCb, callback) {
     if (gasPrice) tx.gasPrice = executionContext.echojslib().toHex(gasPrice)
     if (api.personalMode()) {
       promptCb(
@@ -41,9 +42,9 @@ class TxRunner {
     }
   }
 
-  _sendTransaction (sendTx, tx, pass, callback) {
+  _sendTransaction(sendTx, tx, pass, callback) {
     var self = this
-    var cb = function (err, resp) {
+    var cb = function(err, resp) {
       if (err) {
         return callback(err, resp)
       }
@@ -69,58 +70,133 @@ class TxRunner {
     }
   }
 
-  execute (args, confirmationCb, gasEstimationForceSend, promptCb, callback) {
-    var self = this
-
-    var data = args.data
-    const wif = args.wif
-
+  execute(args, confirmationCb, gasEstimationForceSend, promptCb, callback) {
+    const data = args.data
     try {
-      if (executionContext.getProvider() === 'echojslib') {
-        self.runInEchoNode(args.from, args.to, args.asset, wif, data, args.value, args.useCall, args.timestamp, callback)
+      if (executionContext.getProvider() === constnts.EXECUTION_CONTEXTS.EXTERNAL) {
+        this.runInEchoNode(args.from, args.to, args.feeAsset, args.amountAsset, args.wif, data, args.value, args.useCall, args.contractMethod, args.timestamp, callback)
+      } else if (executionContext.getProvider() === constnts.EXECUTION_CONTEXTS.INJECTED) {
+        this.runViaBridge(args.from, args.to, args.feeAsset, args.amountAsset, data, args.value, args.useCall, args.contractMethod, args.timestamp, callback)
       }
     } catch (e) {
+      console.error(e)
       callback(e, null)
     }
   }
 
-  runInEchoNode(from, to, asset, wif, data, value, useCall, timestamp, callback) {
+  runInEchoNode(from, to, feeAsset, amountAsset, wif, data, value, useCall, contractMethod, timestamp, callback) {
     const echojslib = executionContext.echojslib()
-    const privateKey = echojslib.PrivateKey
-    .fromWif(wif);
+    const connection = executionContext.echoConnection()
+    if (useCall) {
+      executionContext.getEchoApi().callContractNoChangingState(to, from, amountAsset, data).then(res => {
+        callback(null, res)
+      }).catch(error => {
+        callback(error)
+      })
+    } else {
+      let options
+      switch (contractMethod) {
+        case echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT: {
+          options = {
+            fee: { // optional, default fee asset: 1.3.0, amount: will be calculated
+                asset_id: feeAsset
+            },
+            registrar: from,
+            value: { asset_id: amountAsset, amount: value }, // transfer asset to contract
+            code: data,
+            eth_accuracy: false
+          }
+          break
+        }
+        case echojslib.constants.OPERATIONS_IDS.CALL_CONTRACT: {
+          options = {
+            fee: { // optional, default fee asset: 1.3.0, amount: will be calculated
+                asset_id: feeAsset
+            },
+            registrar: from,
+            value: { asset_id: amountAsset, amount: value }, // transfer asset to contract
+            code: data,
+            callee: to
+          }
+          break
+        }
+      }
+      //HrKbFniKDKRT7cboJTKriGmpNMQ3vprHbQgG54et9zJf
+      const privateKey = echojslib.PrivateKey
+      .fromWif(wif)
 
-    const options = {
-      fee: { // optional, default fee asset: 1.3.0, amount: will be calculated
-          asset_id: asset        
-      },
-      registrar: from,
-      value: { asset_id: asset, amount: value }, // transfer asset to contract
-      code: data,
-      eth_accuracy: false,
-    };
-
-    const connection = executionContext.echoConnection();
-
-    connection
-    .createTransaction()
-    .addOperation(echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT, options)
-    .addSigner(privateKey)
-    .broadcast((d) => {
-      console.log(d)
-    })
-    .then(async tx => {
-      const operationResultId = tx[0].trx.operation_results[0][1];
-        executionContext.echojslib().echo.api.getContractResult(operationResultId).then((res) => res).catch((e) => console.log(e)).then(contractResult => {
-        tx[0].contractResult = contractResult
-        callback(null, tx)
-      });   
-    }, (error) => {
-      callback(error);
-    });
-
+      connection
+      .createTransaction()
+      .addOperation(contractMethod, options)
+      .addSigner(privateKey)
+      .broadcast(() => {
+      })
+      .then(async tx => {
+        const operationResultId = tx[0].trx.operation_results[0][1]
+        executionContext.getEchoApi().getContractResult(operationResultId).then((res) => res).catch((e) => console.log(e)).then(contractResult => {
+          tx[0].contractResult = contractResult
+          callback(null, tx)
+        })
+      }, (error) => {
+        callback(error)
+      })
+    }
   }
 
-  runInVm (from, to, data, value, gasLimit, useCall, timestamp, callback) {
+  runViaBridge(from, to, feeAsset, amountAsset, data, value, useCall, contractMethod, timestamp, callback) {
+
+    if (useCall) {
+     executionContext.getEchoApi().callContractNoChangingState(to, from, amountAsset, data.replace('0x', '')).then(res => {
+       callback(null, res)
+     }).catch(error => {
+       callback(error)
+     })
+   } else {
+     const echojslib = executionContext.echojslib()
+
+     const tr = echojslib.echo.createTransaction()
+
+     let options = {
+       fee: { // optional, default fee asset: 1.3.0, amount: will be calculated
+         asset_id: feeAsset
+       },
+       registrar: from,
+       value: { asset_id: amountAsset, amount: value }, // transfer asset to contract
+       code: data
+     }
+
+     switch (contractMethod) {
+       case echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT: {
+         options.eth_accuracy = false
+         break
+       }
+       case echojslib.constants.OPERATIONS_IDS.CALL_CONTRACT: {
+         options.callee = to
+         break
+       }
+     }
+
+      tr.addOperation(contractMethod, options)
+
+     tr.signWithBridge()
+     .then((result) => {
+       return result.broadcast()
+     })
+     .then((result) => {
+       const operationResultId = result[0].trx.operation_results[0][1]
+       return executionContext.getEchoApi().getContractResult(operationResultId)
+       .then(contractResult => {
+         result[0].contractResult = contractResult
+         callback(null, result)
+       })
+     })
+     .catch((error) => {
+       callback(error)
+     })
+   }
+  }
+
+  runInVm(from, to, data, value, gasLimit, useCall, timestamp, callback) {
     const self = this
     var account = self.vmaccounts[from]
     if (!account) {
@@ -156,9 +232,9 @@ class TxRunner {
       executionContext.vm().stateManager.checkpoint(() => {})
     }
 
-    executionContext.vm().runTx({block: block, tx: tx, skipBalance: true, skipNonce: true}, function (err, result) {
+    executionContext.vm().runTx({block: block, tx: tx, skipBalance: true, skipNonce: true}, function(err, result) {
       if (useCall) {
-        executionContext.vm().stateManager.revert(function () {})
+        executionContext.vm().stateManager.revert(function() {})
       }
       err = err ? err.message : err
       if (result) {
@@ -171,20 +247,20 @@ class TxRunner {
     })
   }
 
-  runInNode (from, to, data, value, gasLimit, useCall, confirmCb, gasEstimationForceSend, promptCb, callback) {
+  runInNode(from, to, data, value, gasLimit, useCall, confirmCb, gasEstimationForceSend, promptCb, callback) {
     const self = this
     var tx = { from: from, to: to, data: data, value: value }
 
     if (useCall) {
       tx.gas = gasLimit
-      return executionContext.echojslib().eth.call(tx, function (error, result) {
+      return executionContext.echojslib().eth.call(tx, function(error, result) {
         callback(error, {
           result: result,
           transactionHash: result ? result.transactionHash : null
         })
       })
     }
-    executionContext.echojslib().eth.estimateGas(tx, function (err, gasEstimation) {
+    executionContext.echojslib().eth.estimateGas(tx, function(err, gasEstimation) {
       gasEstimationForceSend(err, () => {
         // callback is called whenever no error
         tx.gas = !gasEstimation ? gasLimit : gasEstimation
@@ -225,7 +301,7 @@ class TxRunner {
   }
 }
 
-async function tryTillReceiptAvailable (txhash, done) {
+async function tryTillReceiptAvailable(txhash, done) {
   return new Promise((resolve, reject) => {
     executionContext.echojslib().eth.getTransactionReceipt(txhash, async (err, receipt) => {
       if (err || !receipt) {
@@ -239,7 +315,7 @@ async function tryTillReceiptAvailable (txhash, done) {
   })
 }
 
-async function tryTillTxAvailable (txhash, done) {
+async function tryTillTxAvailable(txhash, done) {
   return new Promise((resolve, reject) => {
     executionContext.echojslib().eth.getTransaction(txhash, async (err, tx) => {
       if (err || !tx) {
@@ -253,9 +329,9 @@ async function tryTillTxAvailable (txhash, done) {
   })
 }
 
-async function pause () { return new Promise((resolve, reject) => { setTimeout(resolve, 500) }) }
+async function pause() { return new Promise((resolve, reject) => { setTimeout(resolve, 500) }) }
 
-function run (self, tx, stamp, confirmationCb, gasEstimationForceSend, promptCb, callback) {
+function run(self, tx, stamp, confirmationCb, gasEstimationForceSend, promptCb, callback) {
   if (!self.runAsync && Object.keys(self.pendingTxs).length) {
     self.queusTxs.push({ tx, stamp, callback })
   } else {

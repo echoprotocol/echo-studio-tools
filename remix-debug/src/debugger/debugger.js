@@ -8,7 +8,7 @@ var OffsetToColumnConverter = remixLib.OffsetToColumnConverter
 var StepManager = require('./stepManager')
 var VmDebuggerLogic = require('./VmDebugger')
 
-function Debugger (options) {
+function Debugger(options) {
   var self = this
   this.event = new EventManager()
 
@@ -34,26 +34,26 @@ function Debugger (options) {
 
   this.debugger.setBreakpointManager(this.breakPointManager)
 
-  this.debugger.event.register('newTraceLoaded', this, function () {
+  this.debugger.event.register('newTraceLoaded', this, function() {
     self.event.trigger('debuggerStatus', [true])
   })
 
-  this.debugger.event.register('traceUnloaded', this, function () {
+  this.debugger.event.register('traceUnloaded', this, function() {
     self.event.trigger('debuggerStatus', [false])
   })
 
-  this.event.register('breakpointStep', function (step) {
+  this.event.register('breakpointStep', function(step) {
     self.step_manager.jumpTo(step)
   })
 }
 
-Debugger.prototype.registerAndHighlightCodeItem = function (index) {
+Debugger.prototype.registerAndHighlightCodeItem = function(index) {
   const self = this
   // register selected code item, highlight the corresponding source location
   if (!self.compiler.lastCompilationResult) return
   self.debugger.traceManager.getCurrentCalledAddressAt(index, (error, address) => {
     if (error) return console.log(error)
-    self.debugger.callTree.sourceLocationTracker.getSourceLocationFromVMTraceIndex(address, index, self.compiler.lastCompilationResult.data.contracts, function (error, rawLocation) {
+    self.debugger.callTree.sourceLocationTracker.getSourceLocationFromVMTraceIndex(address, index, self.compiler.lastCompilationResult.data.contracts, function(error, rawLocation) {
       if (!error && self.compiler.lastCompilationResult && self.compiler.lastCompilationResult.data) {
         var lineColumnPos = self.offsetToLineColumnConverter.offsetToLineColumn(rawLocation, rawLocation.file, self.compiler.lastCompilationResult.source.sources, self.compiler.lastCompilationResult.data.sources)
         self.event.trigger('newSourceLocation', [lineColumnPos, rawLocation])
@@ -64,11 +64,11 @@ Debugger.prototype.registerAndHighlightCodeItem = function (index) {
   })
 }
 
-Debugger.prototype.updateWeb3 = function (web3) {
+Debugger.prototype.updateWeb3 = function(web3) {
   this.debugger.echojslib = web3
 }
 
-Debugger.prototype.debug = function (blockNumber, txNumber, tx, loadingCb) {
+Debugger.prototype.debug = function(blockNumber, txNumber, tx, loadingCb) {
   let web3 = this.debugger.web3
 
   return new Promise((resolve, reject) => {
@@ -105,7 +105,7 @@ Debugger.prototype.debug = function (blockNumber, txNumber, tx, loadingCb) {
   })
 }
 
-Debugger.prototype.debugTx = function (tx, loadingCb) {
+Debugger.prototype.debugTx = function(tx, loadingCb) {
   const self = this
   this.step_manager = new StepManager(this.debugger, this.debugger.traceManager)
 
@@ -120,7 +120,7 @@ Debugger.prototype.debugTx = function (tx, loadingCb) {
   this.vmDebuggerLogic = new VmDebuggerLogic(this.debugger, tx, this.step_manager, this.debugger.traceManager, this.debugger.codeManager, this.debugger.solidityProxy, this.debugger.callTree)
   this.vmDebuggerLogic.start()
 
-  this.step_manager.event.register('stepChanged', this, function (stepIndex) {
+  this.step_manager.event.register('stepChanged', this, function(stepIndex) {
     if (typeof stepIndex !== 'number' || stepIndex >= self.step_manager.traceLength) {
       return self.event.trigger('endDebug')
     }
@@ -135,7 +135,7 @@ Debugger.prototype.debugTx = function (tx, loadingCb) {
   this.debugger.debug(tx)
 }
 
-Debugger.prototype.unload = function () {
+Debugger.prototype.unload = function() {
   this.debugger.unLoad()
   this.event.trigger('debuggerUnloaded')
 }

@@ -3,7 +3,7 @@ var desc = 'Warn if the gas requirements of functions are too high.'
 var categories = require('./categories')
 var algo = require('./algorithmCategories')
 
-function gasCosts () {
+function gasCosts() {
 }
 
 /**
@@ -12,7 +12,7 @@ function gasCosts () {
   * @param {Function} cb    - callback
   */
   // @TODO has been copied from remix-ide repo ! should fix that soon !
-function visitContracts (contracts, cb) {
+function visitContracts(contracts, cb) {
   for (var file in contracts) {
     for (var name in contracts[file]) {
       if (cb({ name: name, object: contracts[file][name], file: file })) return
@@ -20,7 +20,7 @@ function visitContracts (contracts, cb) {
   }
 }
 
-gasCosts.prototype.report = function (compilationResults) {
+gasCosts.prototype.report = function(compilationResults) {
   var report = []
   visitContracts(compilationResults.contracts, (contract) => {
     if (

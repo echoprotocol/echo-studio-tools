@@ -1,223 +1,215 @@
-'use strict';
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var xmlhttprequest_1 = require("xmlhttprequest");
-var base64_1 = require("./base64");
-var properties_1 = require("./properties");
-var utf8_1 = require("./utf8");
-var errors = __importStar(require("../errors"));
+'use strict'
+var __importStar = (this && this.__importStar) || function(mod) {
+    if (mod && mod.__esModule) return mod
+    var result = {}
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k]
+    result['default'] = mod
+    return result
+}
+Object.defineProperty(exports, '__esModule', { value: true })
+var xmlhttprequest_1 = require('xmlhttprequest')
+var base64_1 = require('./base64')
+var properties_1 = require('./properties')
+var utf8_1 = require('./utf8')
+var errors = __importStar(require('../errors'))
 function fetchJson(connection, json, processFunc) {
-    var headers = {};
-    var url = null;
-    var timeout = 2 * 60 * 1000;
+    var headers = {}
+    var url = null
+    var timeout = 2 * 60 * 1000
     if (typeof (connection) === 'string') {
-        url = connection;
-    }
-    else if (typeof (connection) === 'object') {
+        url = connection
+    }    else if (typeof (connection) === 'object') {
         if (connection.url == null) {
-            errors.throwError('missing URL', errors.MISSING_ARGUMENT, { arg: 'url' });
+            errors.throwError('missing URL', errors.MISSING_ARGUMENT, { arg: 'url' })
         }
-        url = connection.url;
+        url = connection.url
         if (typeof (connection.timeout) === 'number' && connection.timeout > 0) {
-            timeout = connection.timeout;
+            timeout = connection.timeout
         }
         if (connection.headers) {
             for (var key in connection.headers) {
-                headers[key.toLowerCase()] = { key: key, value: String(connection.headers[key]) };
+                headers[key.toLowerCase()] = { key: key, value: String(connection.headers[key]) }
             }
         }
         if (connection.user != null && connection.password != null) {
             if (url.substring(0, 6) !== 'https:' && connection.allowInsecure !== true) {
-                errors.throwError('basic authentication requires a secure https url', errors.INVALID_ARGUMENT, { arg: 'url', url: url, user: connection.user, password: '[REDACTED]' });
+                errors.throwError('basic authentication requires a secure https url', errors.INVALID_ARGUMENT, { arg: 'url', url: url, user: connection.user, password: '[REDACTED]' })
             }
-            var authorization = connection.user + ':' + connection.password;
+            var authorization = connection.user + ':' + connection.password
             headers['authorization'] = {
                 key: 'Authorization',
                 value: 'Basic ' + base64_1.encode(utf8_1.toUtf8Bytes(authorization))
-            };
+            }
         }
     }
-    return new Promise(function (resolve, reject) {
-        var request = new xmlhttprequest_1.XMLHttpRequest();
-        var timer = null;
-        timer = setTimeout(function () {
+    return new Promise(function(resolve, reject) {
+        var request = new xmlhttprequest_1.XMLHttpRequest()
+        var timer = null
+        timer = setTimeout(function() {
             if (timer == null) {
-                return;
+                return
             }
-            timer = null;
-            reject(new Error('timeout'));
-            setTimeout(function () {
-                request.abort();
-            }, 0);
-        }, timeout);
-        var cancelTimeout = function () {
+            timer = null
+            reject(new Error('timeout'))
+            setTimeout(function() {
+                request.abort()
+            }, 0)
+        }, timeout)
+        var cancelTimeout = function() {
             if (timer == null) {
-                return;
+                return
             }
-            clearTimeout(timer);
-            timer = null;
-        };
+            clearTimeout(timer)
+            timer = null
+        }
         if (json) {
-            request.open('POST', url, true);
-            headers['content-type'] = { key: 'Content-Type', value: 'application/json' };
+            request.open('POST', url, true)
+            headers['content-type'] = { key: 'Content-Type', value: 'application/json' }
+        }        else {
+            request.open('GET', url, true)
         }
-        else {
-            request.open('GET', url, true);
-        }
-        Object.keys(headers).forEach(function (key) {
-            var header = headers[key];
-            request.setRequestHeader(header.key, header.value);
-        });
-        request.onreadystatechange = function () {
+        Object.keys(headers).forEach(function(key) {
+            var header = headers[key]
+            request.setRequestHeader(header.key, header.value)
+        })
+        request.onreadystatechange = function() {
             if (request.readyState !== 4) {
-                return;
+                return
             }
             if (request.status != 200) {
-                cancelTimeout();
+                cancelTimeout()
                 // @TODO: not any!
-                var error = new Error('invalid response - ' + request.status);
-                error.statusCode = request.status;
+                var error = new Error('invalid response - ' + request.status)
+                error.statusCode = request.status
                 if (request.responseText) {
-                    error.responseText = request.responseText;
+                    error.responseText = request.responseText
                 }
-                reject(error);
-                return;
+                reject(error)
+                return
             }
-            var result = null;
+            var result = null
             try {
-                result = JSON.parse(request.responseText);
-            }
-            catch (error) {
-                cancelTimeout();
+                result = JSON.parse(request.responseText)
+            }            catch (error) {
+                cancelTimeout()
                 // @TODO: not any!
-                var jsonError = new Error('invalid json response');
-                jsonError.orginialError = error;
-                jsonError.responseText = request.responseText;
+                var jsonError = new Error('invalid json response')
+                jsonError.orginialError = error
+                jsonError.responseText = request.responseText
                 if (json != null) {
-                    jsonError.requestBody = json;
+                    jsonError.requestBody = json
                 }
-                jsonError.url = url;
-                reject(jsonError);
-                return;
+                jsonError.url = url
+                reject(jsonError)
+                return
             }
             if (processFunc) {
                 try {
-                    result = processFunc(result);
-                }
-                catch (error) {
-                    cancelTimeout();
-                    error.url = url;
-                    error.body = json;
-                    error.responseText = request.responseText;
-                    reject(error);
-                    return;
+                    result = processFunc(result)
+                }                catch (error) {
+                    cancelTimeout()
+                    error.url = url
+                    error.body = json
+                    error.responseText = request.responseText
+                    reject(error)
+                    return
                 }
             }
-            cancelTimeout();
-            resolve(result);
-        };
-        request.onerror = function (error) {
-            cancelTimeout();
-            reject(error);
-        };
+            cancelTimeout()
+            resolve(result)
+        }
+        request.onerror = function(error) {
+            cancelTimeout()
+            reject(error)
+        }
         try {
             if (json != null) {
-                request.send(json);
+                request.send(json)
+            }            else {
+                request.send()
             }
-            else {
-                request.send();
-            }
-        }
-        catch (error) {
-            cancelTimeout();
+        }        catch (error) {
+            cancelTimeout()
             // @TODO: not any!
-            var connectionError = new Error('connection error');
-            connectionError.error = error;
-            reject(connectionError);
+            var connectionError = new Error('connection error')
+            connectionError.error = error
+            reject(connectionError)
         }
-    });
+    })
 }
-exports.fetchJson = fetchJson;
+exports.fetchJson = fetchJson
 function poll(func, options) {
     if (!options) {
-        options = {};
+        options = {}
     }
-    options = properties_1.shallowCopy(options);
+    options = properties_1.shallowCopy(options)
     if (options.floor == null) {
-        options.floor = 0;
+        options.floor = 0
     }
     if (options.ceiling == null) {
-        options.ceiling = 10000;
+        options.ceiling = 10000
     }
     if (options.interval == null) {
-        options.interval = 250;
+        options.interval = 250
     }
-    return new Promise(function (resolve, reject) {
-        var timer = null;
-        var done = false;
+    return new Promise(function(resolve, reject) {
+        var timer = null
+        var done = false
         // Returns true if cancel was successful. Unsuccessful cancel means we're already done.
-        var cancel = function () {
+        var cancel = function() {
             if (done) {
-                return false;
+                return false
             }
-            done = true;
+            done = true
             if (timer) {
-                clearTimeout(timer);
+                clearTimeout(timer)
             }
-            return true;
-        };
-        if (options.timeout) {
-            timer = setTimeout(function () {
-                if (cancel()) {
-                    reject(new Error('timeout'));
-                }
-            }, options.timeout);
+            return true
         }
-        var fastTimeout = options.fastRetry || null;
-        var attempt = 0;
+        if (options.timeout) {
+            timer = setTimeout(function() {
+                if (cancel()) {
+                    reject(new Error('timeout'))
+                }
+            }, options.timeout)
+        }
+        var fastTimeout = options.fastRetry || null
+        var attempt = 0
         function check() {
-            return func().then(function (result) {
+            return func().then(function(result) {
                 // If we have a result, or are allowed null then we're done
                 if (result !== undefined) {
                     if (cancel()) {
-                        resolve(result);
+                        resolve(result)
                     }
-                }
-                else if (options.onceBlock) {
-                    options.onceBlock.once('block', check);
+                }                else if (options.onceBlock) {
+                    options.onceBlock.once('block', check)
                     // Otherwise, exponential back-off (up to 10s) our next request
-                }
-                else if (!done) {
-                    attempt++;
-                    var timeout = options.interval * parseInt(String(Math.random() * Math.pow(2, attempt)));
+                }                else if (!done) {
+                    attempt++
+                    var timeout = options.interval * parseInt(String(Math.random() * Math.pow(2, attempt)))
                     if (timeout < options.floor) {
-                        timeout = options.floor;
+                        timeout = options.floor
                     }
                     if (timeout > options.ceiling) {
-                        timeout = options.ceiling;
+                        timeout = options.ceiling
                     }
                     // Fast Timeout, means we quickly try again the first time
                     if (fastTimeout) {
-                        attempt--;
-                        timeout = fastTimeout;
-                        fastTimeout = null;
+                        attempt--
+                        timeout = fastTimeout
+                        fastTimeout = null
                     }
-                    setTimeout(check, timeout);
+                    setTimeout(check, timeout)
                 }
-                return null;
-            }, function (error) {
+                return null
+            }, function(error) {
                 if (cancel()) {
-                    reject(error);
+                    reject(error)
                 }
-            });
+            })
         }
-        check();
-    });
+        check()
+    })
 }
-exports.poll = poll;
+exports.poll = poll

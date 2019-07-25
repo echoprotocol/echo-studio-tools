@@ -7,7 +7,7 @@ var remixCore = require('remix-core')
 var StorageViewer = remixCore.storage.StorageViewer
 var yo = require('yo-yo')
 
-function SolidityState (_parent, _traceManager, _codeManager, _solidityProxy) {
+function SolidityState(_parent, _traceManager, _codeManager, _solidityProxy) {
   this.storageResolver = null
   this.parent = _parent
   this.traceManager = _traceManager
@@ -25,7 +25,7 @@ function SolidityState (_parent, _traceManager, _codeManager, _solidityProxy) {
   _parent.event.register('newTraceLoaded', () => { this.stateVariablesByAddresses = {} })
 }
 
-SolidityState.prototype.render = function () {
+SolidityState.prototype.render = function() {
   if (!this.view) {
     this.view = yo`<div id='soliditystate' >
       ${this.basicPanel.render()}
@@ -34,10 +34,10 @@ SolidityState.prototype.render = function () {
   return this.view
 }
 
-SolidityState.prototype.init = function () {
+SolidityState.prototype.init = function() {
   var self = this
   var decodeTimeout = null
-  this.parent.event.register('indexChanged', this, function (index) {
+  this.parent.event.register('indexChanged', this, function(index) {
     if (index < 0) {
       self.basicPanel.setMessage('invalid step index')
       return
@@ -62,7 +62,7 @@ SolidityState.prototype.init = function () {
   })
 }
 
-function decode (self, index) {
+function decode(self, index) {
   self.traceManager.getCurrentCalledAddressAt(self.parent.currentStepIndex, (error, address) => {
     if (error) {
       self.basicPanel.update({})
@@ -71,7 +71,7 @@ function decode (self, index) {
       if (self.stateVariablesByAddresses[address]) {
         extractStateVariables(self, self.stateVariablesByAddresses[address], address)
       } else {
-        self.solidityProxy.extractStateVariablesAt(index, function (error, stateVars) {
+        self.solidityProxy.extractStateVariablesAt(index, function(error, stateVars) {
           if (error) {
             self.basicPanel.update({})
             console.log(error)
@@ -85,7 +85,7 @@ function decode (self, index) {
   })
 }
 
-function extractStateVariables (self, stateVars, address) {
+function extractStateVariables(self, stateVars, address) {
   var storageViewer = new StorageViewer({
     stepIndex: self.parent.currentStepIndex,
     tx: self.parent.tx,

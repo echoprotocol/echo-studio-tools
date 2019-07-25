@@ -28,7 +28,7 @@ var EventManager = remixLib.EventManager
   *
   * @param {Map} opts  -  { function compilationResult } //
   */
-function Ethdebugger (opts) {
+function Ethdebugger(opts) {
   this.opts = opts || {}
   if (!this.opts.compilationResult) this.opts.compilationResult = () => { return null }
 
@@ -46,7 +46,7 @@ function Ethdebugger (opts) {
   this.callTree = new InternalCallTree(this.event, this.traceManager, this.solidityProxy, this.codeManager, { includeLocalVariables: true })
 }
 
-Ethdebugger.prototype.setManagers = function () {
+Ethdebugger.prototype.setManagers = function() {
   this.traceManager = new TraceManager({web3: this.web3})
   this.codeManager = new CodeManager(this.traceManager)
   this.solidityProxy = new SolidityProxy(this.traceManager, this.codeManager)
@@ -55,11 +55,11 @@ Ethdebugger.prototype.setManagers = function () {
   this.callTree = new InternalCallTree(this.event, this.traceManager, this.solidityProxy, this.codeManager, { includeLocalVariables: true })
 }
 
-Ethdebugger.prototype.resolveStep = function (index) {
+Ethdebugger.prototype.resolveStep = function(index) {
   this.codeManager.resolveStep(index, this.tx)
 }
 
-Ethdebugger.prototype.setCompilationResult = function (compilationResult) {
+Ethdebugger.prototype.setCompilationResult = function(compilationResult) {
   if (compilationResult && compilationResult.sources && compilationResult.contracts) {
     this.solidityProxy.reset(compilationResult)
   } else {
@@ -68,29 +68,29 @@ Ethdebugger.prototype.setCompilationResult = function (compilationResult) {
 }
 
 /* resolve source location */
-Ethdebugger.prototype.sourceLocationFromVMTraceIndex = function (address, stepIndex, callback) {
+Ethdebugger.prototype.sourceLocationFromVMTraceIndex = function(address, stepIndex, callback) {
   this.callTree.sourceLocationTracker.getSourceLocationFromVMTraceIndex(address, stepIndex, this.solidityProxy.contracts, (error, rawLocation) => {
     callback(error, rawLocation)
   })
 }
 
-Ethdebugger.prototype.sourceLocationFromInstructionIndex = function (address, instIndex, callback) {
-  this.callTree.sourceLocationTracker.getSourceLocationFromInstructionIndex(address, instIndex, this.solidityProxy.contracts, function (error, rawLocation) {
+Ethdebugger.prototype.sourceLocationFromInstructionIndex = function(address, instIndex, callback) {
+  this.callTree.sourceLocationTracker.getSourceLocationFromInstructionIndex(address, instIndex, this.solidityProxy.contracts, function(error, rawLocation) {
     callback(error, rawLocation)
   })
 }
 
 /* breakpoint */
-Ethdebugger.prototype.setBreakpointManager = function (breakpointManager) {
+Ethdebugger.prototype.setBreakpointManager = function(breakpointManager) {
   this.breakpointManager = breakpointManager
 }
 
 /* decode locals */
-Ethdebugger.prototype.extractLocalsAt = function (step, callback) {
+Ethdebugger.prototype.extractLocalsAt = function(step, callback) {
   callback(null, this.callTree.findScope(step))
 }
 
-Ethdebugger.prototype.decodeLocalsAt = function (step, sourceLocation, callback) {
+Ethdebugger.prototype.decodeLocalsAt = function(step, sourceLocation, callback) {
   this.traceManager.waterfall([
     this.traceManager.getStackAt,
     this.traceManager.getMemoryAt,
@@ -123,13 +123,13 @@ Ethdebugger.prototype.decodeLocalsAt = function (step, sourceLocation, callback)
 }
 
 /* decode state */
-Ethdebugger.prototype.extractStateAt = function (step, callback) {
-  this.solidityProxy.extractStateVariablesAt(step, function (error, stateVars) {
+Ethdebugger.prototype.extractStateAt = function(step, callback) {
+  this.solidityProxy.extractStateVariablesAt(step, function(error, stateVars) {
     callback(error, stateVars)
   })
 }
 
-Ethdebugger.prototype.decodeStateAt = function (step, stateVars, callback) {
+Ethdebugger.prototype.decodeStateAt = function(step, stateVars, callback) {
   this.traceManager.getCurrentCalledAddressAt(step, (error, address) => {
     if (error) return callback(error)
     var storageViewer = new StorageViewer({
@@ -147,7 +147,7 @@ Ethdebugger.prototype.decodeStateAt = function (step, stateVars, callback) {
   })
 }
 
-Ethdebugger.prototype.storageViewAt = function (step, address) {
+Ethdebugger.prototype.storageViewAt = function(step, address) {
   return new StorageViewer({
     stepIndex: step,
     tx: this.tx,
@@ -155,18 +155,18 @@ Ethdebugger.prototype.storageViewAt = function (step, address) {
   }, this.storageResolver, this.traceManager)
 }
 
-Ethdebugger.prototype.updateWeb3 = function (web3) {
+Ethdebugger.prototype.updateWeb3 = function(web3) {
   this.web3 = web3
   this.setManagers()
 }
 
-Ethdebugger.prototype.unLoad = function () {
+Ethdebugger.prototype.unLoad = function() {
   this.traceManager.init()
   this.codeManager.clear()
   this.event.trigger('traceUnloaded')
 }
 
-Ethdebugger.prototype.debug = function (tx) {
+Ethdebugger.prototype.debug = function(tx) {
   if (this.traceManager.isLoading) {
     return
   }
@@ -176,7 +176,7 @@ Ethdebugger.prototype.debug = function (tx) {
   this.setCompilationResult(this.opts.compilationResult())
   this.tx = tx
   var self = this
-  this.traceManager.resolveTrace(tx, function (error, result) {
+  this.traceManager.resolveTrace(tx, function(error, result) {
     if (result) {
       self.event.trigger('newTraceLoaded', [self.traceManager.trace])
       if (self.breakpointManager && self.breakpointManager.hasBreakpoint()) {

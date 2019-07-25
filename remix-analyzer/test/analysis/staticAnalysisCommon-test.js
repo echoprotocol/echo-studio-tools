@@ -2,11 +2,11 @@ var test = require('tape')
 
 var common = require('../../src/solidity-analyzer/modules/staticAnalysisCommon')
 
-function escapeRegExp (str) {
+function escapeRegExp(str) {
   return str.replace(/[-[\]/{}()+?.\\^$|]/g, '\\$&')
 }
 
-test('staticAnalysisCommon.helpers.buildFunctionSignature', function (t) {
+test('staticAnalysisCommon.helpers.buildFunctionSignature', function(t) {
   t.plan(9)
 
   t.equal(common.helpers.buildFunctionSignature([common.basicTypes.UINT, common.basicTypes.ADDRESS], [common.basicTypes.BOOL], false),
@@ -48,7 +48,7 @@ test('staticAnalysisCommon.helpers.buildFunctionSignature', function (t) {
 
 // #################### Node Identification Primitives
 
-test('staticAnalysisCommon.helpers.name', function (t) {
+test('staticAnalysisCommon.helpers.name', function(t) {
   t.plan(9)
   var node = { attributes: { value: 'now' } }
   var node2 = { attributes: { member_name: 'call' } }
@@ -60,7 +60,7 @@ test('staticAnalysisCommon.helpers.name', function (t) {
   lowlevelAccessersCommon(t, common.helpers.name, node)
 })
 
-test('staticAnalysisCommon.helpers.operator', function (t) {
+test('staticAnalysisCommon.helpers.operator', function(t) {
   t.plan(10)
   var node = { attributes: { operator: '++' } }
   var node2 = { attributes: { operator: '+++' } }
@@ -76,7 +76,7 @@ test('staticAnalysisCommon.helpers.operator', function (t) {
   lowlevelAccessersCommon(t, common.helpers.operator, node)
 })
 
-test('staticAnalysisCommon.helpers.nodeType', function (t) {
+test('staticAnalysisCommon.helpers.nodeType', function(t) {
   t.plan(9)
   var node = { name: 'Identifier', attributes: { name: 'now' } }
   var node2 = { name: 'FunctionCall', attributes: { member_name: 'call' } }
@@ -88,7 +88,7 @@ test('staticAnalysisCommon.helpers.nodeType', function (t) {
   lowlevelAccessersCommon(t, common.helpers.nodeType, node)
 })
 
-test('staticAnalysisCommon.helpers.expressionType', function (t) {
+test('staticAnalysisCommon.helpers.expressionType', function(t) {
   t.plan(9)
   var node = { name: 'Identifier', attributes: { value: 'now', type: 'uint256' } }
   var node2 = { name: 'FunctionCall', attributes: { member_name: 'call', type: 'function () payable returns (bool)' } }
@@ -100,7 +100,7 @@ test('staticAnalysisCommon.helpers.expressionType', function (t) {
   lowlevelAccessersCommon(t, common.helpers.expressionType, node)
 })
 
-test('staticAnalysisCommon.helpers.nrOfChildren', function (t) {
+test('staticAnalysisCommon.helpers.nrOfChildren', function(t) {
   t.plan(10)
   var node = { name: 'Identifier', children: ['a', 'b'], attributes: { value: 'now', type: 'uint256' } }
   var node2 = { name: 'FunctionCall', children: [], attributes: { member_name: 'call', type: 'function () payable returns (bool)' } }
@@ -114,7 +114,7 @@ test('staticAnalysisCommon.helpers.nrOfChildren', function (t) {
   lowlevelAccessersCommon(t, common.helpers.nrOfChildren, node)
 })
 
-test('staticAnalysisCommon.helpers.minNrOfChildren', function (t) {
+test('staticAnalysisCommon.helpers.minNrOfChildren', function(t) {
   t.plan(13)
   var node = { name: 'Identifier', children: ['a', 'b'], attributes: { value: 'now', type: 'uint256' } }
   var node2 = { name: 'FunctionCall', children: [], attributes: { member_name: 'call', type: 'function () payable returns (bool)' } }
@@ -131,7 +131,7 @@ test('staticAnalysisCommon.helpers.minNrOfChildren', function (t) {
   lowlevelAccessersCommon(t, common.helpers.minNrOfChildren, node)
 })
 
-function lowlevelAccessersCommon (t, f, someNode) {
+function lowlevelAccessersCommon(t, f, someNode) {
   t.ok(f(someNode), 'always ok if type is undefinded')
   t.ok(f(someNode, undefined), 'always ok if name is undefinded 2')
   t.notOk(f(null, undefined), 'false on no node')
@@ -142,7 +142,7 @@ function lowlevelAccessersCommon (t, f, someNode) {
 
 // #################### Trivial Getter Test
 
-test('staticAnalysisCommon.getType', function (t) {
+test('staticAnalysisCommon.getType', function(t) {
   t.plan(3)
   var node = { name: 'Identifier', children: ['a', 'b'], attributes: { value: 'now', type: 'uint256' } }
   var node2 = { name: 'FunctionCall', children: [], attributes: { member_name: 'call', type: 'function () payable returns (bool)' } }
@@ -155,7 +155,7 @@ test('staticAnalysisCommon.getType', function (t) {
 
 // #################### Complex Getter Test
 
-test('staticAnalysisCommon.getFunctionCallType', function (t) {
+test('staticAnalysisCommon.getFunctionCallType', function(t) {
   t.plan(5)
   var localCall = {
     'attributes': {
@@ -230,7 +230,7 @@ test('staticAnalysisCommon.getFunctionCallType', function (t) {
   t.throws(() => common.getFunctionCallType({ name: 'MemberAccess' }), undefined, 'throws on wrong type')
 })
 
-test('staticAnalysisCommon.getEffectedVariableName', function (t) {
+test('staticAnalysisCommon.getEffectedVariableName', function(t) {
   t.plan(3)
   var assignment = {
     'attributes': {
@@ -306,7 +306,7 @@ test('staticAnalysisCommon.getEffectedVariableName', function (t) {
   t.throws(() => common.getEffectedVariableName({ name: 'MemberAccess' }), undefined, 'should throw on all other nodes')
 })
 
-test('staticAnalysisCommon.getLocalCallName', function (t) {
+test('staticAnalysisCommon.getLocalCallName', function(t) {
   t.plan(3)
   var localCall = {
     'attributes': {
@@ -363,7 +363,7 @@ test('staticAnalysisCommon.getLocalCallName', function (t) {
   t.throws(() => common.getLocalCallName(thisLocalCall), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getThisLocalCallName', function (t) {
+test('staticAnalysisCommon.getThisLocalCallName', function(t) {
   t.plan(3)
   var localCall = {
     'attributes': {
@@ -420,7 +420,7 @@ test('staticAnalysisCommon.getThisLocalCallName', function (t) {
   t.throws(() => common.getThisLocalCallName(localCall), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getSuperLocalCallName', function (t) {
+test('staticAnalysisCommon.getSuperLocalCallName', function(t) {
   t.plan(4)
   var superLocal = {
     'attributes': {
@@ -494,7 +494,7 @@ test('staticAnalysisCommon.getSuperLocalCallName', function (t) {
   t.throws(() => common.getSuperLocalCallName(localCall), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getExternalDirectCallContractName', function (t) {
+test('staticAnalysisCommon.getExternalDirectCallContractName', function(t) {
   t.plan(3)
   var localCall = {
     'attributes': {
@@ -552,7 +552,7 @@ test('staticAnalysisCommon.getExternalDirectCallContractName', function (t) {
   t.throws(() => common.getExternalDirectCallContractName(localCall), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getThisLocalCallContractName', function (t) {
+test('staticAnalysisCommon.getThisLocalCallContractName', function(t) {
   t.plan(3)
   var localCall = {
     'attributes': {
@@ -609,7 +609,7 @@ test('staticAnalysisCommon.getThisLocalCallContractName', function (t) {
   t.throws(() => common.getThisLocalCallContractName(externalDirect), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getExternalDirectCallMemberName', function (t) {
+test('staticAnalysisCommon.getExternalDirectCallMemberName', function(t) {
   t.plan(3)
   var localCall = {
     'attributes': {
@@ -666,21 +666,21 @@ test('staticAnalysisCommon.getExternalDirectCallMemberName', function (t) {
   t.throws(() => common.getExternalDirectCallMemberName(localCall), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getContractName', function (t) {
+test('staticAnalysisCommon.getContractName', function(t) {
   t.plan(2)
   var contract = { name: 'ContractDefinition', attributes: { name: 'baz' } }
   t.ok(common.getContractName(contract) === 'baz', 'returns right contract name')
   t.throws(() => common.getContractName({ name: 'InheritanceSpecifier' }), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getFunctionDefinitionName', function (t) {
+test('staticAnalysisCommon.getFunctionDefinitionName', function(t) {
   t.plan(2)
   var func = { name: 'FunctionDefinition', attributes: { name: 'foo' } }
   t.ok(common.getFunctionDefinitionName(func) === 'foo', 'returns right contract name')
   t.throws(() => common.getFunctionDefinitionName({ name: 'InlineAssembly' }), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getInheritsFromName', function (t) {
+test('staticAnalysisCommon.getInheritsFromName', function(t) {
   t.plan(2)
   var inh = {
     'children': [
@@ -701,7 +701,7 @@ test('staticAnalysisCommon.getInheritsFromName', function (t) {
   t.throws(() => common.getInheritsFromName({ name: 'ElementaryTypeName' }), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getDeclaredVariableName', function (t) {
+test('staticAnalysisCommon.getDeclaredVariableName', function(t) {
   t.plan(2)
   var node1 = {
     'attributes': {
@@ -727,7 +727,7 @@ test('staticAnalysisCommon.getDeclaredVariableName', function (t) {
   t.throws(() => common.getDeclaredVariableName(node1) === 'x', undefined, 'throw if wrong node')
 })
 
-test('staticAnalysisCommon.getStateVariableDeclarationsFormContractNode', function (t) {
+test('staticAnalysisCommon.getStateVariableDeclarationsFormContractNode', function(t) {
   t.plan(4)
   var contract = {
     'attributes': {
@@ -845,7 +845,7 @@ test('staticAnalysisCommon.getStateVariableDeclarationsFormContractNode', functi
   t.ok(res[3] === undefined, 'var 4 should be  undefined')
 })
 
-test('staticAnalysisCommon.getFunctionOrModifierDefinitionParameterPart', function (t) {
+test('staticAnalysisCommon.getFunctionOrModifierDefinitionParameterPart', function(t) {
   t.plan(2)
   var funDef = {
     'attributes': {
@@ -875,7 +875,7 @@ test('staticAnalysisCommon.getFunctionOrModifierDefinitionParameterPart', functi
   t.throws(() => common.getFunctionOrModifierDefinitionParameterPart({ name: 'SourceUnit' }), undefined, 'throws on other nodes')
 })
 
-test('staticAnalysisCommon.getFunctionCallTypeParameterType', function (t) {
+test('staticAnalysisCommon.getFunctionCallTypeParameterType', function(t) {
   t.plan(4)
   var localCall = {
     'attributes': {
@@ -933,7 +933,7 @@ test('staticAnalysisCommon.getFunctionCallTypeParameterType', function (t) {
   t.throws(() => common.getFunctionCallTypeParameterType({ name: 'MemberAccess' }), undefined, 'throws on wrong type')
 })
 
-test('staticAnalysisCommon.getLibraryCallContractName', function (t) {
+test('staticAnalysisCommon.getLibraryCallContractName', function(t) {
   t.plan(2)
   var node = {
     'attributes': {
@@ -955,7 +955,7 @@ test('staticAnalysisCommon.getLibraryCallContractName', function (t) {
   t.throws(() => common.getLibraryCallContractName({ name: 'Identifier' }), undefined, 'should throw on wrong node')
 })
 
-test('staticAnalysisCommon.getLibraryCallMemberName', function (t) {
+test('staticAnalysisCommon.getLibraryCallMemberName', function(t) {
   t.plan(2)
   var node = {
     'attributes': {
@@ -977,7 +977,7 @@ test('staticAnalysisCommon.getLibraryCallMemberName', function (t) {
   t.throws(() => common.getLibraryCallMemberName({ name: 'Identifier' }), undefined, 'should throw on wrong node')
 })
 
-test('staticAnalysisCommon.getFullQualifiedFunctionCallIdent', function (t) {
+test('staticAnalysisCommon.getFullQualifiedFunctionCallIdent', function(t) {
   t.plan(4)
   var contract = { name: 'ContractDefinition', attributes: { name: 'baz' } }
   var localCall = {
@@ -1037,7 +1037,7 @@ test('staticAnalysisCommon.getFullQualifiedFunctionCallIdent', function (t) {
   t.throws(() => common.getFullQualifiedFunctionCallIdent(contract, { name: 'MemberAccess' }), undefined, 'throws on wrong type')
 })
 
-test('staticAnalysisCommon.getFullQuallyfiedFuncDefinitionIdent', function (t) {
+test('staticAnalysisCommon.getFullQuallyfiedFuncDefinitionIdent', function(t) {
   t.plan(3)
   var contract = { name: 'ContractDefinition', attributes: { name: 'baz' } }
   var funDef = {
@@ -1121,7 +1121,7 @@ test('staticAnalysisCommon.getFullQuallyfiedFuncDefinitionIdent', function (t) {
 
 // #################### Trivial Node Identification
 
-test('staticAnalysisCommon.isFunctionDefinition', function (t) {
+test('staticAnalysisCommon.isFunctionDefinition', function(t) {
   t.plan(3)
   var node1 = { name: 'FunctionDefinition' }
   var node2 = { name: 'MemberAccess' }
@@ -1132,7 +1132,7 @@ test('staticAnalysisCommon.isFunctionDefinition', function (t) {
   t.notOk(common.isFunctionDefinition(node3), 'substring should not work')
 })
 
-test('staticAnalysisCommon.isModifierDefinition', function (t) {
+test('staticAnalysisCommon.isModifierDefinition', function(t) {
   t.plan(3)
   var node1 = { name: 'ModifierDefinition' }
   var node2 = { name: 'MemberAccess' }
@@ -1143,7 +1143,7 @@ test('staticAnalysisCommon.isModifierDefinition', function (t) {
   t.notOk(common.isModifierDefinition(node3), 'substring should not work')
 })
 
-test('staticAnalysisCommon.isModifierInvocation', function (t) {
+test('staticAnalysisCommon.isModifierInvocation', function(t) {
   t.plan(3)
   var node1 = { name: 'ModifierInvocation' }
   var node2 = { name: 'MemberAccess' }
@@ -1154,7 +1154,7 @@ test('staticAnalysisCommon.isModifierInvocation', function (t) {
   t.notOk(common.isModifierInvocation(node3), 'substring should not work')
 })
 
-test('staticAnalysisCommon.isVariableDeclaration', function (t) {
+test('staticAnalysisCommon.isVariableDeclaration', function(t) {
   t.plan(3)
   var node1 = { name: 'VariableDeclaration' }
   var node2 = { name: 'MemberAccess' }
@@ -1165,7 +1165,7 @@ test('staticAnalysisCommon.isVariableDeclaration', function (t) {
   t.notOk(common.isVariableDeclaration(node3), 'substring should not work')
 })
 
-test('staticAnalysisCommon.isInheritanceSpecifier', function (t) {
+test('staticAnalysisCommon.isInheritanceSpecifier', function(t) {
   t.plan(3)
   var node1 = { name: 'InheritanceSpecifier' }
   var node2 = { name: 'MemberAccess' }
@@ -1176,7 +1176,7 @@ test('staticAnalysisCommon.isInheritanceSpecifier', function (t) {
   t.notOk(common.isInheritanceSpecifier(node3), 'substring should not work')
 })
 
-test('staticAnalysisCommon.isAssignment', function (t) {
+test('staticAnalysisCommon.isAssignment', function(t) {
   t.plan(3)
   var node1 = { name: 'Assignment' }
   var node2 = { name: 'MemberAccess' }
@@ -1187,7 +1187,7 @@ test('staticAnalysisCommon.isAssignment', function (t) {
   t.notOk(common.isAssignment(node3), 'substring should not work')
 })
 
-test('staticAnalysisCommon.isContractDefinition', function (t) {
+test('staticAnalysisCommon.isContractDefinition', function(t) {
   t.plan(3)
   var node1 = { name: 'ContractDefinition' }
   var node2 = { name: 'MemberAccess' }
@@ -1198,7 +1198,7 @@ test('staticAnalysisCommon.isContractDefinition', function (t) {
   t.notOk(common.isContractDefinition(node3), 'substring should not work')
 })
 
-test('staticAnalysisCommon.isInlineAssembly', function (t) {
+test('staticAnalysisCommon.isInlineAssembly', function(t) {
   t.plan(3)
   var node1 = { name: 'InlineAssembly' }
   var node2 = { name: 'MemberAccess' }
@@ -1211,7 +1211,7 @@ test('staticAnalysisCommon.isInlineAssembly', function (t) {
 
 // #################### Complex Node Identification
 
-test('staticAnalysisCommon.isBuiltinFunctionCall', function (t) {
+test('staticAnalysisCommon.isBuiltinFunctionCall', function(t) {
   t.plan(2)
   var selfdestruct = {
     'attributes': {
@@ -1264,7 +1264,7 @@ test('staticAnalysisCommon.isBuiltinFunctionCall', function (t) {
   t.notOk(common.isBuiltinFunctionCall(localCall), 'local call is not builtin')
 })
 
-test('staticAnalysisCommon.isStorageVariableDeclaration', function (t) {
+test('staticAnalysisCommon.isStorageVariableDeclaration', function(t) {
   t.plan(3)
   var node1 = {
     'attributes': {
@@ -1344,7 +1344,7 @@ test('staticAnalysisCommon.isStorageVariableDeclaration', function (t) {
   t.notOk(common.isStorageVariableDeclaration(node3), 'bytes is not storage')
 })
 
-test('staticAnalysisCommon.isInteraction', function (t) {
+test('staticAnalysisCommon.isInteraction', function(t) {
   t.plan(6)
   var sendAst = { name: 'MemberAccess', children: [{attributes: { value: 'd', type: 'address' }}], attributes: { value: 'send', type: 'function (uint256) returns (bool)' } }
   var callAst = { name: 'MemberAccess', children: [{attributes: { value: 'f', type: 'address' }}], attributes: { member_name: 'call', type: 'function () payable returns (bool)' } }
@@ -1408,7 +1408,7 @@ test('staticAnalysisCommon.isInteraction', function (t) {
   t.notOk(common.isInteraction(nodeNot), 'local call is not interaction')
 })
 
-test('staticAnalysisCommon.isEffect', function (t) {
+test('staticAnalysisCommon.isEffect', function(t) {
   t.plan(5)
   var inlineAssembly = {
     'children': [
@@ -1488,7 +1488,7 @@ test('staticAnalysisCommon.isEffect', function (t) {
   t.notOk(common.isEffect({ name: 'MemberAccess', attributes: { operator: '++' } }), 'MemberAccess not treated as effect')
 })
 
-test('staticAnalysisCommon.isWriteOnStateVariable', function (t) {
+test('staticAnalysisCommon.isWriteOnStateVariable', function(t) {
   t.plan(3)
   var inlineAssembly = {
     'children': [
@@ -1610,7 +1610,7 @@ test('staticAnalysisCommon.isWriteOnStateVariable', function (t) {
   t.ok(common.isWriteOnStateVariable(assignment, [node1, node2, node3]), 'assignment on state is not write on state')
 })
 
-test('staticAnalysisCommon.isStateVariable', function (t) {
+test('staticAnalysisCommon.isStateVariable', function(t) {
   t.plan(3)
   var node1 = {
     'attributes': {
@@ -1663,7 +1663,7 @@ test('staticAnalysisCommon.isStateVariable', function (t) {
   t.notOk(common.isStateVariable('x', [node2, node3]), 'not contained')
 })
 
-test('staticAnalysisCommon.isConstantFunction', function (t) {
+test('staticAnalysisCommon.isConstantFunction', function(t) {
   t.plan(3)
   var node1 = { name: 'FunctionDefinition', attributes: { constant: true } }
   var node2 = { name: 'FunctionDefinition', attributes: { constant: false } }
@@ -1674,7 +1674,7 @@ test('staticAnalysisCommon.isConstantFunction', function (t) {
   t.notOk(common.isConstantFunction(node3), 'wrong node should not be const func definition')
 })
 
-test('staticAnalysisCommon.isPlusPlusUnaryOperation', function (t) {
+test('staticAnalysisCommon.isPlusPlusUnaryOperation', function(t) {
   t.plan(3)
   var node1 = { name: 'UnaryOperation', attributes: { operator: '++' } }
   var node2 = { name: 'UnaryOperation', attributes: { operator: '--' } }
@@ -1685,7 +1685,7 @@ test('staticAnalysisCommon.isPlusPlusUnaryOperation', function (t) {
   t.notOk(common.isPlusPlusUnaryOperation(node3), 'wrong node should not be unary ++')
 })
 
-test('staticAnalysisCommon.isMinusMinusUnaryOperation', function (t) {
+test('staticAnalysisCommon.isMinusMinusUnaryOperation', function(t) {
   t.plan(3)
   var node1 = { name: 'UnaryOperation', attributes: { operator: '--' } }
   var node2 = { name: 'UnaryOperation', attributes: { operator: '++' } }
@@ -1696,7 +1696,7 @@ test('staticAnalysisCommon.isMinusMinusUnaryOperation', function (t) {
   t.notOk(common.isMinusMinusUnaryOperation(node3), 'wrong node should not be unary --')
 })
 
-test('staticAnalysisCommon.isFullyImplementedContract', function (t) {
+test('staticAnalysisCommon.isFullyImplementedContract', function(t) {
   t.plan(3)
   var node1 = { name: 'ContractDefinition', attributes: { fullyImplemented: true } }
   var node2 = { name: 'ContractDefinition', attributes: { fullyImplemented: false } }
@@ -1707,7 +1707,7 @@ test('staticAnalysisCommon.isFullyImplementedContract', function (t) {
   t.notOk(common.isFullyImplementedContract(node3), 'wrong node should not be fully implemented contract')
 })
 
-test('staticAnalysisCommon.isCallToNonConstLocalFunction', function (t) {
+test('staticAnalysisCommon.isCallToNonConstLocalFunction', function(t) {
   t.plan(2)
   var node1 = {
     'attributes': {
@@ -1738,7 +1738,7 @@ test('staticAnalysisCommon.isCallToNonConstLocalFunction', function (t) {
   t.notok(common.isCallToNonConstLocalFunction(node1), 'should no longer be call to non const Local func')
 })
 
-test('staticAnalysisCommon.isExternalDirectCall', function (t) {
+test('staticAnalysisCommon.isExternalDirectCall', function(t) {
   t.plan(5)
   var node = {
     attributes: {
@@ -1769,7 +1769,7 @@ test('staticAnalysisCommon.isExternalDirectCall', function (t) {
   t.notOk(common.isExternalDirectCall(node2), 'local call is not an exernal call')
 })
 
-test('staticAnalysisCommon.isNowAccess', function (t) {
+test('staticAnalysisCommon.isNowAccess', function(t) {
   t.plan(3)
   var node = { name: 'Identifier', attributes: { value: 'now', type: 'uint256' } }
   t.notOk(common.isThisLocalCall(node), 'is this.local_method() used should not work')
@@ -1777,7 +1777,7 @@ test('staticAnalysisCommon.isNowAccess', function (t) {
   t.ok(common.isNowAccess(node), 'is now used should work')
 })
 
-test('staticAnalysisCommon.isBlockTimestampAccess', function (t) {
+test('staticAnalysisCommon.isBlockTimestampAccess', function(t) {
   t.plan(3)
   var node = { name: 'MemberAccess', children: [{attributes: { value: 'block', type: 'block' }}], attributes: { value: 'timestamp', type: 'uint256' } }
   t.notOk(common.isThisLocalCall(node), 'is this.local_method() used should not work')
@@ -1785,7 +1785,7 @@ test('staticAnalysisCommon.isBlockTimestampAccess', function (t) {
   t.notOk(common.isNowAccess(node), 'is now used should not work')
 })
 
-test('staticAnalysisCommon.isBlockBlockhashAccess', function (t) {
+test('staticAnalysisCommon.isBlockBlockhashAccess', function(t) {
   t.plan(4)
   var node = {
     'attributes': {
@@ -1810,7 +1810,7 @@ test('staticAnalysisCommon.isBlockBlockhashAccess', function (t) {
   t.notOk(common.isNowAccess(node), 'is now used should not work')
 })
 
-test('staticAnalysisCommon.isThisLocalCall', function (t) {
+test('staticAnalysisCommon.isThisLocalCall', function(t) {
   t.plan(3)
   var node = { name: 'MemberAccess', children: [{attributes: { value: 'this', type: 'contract test' }}], attributes: { value: 'b', type: 'function (bytes32,address) returns (bool)' } }
   t.ok(common.isThisLocalCall(node), 'is this.local_method() used should work')
@@ -1818,7 +1818,7 @@ test('staticAnalysisCommon.isThisLocalCall', function (t) {
   t.notOk(common.isNowAccess(node), 'is now used should not work')
 })
 
-test('staticAnalysisCommon.isSuperLocalCall', function (t) {
+test('staticAnalysisCommon.isSuperLocalCall', function(t) {
   t.plan(4)
   var node = {
     'attributes': {
@@ -1842,7 +1842,7 @@ test('staticAnalysisCommon.isSuperLocalCall', function (t) {
   t.notOk(common.isNowAccess(node), 'is now used should not work')
 })
 
-test('staticAnalysisCommon.isLibraryCall', function (t) {
+test('staticAnalysisCommon.isLibraryCall', function(t) {
   t.plan(5)
   var node = {
     'attributes': {
@@ -1867,7 +1867,7 @@ test('staticAnalysisCommon.isLibraryCall', function (t) {
   t.notOk(common.isNowAccess(node), 'is now used should not work')
 })
 
-test('staticAnalysisCommon.isLocalCall', function (t) {
+test('staticAnalysisCommon.isLocalCall', function(t) {
   t.plan(5)
   var node1 = {
     'attributes': {
@@ -1906,7 +1906,7 @@ test('staticAnalysisCommon.isLocalCall', function (t) {
   t.notOk(common.isInteraction(node1), 'is not interaction')
 })
 
-test('staticAnalysisCommon.isLowLevelCall', function (t) {
+test('staticAnalysisCommon.isLowLevelCall', function(t) {
   t.plan(6)
   var sendAst = { name: 'MemberAccess', children: [{attributes: { value: 'd', type: 'address' }}], attributes: { value: 'send', type: 'function (uint256) returns (bool)' } }
   var callAst = { name: 'MemberAccess', children: [{attributes: { value: 'f', type: 'address' }}], attributes: { member_name: 'call', type: 'function () payable returns (bool)' } }
@@ -1921,7 +1921,7 @@ test('staticAnalysisCommon.isLowLevelCall', function (t) {
   t.ok(common.isLowLevelDelegatecallInst(delegatecallAst) && common.isLowLevelCall(delegatecallAst), 'delegatecall is llc should work')
 })
 
-test('staticAnalysisCommon: Call of parameter function', function (t) {
+test('staticAnalysisCommon: Call of parameter function', function(t) {
   t.plan(7)
   var node1 = {
     'attributes': {
@@ -2006,7 +2006,7 @@ test('staticAnalysisCommon: Call of parameter function', function (t) {
   t.equals(common.getFunctionCallTypeParameterType(node1), 'uint256,uint256', 'Extracts param right type')
 })
 
-test('staticAnalysisCommon: function call with of function with function parameter', function (t) {
+test('staticAnalysisCommon: function call with of function with function parameter', function(t) {
   t.plan(2)
   var node1 = {
     'attributes': {
@@ -2103,7 +2103,7 @@ test('staticAnalysisCommon: function call with of function with function paramet
   t.equals(common.getFunctionCallTypeParameterType(node1), 'function (uint256,uint256) pure returns (uint256),uint256,uint256', 'Extracts param right type')
 })
 
-test('staticAnalysisCommon: require call', function (t) {
+test('staticAnalysisCommon: require call', function(t) {
   t.plan(3)
   var node = {'attributes': {'argumentTypes': null, 'isConstant': false, 'isLValue': false, 'isPure': false, 'isStructConstructorCall': false, 'lValueRequested': false, 'names': [null], 'type': 'tuple()', 'type_conversion': false}, 'children': [{'attributes': {'argumentTypes': [{'typeIdentifier': 't_bool', 'typeString': 'bool'}, {'typeIdentifier': 't_stringliteral_80efd193f332877914d93edb0b3ef5c6a7eecd00c6251c3fd7f146b60b40e6cd', 'typeString': 'literal_string \'fuu\''}], 'overloadedDeclarations': [90, 91], 'referencedDeclaration': 91, 'type': 'function (bool,string memory) pure', 'value': 'require'}, 'id': 50, 'name': 'Identifier', 'src': '462:7:0'}, {'attributes': {'argumentTypes': null, 'commonType': {'typeIdentifier': 't_address', 'typeString': 'address'}, 'isConstant': false, 'isLValue': false, 'isPure': false, 'lValueRequested': false, 'operator': '==', 'type': 'bool'}, 'children': [{'attributes': {'argumentTypes': null, 'isConstant': false, 'isLValue': false, 'isPure': false, 'lValueRequested': false, 'member_name': 'sender', 'referencedDeclaration': null, 'type': 'address'}, 'children': [{'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 87, 'type': 'msg', 'value': 'msg'}, 'id': 51, 'name': 'Identifier', 'src': '470:3:0'}], 'id': 52, 'name': 'MemberAccess', 'src': '470:10:0'}, {'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 10, 'type': 'address', 'value': 'owner'}, 'id': 53, 'name': 'Identifier', 'src': '484:5:0'}], 'id': 54, 'name': 'BinaryOperation', 'src': '470:19:0'}, {'attributes': {'argumentTypes': null, 'hexvalue': '667575', 'isConstant': false, 'isLValue': false, 'isPure': true, 'lValueRequested': false, 'subdenomination': null, 'token': 'string', 'type': 'literal_string \'fuu\'', 'value': 'fuu'}, 'id': 55, 'name': 'Literal', 'src': '491:5:0'}], 'id': 56, 'name': 'FunctionCall', 'src': '462:35:0'}
 
@@ -2112,14 +2112,14 @@ test('staticAnalysisCommon: require call', function (t) {
   t.equals(common.getFunctionCallTypeParameterType(node), 'bool,string memory', 'Extracts param right type')
 })
 
-test('staticAnalysisCommon: isDeleteOfDynamicArray', function (t) {
+test('staticAnalysisCommon: isDeleteOfDynamicArray', function(t) {
   t.plan(2)
   var node = {'attributes': {'argumentTypes': null, 'isConstant': false, 'isLValue': false, 'isPure': false, 'lValueRequested': false, 'operator': 'delete', 'prefix': true, 'type': 'tuple()'}, 'children': [{'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 4, 'type': 'uint256[] storage ref', 'value': 'users'}, 'id': 58, 'name': 'Identifier', 'src': '514:5:0'}], 'id': 59, 'name': 'UnaryOperation', 'src': '507:12:0'}
   t.equals(common.isDeleteOfDynamicArray(node), true)
   t.equals(common.isDynamicArrayAccess(node.children[0]), true, 'Extracts right type')
 })
 
-test('staticAnalysisCommon: isAbiNamespaceCall', function (t) {
+test('staticAnalysisCommon: isAbiNamespaceCall', function(t) {
   t.plan(8)
   var node1 = {'attributes': {'argumentTypes': null, 'isConstant': false, 'isLValue': false, 'isPure': false, 'isStructConstructorCall': false, 'lValueRequested': false, 'names': [null], 'type': 'bytes memory', 'type_conversion': false}, 'children': [{'attributes': {'argumentTypes': [{'typeIdentifier': 't_uint256', 'typeString': 'uint256'}, {'typeIdentifier': 't_uint256', 'typeString': 'uint256'}], 'isConstant': false, 'isLValue': false, 'isPure': false, 'lValueRequested': false, 'member_name': 'encode', 'referencedDeclaration': null, 'type': 'function () pure returns (bytes memory)'}, 'children': [{'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 64, 'type': 'abi', 'value': 'abi'}, 'id': 26, 'name': 'Identifier', 'src': '245: 3:0'}], 'id': 28, 'name': 'MemberAccess', 'src': '245:10:0'}, {'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 7, 'type': 'uint256', 'value': 'a'}, 'id': 29, 'name': 'Identifier', 'src': '256:1:0'}, {'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 15, 'type': 'uint256', 'value': 'b'}, 'id': 30, 'name': 'Identifier', 'src': '258:1:0'}], 'id': 31, 'name': 'FunctionCall', 'src': '245:15:0'}
   var node2 = {'attributes': {'argumentTypes': null, 'isConstant': false, 'isLValue': false, 'isPure': false, 'isStructConstructorCall': false, 'lValueRequested': false, 'names': [null], 'type': 'bytes memory', 'type_conversion': false}, 'children': [{'attributes': {'argumentTypes': [{'typeIdentifier': 't_uint256', 'typeString': 'uint256'}, {'typeIdentifier': 't_uint256', 'typeString': 'uint256'}], 'isConstant': false, 'isLValue': false, 'isPure': false, 'lValueRequested': false, 'member_name': 'encodePacked', 'referencedDeclaration': null, 'type': 'function () pure returns (bytes memory)'}, 'children': [{'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 64, 'type': 'abi', 'value': 'abi'}, 'id': 33, 'name': 'Identifier', 'src': '279:3:0'}], 'id': 35, 'name': 'MemberAccess', 'src': '279:16:0'}, {'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 7, 'type': 'uint256', 'value': 'a'}, 'id': 36, 'name': 'Identifier', 'src': '296:1:0'}, {'attributes': {'argumentTypes': null, 'overloadedDeclarations': [null], 'referencedDeclaration': 15, 'type': 'uint256', 'value': 'b'}, 'id': 37, 'name': 'Identifier', 'src': '298:1:0'}], 'id': 38, 'name': 'FunctionCall', 'src': '279:21:0'}

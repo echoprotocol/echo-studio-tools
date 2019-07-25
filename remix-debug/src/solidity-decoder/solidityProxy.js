@@ -6,7 +6,7 @@ var astHelper = require('./astHelper')
 var util = remixLib.util
 
 class SolidityProxy {
-  constructor (traceManager, codeManager) {
+  constructor(traceManager, codeManager) {
     this.cache = new Cache()
     this.reset({})
     this.traceManager = traceManager
@@ -18,7 +18,7 @@ class SolidityProxy {
     *
     * @param {Object} compilationResult  - result os a compilatiion (diectly returned by the compiler)
     */
-  reset (compilationResult) {
+  reset(compilationResult) {
     this.sources = compilationResult.sources
     this.contracts = compilationResult.contracts
     this.cache.reset()
@@ -29,7 +29,7 @@ class SolidityProxy {
     *
     * @return {Bool} - returns true if a compilation result has been applied
     */
-  loaded () {
+  loaded() {
     return this.contracts !== undefined
   }
 
@@ -39,7 +39,7 @@ class SolidityProxy {
     * @param {Int} vmTraceIndex  - index in the vm trave where to resolve the executed contract name
     * @param {Function} cb  - callback returns (error, contractName)
     */
-  contractNameAt (vmTraceIndex, cb) {
+  contractNameAt(vmTraceIndex, cb) {
     this.traceManager.getCurrentCalledAddressAt(vmTraceIndex, (error, address) => {
       if (error) {
         cb(error)
@@ -67,7 +67,7 @@ class SolidityProxy {
     * @param {String} contractName  - name of the contract to retrieve state variables from
     * @return {Object} - returns state variables of @args contractName
     */
-  extractStatesDefinitions () {
+  extractStatesDefinitions() {
     if (!this.cache.contractDeclarations) {
       this.cache.contractDeclarations = astHelper.extractContractDefinitions(this.sources)
     }
@@ -83,7 +83,7 @@ class SolidityProxy {
     * @param {String} contractName  - name of the contract to retrieve state variables from
     * @return {Object} - returns state variables of @args contractName
     */
-  extractStateVariables (contractName) {
+  extractStateVariables(contractName) {
     if (!this.cache.stateVariablesByContractName[contractName]) {
       this.cache.stateVariablesByContractName[contractName] = stateDecoder.extractStateVariables(contractName, this.sources)
     }
@@ -96,7 +96,7 @@ class SolidityProxy {
     * @param {Int} vmTraceIndex  - index in the vm trave where to resolve the state variables
     * @return {Object} - returns state variables of @args vmTraceIndex
     */
-  extractStateVariablesAt (vmtraceIndex, cb) {
+  extractStateVariablesAt(vmtraceIndex, cb) {
     this.contractNameAt(vmtraceIndex, (error, contractName) => {
       if (error) {
         cb(error)
@@ -112,7 +112,7 @@ class SolidityProxy {
     * @param {Object} sourceLocation  - source location containing the 'file' to retrieve the AST from
     * @return {Object} - AST of the current file
     */
-  ast (sourceLocation) {
+  ast(sourceLocation) {
     var file = this.fileNameFromIndex(sourceLocation.file)
     if (this.sources[file]) {
       return this.sources[file].legacyAST
@@ -128,12 +128,12 @@ class SolidityProxy {
    * @param {Int} index  - index of the filename
    * @return {String} - filename
    */
-  fileNameFromIndex (index) {
+  fileNameFromIndex(index) {
     return Object.keys(this.contracts)[index]
   }
 }
 
-function contractNameFromCode (contracts, code, address) {
+function contractNameFromCode(contracts, code, address) {
   var isCreation = traceHelper.isContractCreation(address)
   for (var file in contracts) {
     for (var contract in contracts[file]) {
@@ -147,10 +147,10 @@ function contractNameFromCode (contracts, code, address) {
 }
 
 class Cache {
-  constructor () {
+  constructor() {
     this.reset()
   }
-  reset () {
+  reset() {
     this.contractNameByAddress = {}
     this.stateVariablesByContractName = {}
     this.contractDeclarations = null

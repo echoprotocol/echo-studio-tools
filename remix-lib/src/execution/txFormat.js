@@ -14,7 +14,7 @@ module.exports = {
     * @param {Object} values to encode
     * @param {String} contractbyteCode
     */
-  encodeData: function (funABI, values, contractbyteCode) {
+  encodeData: function(funABI, values, contractbyteCode) {
     var encoded
     var encodedHex
     try {
@@ -37,7 +37,7 @@ module.exports = {
   * @param {Object} funAbi    - abi definition of the function to call. null if building data for the ctor.
   * @param {Function} callback    - callback
   */
-  encodeParams: function (params, funAbi, callback) {
+  encodeParams: function(params, funAbi, callback) {
     var data = ''
     var dataHex = ''
     var funArgs
@@ -80,7 +80,7 @@ module.exports = {
   * @param {Object} funAbi    - abi definition of the function to call. null if building data for the ctor.
   * @param {Function} callback    - callback
   */
-  encodeFunctionCall: function (params, funAbi, callback) {
+  encodeFunctionCall: function(params, funAbi, callback) {
     this.encodeParams(params, funAbi, (error, encodedParam) => {
       if (error) return callback(error)
       callback(null, { dataHex: helper.encodeFunctionId(funAbi) + encodedParam.dataHex, funAbi, funArgs: encodedParam.funArgs })
@@ -97,7 +97,7 @@ module.exports = {
   * @param {Object} linkReferences    - given by the compiler, contains the proper linkReferences
   * @param {Function} callback    - callback
   */
-  encodeConstructorCallAndLinkLibraries: function (contract, params, funAbi, linkLibraries, linkReferences, callback) {
+  encodeConstructorCallAndLinkLibraries: function(contract, params, funAbi, linkLibraries, linkReferences, callback) {
     this.encodeParams(params, funAbi, (error, encodedParam) => {
       if (error) return callback(error)
       var bytecodeToDeploy = contract.evm.bytecode.object
@@ -132,7 +132,7 @@ module.exports = {
   * @param {Function} callbackDeployLibrary  - callbackDeployLibrary
   * @param {Function} callback    - callback
   */
-  encodeConstructorCallAndDeployLibraries: function (contractName, contract, contracts, params, funAbi, callback, callbackStep, callbackDeployLibrary) {
+  encodeConstructorCallAndDeployLibraries: function(contractName, contract, contracts, params, funAbi, callback, callbackStep, callbackDeployLibrary) {
     this.encodeParams(params, funAbi, (error, encodedParam) => {
       if (error) return callback(error)
       var dataHex = ''
@@ -168,11 +168,10 @@ module.exports = {
   * @param {Function} callbackStep  - callbackStep
   * @param {Function} callbackDeployLibrary  - callbackDeployLibrary
   */
-  buildData: function (contractName, contract, contracts, isConstructor, funAbi, params, callback, callbackStep, callbackDeployLibrary) {
+  buildData: function(contractName, contract, contracts, isConstructor, funAbi, params, callback, callbackStep, callbackDeployLibrary) {
     var funArgs = ''
     var data = ''
     var dataHex = ''
-
     if (params.indexOf('raw:0x') === 0) {
       // in that case we consider that the input is already encoded and *does not* contain the method signature
       dataHex = params.replace('raw:0x', '')
@@ -181,6 +180,9 @@ module.exports = {
       try {
         params = params.replace(/(^|,\s+|,)(\d+)(\s+,|,|$)/g, '$1"$2"$3') // replace non quoted number by quoted number
         params = params.replace(/(^|,\s+|,)(0[xX][0-9a-fA-F]+)(\s+,|,|$)/g, '$1"$2"$3') // replace non quoted hex string by quoted hex string
+        if (params && params[0] !== '"' && params[params.length - 1] !== '"') {
+          params = `"${params}"`
+        }
         funArgs = JSON.parse('[' + params + ']')
       } catch (e) {
         callback('Error encoding arguments: ' + e)
@@ -196,7 +198,7 @@ module.exports = {
       if (data.slice(0, 9) === 'undefined') {
         dataHex = data.slice(9)
       }
-      if (data.slice(0, 2) === '0x') {
+      if (dataHex.slice(0, 2) === '0x') {
         dataHex = data.slice(2)
       }
     }
@@ -220,12 +222,14 @@ module.exports = {
     } else {
       dataHex = helper.encodeFunctionId(funAbi) + dataHex
     }
+
+    dataHex = dataHex.replace('0x', '')
     callback(null, { dataHex, funAbi, funArgs, contractBytecode, contractName: contractName })
   },
 
-  atAddress: function () {},
+  atAddress: function() {},
 
-  linkBytecodeStandard: function (contract, contracts, callback, callbackStep, callbackDeployLibrary) {
+  linkBytecodeStandard: function(contract, contracts, callback, callbackStep, callbackDeployLibrary) {
     var contractBytecode = contract.evm.bytecode.object
     asyncJS.eachOfSeries(contract.evm.bytecode.linkReferences, (libs, file, cbFile) => {
       asyncJS.eachOfSeries(contract.evm.bytecode.linkReferences[file], (libRef, libName, cbLibDeployed) => {
@@ -256,7 +260,7 @@ module.exports = {
     })
   },
 
-  linkBytecodeLegacy: function (contract, contracts, callback, callbackStep, callbackDeployLibrary) {
+  linkBytecodeLegacy: function(contract, contracts, callback, callbackStep, callbackDeployLibrary) {
     var libraryRefMatch = contract.evm.bytecode.object.match(/__([^_]{1,36})__/)
     if (!libraryRefMatch) {
       return callback('Invalid bytecode format.')
@@ -288,7 +292,7 @@ module.exports = {
     }, callbackStep, callbackDeployLibrary)
   },
 
-  linkBytecode: function (contract, contracts, callback, callbackStep, callbackDeployLibrary) {
+  linkBytecode: function(contract, contracts, callback, callbackStep, callbackDeployLibrary) {
     console.log('LINK_BYTE_CODE')
     if (contract.evm.bytecode.object.indexOf('_') < 0) {
       return callback(null, contract.evm.bytecode.object)
@@ -300,7 +304,7 @@ module.exports = {
     }
   },
 
-  deployLibrary: function (libraryName, libraryShortName, library, contracts, callback, callbackStep, callbackDeployLibrary) {
+  deployLibrary: function(libraryName, libraryShortName, library, contracts, callback, callbackStep, callbackDeployLibrary) {
     var address = library.address
     if (address) {
       return callback(null, address)
@@ -325,7 +329,7 @@ module.exports = {
     }
   },
 
-  linkLibraryStandardFromlinkReferences: function (libraryName, address, bytecode, linkReferences) {
+  linkLibraryStandardFromlinkReferences: function(libraryName, address, bytecode, linkReferences) {
     for (var file in linkReferences) {
       for (var libName in linkReferences[file]) {
         if (libraryName === libName) {
@@ -336,11 +340,11 @@ module.exports = {
     return bytecode
   },
 
-  linkLibraryStandard: function (libraryName, address, bytecode, contract) {
+  linkLibraryStandard: function(libraryName, address, bytecode, contract) {
     return this.linkLibraryStandardFromlinkReferences(libraryName, address, bytecode, contract.evm.bytecode.linkReferences)
   },
 
-  setLibraryAddress: function (address, bytecodeToLink, positions) {
+  setLibraryAddress: function(address, bytecodeToLink, positions) {
     if (positions) {
       for (var pos of positions) {
         var regpos = bytecodeToLink.match(new RegExp(`(.{${2 * pos.start}})(.{${2 * pos.length}})(.*)`))
@@ -352,11 +356,11 @@ module.exports = {
     return bytecodeToLink
   },
 
-  linkLibrary: function (libraryName, address, bytecodeToLink) {
+  linkLibrary: function(libraryName, address, bytecodeToLink) {
     return solcLinker.linkBytecode(bytecodeToLink, { [libraryName]: ethJSUtil.addHexPrefix(address) })
   },
 
-  decodeResponse: function (response, fnabi) {
+  decodeResponse: function(response, fnabi) {
     // Only decode if there supposed to be fields
     if (fnabi.outputs && fnabi.outputs.length > 0) {
       try {
@@ -371,7 +375,7 @@ module.exports = {
         if (!response.length) response = new Uint8Array(32 * fnabi.outputs.length) // ensuring the data is at least filled by 0 cause `AbiCoder` throws if there's not engouh data
         // decode data
         var abiCoder = new ethers.utils.AbiCoder()
-        var decodedObj = abiCoder.decode(outputTypes, response)
+        var decodedObj = abiCoder.decode(outputTypes, '0x' + response)
 
         var json = {}
         for (i = 0; i < outputTypes.length; i++) {

@@ -4,15 +4,15 @@ var categories = require('./categories')
 var common = require('./staticAnalysisCommon')
 var algo = require('./algorithmCategories')
 
-function inlineAssembly () {
+function inlineAssembly() {
   this.inlineAssNodes = []
 }
 
-inlineAssembly.prototype.visit = function (node) {
+inlineAssembly.prototype.visit = function(node) {
   if (common.isInlineAssembly(node)) this.inlineAssNodes.push(node)
 }
 
-inlineAssembly.prototype.report = function (compilationResults) {
+inlineAssembly.prototype.report = function(compilationResults) {
   return this.inlineAssNodes.map((node) => {
     return {
       warning: `CAUTION: The Contract uses inline assembly, this is only advised in rare cases. 

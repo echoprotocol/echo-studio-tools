@@ -9,7 +9,7 @@ var yo = require('yo-yo')
 
 class SolidityLocals {
 
-  constructor (_parent, _traceManager, _internalTreeCall) {
+  constructor(_parent, _traceManager, _internalTreeCall) {
     this.parent = _parent
     this.internalTreeCall = _internalTreeCall
     this.storageResolver = null
@@ -23,14 +23,14 @@ class SolidityLocals {
     this.view
   }
 
-  render () {
+  render() {
     this.view = yo`<div id='soliditylocals' >
     ${this.basicPanel.render()}
     </div>`
     return this.view
   }
 
-  init () {
+  init() {
     var decodeTimeout = null
     this.parent.event.register('sourceLocationChanged', this, (sourceLocation) => {
       if (!this.storageResolver) {
@@ -48,7 +48,7 @@ class SolidityLocals {
   }
 }
 
-function decode (self, sourceLocation) {
+function decode(self, sourceLocation) {
   self.traceManager.waterfall([
     self.traceManager.getStackAt,
     self.traceManager.getMemoryAt,

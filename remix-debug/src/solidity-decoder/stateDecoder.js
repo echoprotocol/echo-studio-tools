@@ -8,7 +8,7 @@ var decodeInfo = require('./decodeInfo')
   * @param {Object} storageResolver  - resolve storage queries
   * @return {Map} - decoded state variable
   */
-async function decodeState (stateVars, storageResolver) {
+async function decodeState(stateVars, storageResolver) {
   var ret = {}
   for (var k in stateVars) {
     var stateVar = stateVars[k]
@@ -34,7 +34,7 @@ async function decodeState (stateVars, storageResolver) {
   * @param {Object} sourcesList  - sources list
   * @return {Object} - return the location of all contract variables in the storage
   */
-function extractStateVariables (contractName, sourcesList) {
+function extractStateVariables(contractName, sourcesList) {
   var states = astHelper.extractStatesDefinitions(sourcesList)
   if (!states[contractName]) {
     return []
@@ -55,7 +55,7 @@ function extractStateVariables (contractName, sourcesList) {
   * @param {String} contractName  - contract for which state var should be resolved
   * @return {Map} - return the state of the contract
   */
-async function solidityState (storageResolver, astList, contractName) {
+async function solidityState(storageResolver, astList, contractName) {
   var stateVars = extractStateVariables(contractName, astList)
   try {
     return await decodeState(stateVars, storageResolver)

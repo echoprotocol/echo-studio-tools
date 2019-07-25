@@ -1,7 +1,7 @@
 var common = require('./staticAnalysisCommon')
 var AstWalker = require('remix-lib').AstWalker
 
-function abstractAstView () {
+function abstractAstView() {
   this.contracts = []
   this.currentContractIndex = null
   this.currentFunctionIndex = null
@@ -43,9 +43,9 @@ function abstractAstView () {
  * @contractsOut {list} return list for high level AST view
  * @return {ASTNode -> void} returns a function that can be used as visit function for static analysis modules, to build up a higher level AST view for further analysis.
  */
-abstractAstView.prototype.build_visit = function (relevantNodeFilter) {
+abstractAstView.prototype.build_visit = function(relevantNodeFilter) {
   var that = this
-  return function (node) {
+  return function(node) {
     if (common.isContractDefinition(node)) {
       setCurrentContract(that, {
         node: node,
@@ -98,20 +98,20 @@ abstractAstView.prototype.build_visit = function (relevantNodeFilter) {
   }
 }
 
-abstractAstView.prototype.build_report = function (wrap) {
+abstractAstView.prototype.build_report = function(wrap) {
   var that = this
-  return function (compilationResult) {
+  return function(compilationResult) {
     resolveStateVariablesInHierarchy(that.contracts)
     return wrap(that.contracts, that.multipleContractsWithSameName)
   }
 }
 
-function resolveStateVariablesInHierarchy (contracts) {
+function resolveStateVariablesInHierarchy(contracts) {
   contracts.map((c) => {
     resolveStateVariablesInHierarchyForContract(c, contracts)
   })
 }
-function resolveStateVariablesInHierarchyForContract (currentContract, contracts) {
+function resolveStateVariablesInHierarchyForContract(currentContract, contracts) {
   currentContract.inheritsFrom.map((inheritsFromName) => {
     // add variables from inherited contracts
     var inheritsFrom = contracts.find((contract) => common.getContractName(contract.node) === inheritsFromName)
@@ -122,7 +122,7 @@ function resolveStateVariablesInHierarchyForContract (currentContract, contracts
     }
   })
 }
-function setCurrentContract (that, contract) {
+function setCurrentContract(that, contract) {
   var name = common.getContractName(contract.node)
   if (that.contracts.map((c) => common.getContractName(c.node)).filter((n) => n === name).length > 0) {
     console.log('abstractAstView.js: two or more contracts with the same name dectected, import aliases not supported at the moment')
@@ -131,33 +131,33 @@ function setCurrentContract (that, contract) {
   that.currentContractIndex = (that.contracts.push(contract) - 1)
 }
 
-function setCurrentFunction (that, func) {
+function setCurrentFunction(that, func) {
   that.isFunctionNotModifier = true
   that.currentFunctionIndex = (getCurrentContract(that).functions.push(func) - 1)
 }
 
-function setCurrentModifier (that, modi) {
+function setCurrentModifier(that, modi) {
   that.isFunctionNotModifier = false
   that.currentModifierIndex = (getCurrentContract(that).modifiers.push(modi) - 1)
 }
 
-function getCurrentContract (that) {
+function getCurrentContract(that) {
   return that.contracts[that.currentContractIndex]
 }
 
-function getCurrentFunction (that) {
+function getCurrentFunction(that) {
   return getCurrentContract(that).functions[that.currentFunctionIndex]
 }
 
-function getCurrentModifier (that) {
+function getCurrentModifier(that) {
   return getCurrentContract(that).modifiers[that.currentModifierIndex]
 }
 
-function getLocalParameters (funcNode) {
+function getLocalParameters(funcNode) {
   return getLocalVariables(common.getFunctionOrModifierDefinitionParameterPart(funcNode)).map(common.getType)
 }
 
-function getReturnParameters (funcNode) {
+function getReturnParameters(funcNode) {
   return getLocalVariables(common.getFunctionOrModifierDefinitionReturnParameterPart(funcNode)).map((n) => {
     return {
       type: common.getType(n),
@@ -166,9 +166,9 @@ function getReturnParameters (funcNode) {
   })
 }
 
-function getLocalVariables (funcNode) {
+function getLocalVariables(funcNode) {
   var locals = []
-  new AstWalker().walk(funcNode, {'*': function (node) {
+  new AstWalker().walk(funcNode, {'*': function(node) {
     if (common.isVariableDeclaration(node)) locals.push(node)
     return true
   }})

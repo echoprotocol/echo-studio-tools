@@ -47,7 +47,7 @@ testFiles.forEach((fileName) => {
   testFileAsts[fileName] = JSON.parse(compiler.compile(compilerInput(content)))
 })
 
-test('Integration test thisLocal.js', function (t) {
+test('Integration test thisLocal.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/thisLocal')
@@ -85,7 +85,7 @@ test('Integration test thisLocal.js', function (t) {
   })
 })
 
-test('Integration test checksEffectsInteraction.js', function (t) {
+test('Integration test checksEffectsInteraction.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/checksEffectsInteraction')
@@ -123,7 +123,7 @@ test('Integration test checksEffectsInteraction.js', function (t) {
   })
 })
 
-test('Integration test constantFunctions.js', function (t) {
+test('Integration test constantFunctions.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/constantFunctions')
@@ -161,7 +161,7 @@ test('Integration test constantFunctions.js', function (t) {
   })
 })
 
-test('Integration test inlineAssembly.js', function (t) {
+test('Integration test inlineAssembly.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/inlineAssembly')
@@ -199,7 +199,7 @@ test('Integration test inlineAssembly.js', function (t) {
   })
 })
 
-test('Integration test txOrigin.js', function (t) {
+test('Integration test txOrigin.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/txOrigin')
@@ -237,7 +237,7 @@ test('Integration test txOrigin.js', function (t) {
   })
 })
 
-test('Integration test gasCosts.js', function (t) {
+test('Integration test gasCosts.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/gasCosts')
@@ -275,7 +275,7 @@ test('Integration test gasCosts.js', function (t) {
   })
 })
 
-test('Integration test similarVariableNames.js', function (t) {
+test('Integration test similarVariableNames.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/similarVariableNames')
@@ -313,7 +313,7 @@ test('Integration test similarVariableNames.js', function (t) {
   })
 })
 
-test('Integration test inlineAssembly.js', function (t) {
+test('Integration test inlineAssembly.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/inlineAssembly')
@@ -351,7 +351,7 @@ test('Integration test inlineAssembly.js', function (t) {
   })
 })
 
-test('Integration test blockTimestamp.js', function (t) {
+test('Integration test blockTimestamp.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/blockTimestamp')
@@ -389,7 +389,7 @@ test('Integration test blockTimestamp.js', function (t) {
   })
 })
 
-test('Integration test lowLevelCalls.js', function (t) {
+test('Integration test lowLevelCalls.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/lowLevelCalls')
@@ -427,7 +427,7 @@ test('Integration test lowLevelCalls.js', function (t) {
   })
 })
 
-test('Integration test blockBlockhash.js', function (t) {
+test('Integration test blockBlockhash.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/blockBlockhash')
@@ -508,7 +508,7 @@ test('Integration test noReturn.js', function (t) {
 })
 */
 
-test('Integration test selfdestruct.js', function (t) {
+test('Integration test selfdestruct.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/selfdestruct')
@@ -546,7 +546,7 @@ test('Integration test selfdestruct.js', function (t) {
   })
 })
 
-test('Integration test guardConditions.js', function (t) {
+test('Integration test guardConditions.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/guardConditions')
@@ -584,7 +584,7 @@ test('Integration test guardConditions.js', function (t) {
   })
 })
 
-test('Integration test deleteDynamicArrays.js', function (t) {
+test('Integration test deleteDynamicArrays.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/deleteDynamicArrays')
@@ -622,7 +622,7 @@ test('Integration test deleteDynamicArrays.js', function (t) {
   })
 })
 
-test('Integration test deleteFromDynamicArray.js', function (t) {
+test('Integration test deleteFromDynamicArray.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/deleteFromDynamicArray')
@@ -660,7 +660,7 @@ test('Integration test deleteFromDynamicArray.js', function (t) {
   })
 })
 
-test('Integration test assignAndCompare.js', function (t) {
+test('Integration test assignAndCompare.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/assignAndCompare')
@@ -698,7 +698,7 @@ test('Integration test assignAndCompare.js', function (t) {
   })
 })
 
-test('Integration test intDivisionTruncate.js', function (t) {
+test('Integration test intDivisionTruncate.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/intDivisionTruncate')
@@ -736,7 +736,7 @@ test('Integration test intDivisionTruncate.js', function (t) {
   })
 })
 
-test('Integration test erc20Decimal.js', function (t) {
+test('Integration test erc20Decimal.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/erc20Decimals')
@@ -774,7 +774,7 @@ test('Integration test erc20Decimal.js', function (t) {
   })
 })
 
-test('Integration test stringBytesLength.js', function (t) {
+test('Integration test stringBytesLength.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/stringBytesLength')
@@ -812,7 +812,7 @@ test('Integration test stringBytesLength.js', function (t) {
   })
 })
 
-test('Integration test forLoopIteratesOverDynamicArray.js', function (t) {
+test('Integration test forLoopIteratesOverDynamicArray.js', function(t) {
   t.plan(testFiles.length)
 
   var module = require('../../src/solidity-analyzer/modules/forLoopIteratesOverDynamicArray')
@@ -851,7 +851,7 @@ test('Integration test forLoopIteratesOverDynamicArray.js', function (t) {
 })
 
 // #################### Helpers
-function runModuleOnFiles (module, t, cb) {
+function runModuleOnFiles(module, t, cb) {
   var statRunner = new StatRunner()
 
   testFiles.forEach((fileName) => {

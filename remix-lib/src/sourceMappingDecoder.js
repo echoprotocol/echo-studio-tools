@@ -5,7 +5,7 @@ var AstWalker = require('./astWalker')
 /**
  * Decompress the source mapping given by solc-bin.js
  */
-function SourceMappingDecoder () {
+function SourceMappingDecoder() {
   // s:l:f:j
 }
 
@@ -33,7 +33,7 @@ SourceMappingDecoder.prototype.atIndex = atIndex
  * @param {string} value      - source location to decode ( should be start:length:file )
  * @return {Object} returns the decompressed source mapping {start, length, file}
  */
-SourceMappingDecoder.prototype.decode = function (value) {
+SourceMappingDecoder.prototype.decode = function(value) {
   if (value) {
     value = value.split(':')
     return {
@@ -50,7 +50,7 @@ SourceMappingDecoder.prototype.decode = function (value) {
  * @param {String} mapping     - compressed source mapping given by solc-bin
  * @return {Array} returns the decompressed source mapping. Array of {start, length, file, jump}
  */
-SourceMappingDecoder.prototype.decompressAll = function (mapping) {
+SourceMappingDecoder.prototype.decompressAll = function(mapping) {
   var map = mapping.split(';')
   var ret = []
   for (var k in map) {
@@ -72,7 +72,7 @@ SourceMappingDecoder.prototype.decompressAll = function (mapping) {
   * @param {String} source - contract source code
   * @return {Array} returns an array containing offset of line breaks
   */
-SourceMappingDecoder.prototype.getLinebreakPositions = function (source) {
+SourceMappingDecoder.prototype.getLinebreakPositions = function(source) {
   var ret = []
   for (var pos = source.indexOf('\n'); pos >= 0; pos = source.indexOf('\n', pos + 1)) {
     ret.push(pos)
@@ -87,7 +87,7 @@ SourceMappingDecoder.prototype.getLinebreakPositions = function (source) {
  * @param {Array} lineBreakPositions - array returned by the function 'getLinebreakPositions'
  * @return {Object} returns an object {start: {line, column}, end: {line, column}} (line/column count start at 0)
  */
-SourceMappingDecoder.prototype.convertOffsetToLineColumn = function (sourceLocation, lineBreakPositions) {
+SourceMappingDecoder.prototype.convertOffsetToLineColumn = function(sourceLocation, lineBreakPositions) {
   if (sourceLocation.start >= 0 && sourceLocation.length >= 0) {
     return {
       start: convertFromCharPosition(sourceLocation.start, lineBreakPositions),
@@ -111,7 +111,7 @@ SourceMappingDecoder.prototype.convertOffsetToLineColumn = function (sourceLocat
  */
 SourceMappingDecoder.prototype.findNodeAtInstructionIndex = findNodeAtInstructionIndex
 
-function convertFromCharPosition (pos, lineBreakPositions) {
+function convertFromCharPosition(pos, lineBreakPositions) {
   var line = util.findLowerBound(pos, lineBreakPositions)
   if (lineBreakPositions[line] !== pos) {
     line = line + 1
@@ -124,7 +124,7 @@ function convertFromCharPosition (pos, lineBreakPositions) {
   }
 }
 
-function sourceLocationFromAstNode (astNode) {
+function sourceLocationFromAstNode(astNode) {
   if (astNode.src) {
     var split = astNode.src.split(':')
     return {
@@ -136,16 +136,16 @@ function sourceLocationFromAstNode (astNode) {
   return null
 }
 
-function findNodeAtInstructionIndex (astNodeType, instIndex, sourceMap, ast) {
+function findNodeAtInstructionIndex(astNodeType, instIndex, sourceMap, ast) {
   var sourceLocation = atIndex(instIndex, sourceMap)
   return findNodeAtSourceLocation(astNodeType, sourceLocation, ast)
 }
 
-function findNodeAtSourceLocation (astNodeType, sourceLocation, ast) {
+function findNodeAtSourceLocation(astNodeType, sourceLocation, ast) {
   var astWalker = new AstWalker()
   var callback = {}
   var found = null
-  callback['*'] = function (node) {
+  callback['*'] = function(node) {
     var nodeLocation = sourceLocationFromAstNode(node)
     if (!nodeLocation) {
       return true
@@ -165,11 +165,11 @@ function findNodeAtSourceLocation (astNodeType, sourceLocation, ast) {
   return found
 }
 
-function nodesAtPosition (astNodeType, position, ast) {
+function nodesAtPosition(astNodeType, position, ast) {
   var astWalker = new AstWalker()
   var callback = {}
   var found = []
-  callback['*'] = function (node) {
+  callback['*'] = function(node) {
     var nodeLocation = sourceLocationFromAstNode(node)
     if (!nodeLocation) {
       return
@@ -188,7 +188,7 @@ function nodesAtPosition (astNodeType, position, ast) {
   return found
 }
 
-function atIndex (index, mapping) {
+function atIndex(index, mapping) {
   var ret = {}
   var map = mapping.split(';')
   if (index >= map.length) {

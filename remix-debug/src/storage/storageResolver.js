@@ -8,7 +8,7 @@ var mappingPreimages = require('./mappingPreimages')
   * (TODO: one instance need to be shared over all the components)
   */
 class StorageResolver {
-  constructor (options) {
+  constructor(options) {
     this.storageByAddress = {}
     this.preimagesMappingByAddress = {}
     this.maxSize = 100
@@ -25,7 +25,7 @@ class StorageResolver {
    * @param {String} - address - lookup address
    * @param {Function} - callback - contains a map: [hashedKey] = {key, hashedKey, value}
    */
-  storageRange (tx, stepIndex, address, callback) {
+  storageRange(tx, stepIndex, address, callback) {
     this.storageRangeInternal(this, this.zeroSlot, tx, stepIndex, address, callback)
   }
 
@@ -39,7 +39,7 @@ class StorageResolver {
    * @param {Array} corrections - used in case the calculated sha3 has been modifyed before SSTORE (notably used for struct in mapping).
    * @return {Function} - callback
    */
-  initialPreimagesMappings (tx, stepIndex, address, corrections, callback) {
+  initialPreimagesMappings(tx, stepIndex, address, corrections, callback) {
     const self = this
     if (this.preimagesMappingByAddress[address]) {
       return callback(null, this.preimagesMappingByAddress[address])
@@ -68,8 +68,8 @@ class StorageResolver {
    * @param {String} - address - lookup address
    * @param {Function} - callback - {key, hashedKey, value} -
    */
-  storageSlot (slot, tx, stepIndex, address, callback) {
-    this.storageRangeInternal(this, slot, tx, stepIndex, address, function (error, storage) {
+  storageSlot(slot, tx, stepIndex, address, callback) {
+    this.storageRangeInternal(this, slot, tx, stepIndex, address, function(error, storage) {
       if (error) {
         callback(error)
       } else {
@@ -84,7 +84,7 @@ class StorageResolver {
    * @param {String} address  - contract address
    * @return {Bool} - return True if the storage at @arg address is complete
    */
-  isComplete (address) {
+  isComplete(address) {
     return this.storageByAddress[address] && this.storageByAddress[address].complete
   }
 
@@ -94,7 +94,7 @@ class StorageResolver {
    *   even if the next 1000 items are not in the cache.
    * - If @arg slot is not cached, the corresponding value will be resolved and the next 1000 slots.
    */
-  storageRangeInternal (self, slotKey, tx, stepIndex, address, callback) {
+  storageRangeInternal(self, slotKey, tx, stepIndex, address, callback) {
     var cached = this.fromCache(self, address)
     if (cached && cached.storage[slotKey]) { // we have the current slot in the cache and maybe the next 1000...
       return callback(null, cached.storage)
@@ -123,7 +123,7 @@ class StorageResolver {
    * @param {String} address  - contract address
    * @return {String} - either the entire known storage or a single value
    */
-  fromCache (self, address) {
+  fromCache(self, address) {
     if (!self.storageByAddress[address]) {
       return null
     }
@@ -136,14 +136,14 @@ class StorageResolver {
    * @param {String} address  - contract address
    * @param {Object} storage  - result of `storageRangeAtInternal`, contains {key, hashedKey, value}
    */
-  toCache (self, address, storage) {
+  toCache(self, address, storage) {
     if (!self.storageByAddress[address]) {
       self.storageByAddress[address] = {}
     }
     self.storageByAddress[address].storage = Object.assign(self.storageByAddress[address].storage || {}, storage)
   }
 
-  storageRangeWeb3Call (tx, address, start, maxSize, callback) {
+  storageRangeWeb3Call(tx, address, start, maxSize, callback) {
     if (traceHelper.isContractCreation(address)) {
       callback(null, {}, null)
     } else {

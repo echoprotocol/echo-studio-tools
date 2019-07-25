@@ -1,15 +1,15 @@
-'use strict';
+'use strict'
 
-var fs = require('fs');
+var fs = require('fs')
 
-var ethereumUtil = require('ethereumjs-util');
-var iban = require('web3/lib/web3/iban.js');
+var ethereumUtil = require('ethereumjs-util')
+var iban = require('web3/lib/web3/iban.js')
 
-var utils = require('../utils.js');
+var utils = require('../utils.js')
 
 function icap(address) {
-    address = (iban.fromAddress(address))._iban;
-    return address;
+    address = (iban.fromAddress(address))._iban
+    return address
 }
 
 var Output = [];
@@ -28,7 +28,7 @@ var Output = [];
         // See: https://gist.github.com/ricmoo/dbc2133ae2a20978eaf7
         // See: https://github.com/ethereum/web3.js/pull/417
         '0x03582910e5bc7a12793da58559aba9a6c4138e44',
-        '0x00582910e5bc7a12793da58559aba9a6c4138e44',
+        '0x00582910e5bc7a12793da58559aba9a6c4138e44'
     ]
 
     Tests.forEach(function(address) {
@@ -38,8 +38,8 @@ var Output = [];
             icapAddress: icap(address),
             index: Output.length,
             name: ('address-' + address)
-        });
-    });
+        })
+    })
 })();
 
 // Some specific private keys to check
@@ -52,12 +52,12 @@ var Output = [];
         '0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
         '0x0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
         '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd036413f',
-        '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140',
+        '0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140'
     ]
 
     Tests.forEach(function(privateKey) {
-        var privateKeyBuffer = Buffer.from(privateKey.substring(2), 'hex');
-        var address = '0x' + ethereumUtil.privateToAddress(privateKeyBuffer).toString('hex');
+        var privateKeyBuffer = Buffer.from(privateKey.substring(2), 'hex')
+        var address = '0x' + ethereumUtil.privateToAddress(privateKeyBuffer).toString('hex')
         Output.push({
             address: address,
             checksumAddress: ethereumUtil.toChecksumAddress(address),
@@ -65,9 +65,9 @@ var Output = [];
             index: Output.length,
             name: ('privateKey-' + privateKey),
             privateKey: privateKey
-        });
-    });
-})();
+        })
+    })
+})()
 /*
 Output.push({
     error: 'invalid private key',
@@ -86,8 +86,8 @@ Output.push({
 
 // Add 1024 random private keys (checks for nibble and byte padding bugs)
 for (var i = 0; i < 1024; i++) {
-    var privateKey = Buffer.from(utils.randomBytes('accounts-' + i, 32));
-    var address = '0x' + ethereumUtil.privateToAddress(Buffer.from(privateKey)).toString('hex');
+    var privateKey = Buffer.from(utils.randomBytes('accounts-' + i, 32))
+    var address = '0x' + ethereumUtil.privateToAddress(Buffer.from(privateKey)).toString('hex')
 
     Output.push({
          address: address,
@@ -95,9 +95,9 @@ for (var i = 0; i < 1024; i++) {
          icapAddress: icap(address),
          index: Output.length,
          name: ('random-' + i),
-         privateKey: '0x' + privateKey.toString('hex'),
-    });
+         privateKey: '0x' + privateKey.toString('hex')
+    })
 }
 
-utils.saveTests('accounts', Output);
+utils.saveTests('accounts', Output)
 

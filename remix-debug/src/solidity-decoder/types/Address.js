@@ -3,11 +3,11 @@ var util = require('./util')
 var ValueType = require('./ValueType')
 
 class Address extends ValueType {
-  constructor () {
+  constructor() {
     super(1, 20, 'address')
   }
 
-  decodeValue (value) {
+  decodeValue(value) {
     if (!value) {
       return '0x0000000000000000000000000000000000000000'
     } else {

@@ -19,7 +19,7 @@ var util = require('./types/util')
   * @param {String} type - type given by the AST
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function mapping (type, stateDefinitions, contractName) {
+function mapping(type, stateDefinitions, contractName) {
   var match = type.match(/mapping\((.*?)=>(.*)\)$/)
   var keyTypeName = match[1].trim()
   var valueTypeName = match[2].trim()
@@ -40,7 +40,7 @@ function mapping (type, stateDefinitions, contractName) {
   * @param {String} type - type given by the AST (e.g uint256, uint32)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function uint (type) {
+function uint(type) {
   type === 'uint' ? 'uint256' : type
   var storageBytes = parseInt(type.replace('uint', '')) / 8
   return new UintType(storageBytes)
@@ -52,7 +52,7 @@ function uint (type) {
   * @param {String} type - type given by the AST (e.g int256, int32)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function int (type) {
+function int(type) {
   type === 'int' ? 'int256' : type
   var storageBytes = parseInt(type.replace('int', '')) / 8
   return new IntType(storageBytes)
@@ -64,7 +64,7 @@ function int (type) {
   * @param {String} type - type given by the AST (e.g address)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function address (type) {
+function address(type) {
   return new AddressType()
 }
 
@@ -74,7 +74,7 @@ function address (type) {
   * @param {String} type - type given by the AST (e.g bool)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function bool (type) {
+function bool(type) {
   return new BoolType()
 }
 
@@ -87,7 +87,7 @@ function bool (type) {
   * @param {String} location - location of the data (storage ref| storage pointer| memory| calldata)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function dynamicByteArray (type, stateDefinitions, contractName, location) {
+function dynamicByteArray(type, stateDefinitions, contractName, location) {
   if (!location) {
     location = util.extractLocation(type)
   }
@@ -104,7 +104,7 @@ function dynamicByteArray (type, stateDefinitions, contractName, location) {
   * @param {String} type - type given by the AST (e.g bytes16)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function fixedByteArray (type) {
+function fixedByteArray(type) {
   var storageBytes = parseInt(type.replace('bytes', ''))
   return new BytesXType(storageBytes)
 }
@@ -118,7 +118,7 @@ function fixedByteArray (type) {
   * @param {String} location - location of the data (storage ref| storage pointer| memory| calldata)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName}
   */
-function stringType (type, stateDefinitions, contractName, location) {
+function stringType(type, stateDefinitions, contractName, location) {
   if (!location) {
     location = util.extractLocation(type)
   }
@@ -138,7 +138,7 @@ function stringType (type, stateDefinitions, contractName, location) {
   * @param {String} location - location of the data (storage ref| storage pointer| memory| calldata)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName, arraySize, subArray}
   */
-function array (type, stateDefinitions, contractName, location) {
+function array(type, stateDefinitions, contractName, location) {
   var arraySize
   var match = type.match(/(.*)\[(.*?)\]( storage ref| storage pointer| memory| calldata)?$/)
   if (!match) {
@@ -165,7 +165,7 @@ function array (type, stateDefinitions, contractName, location) {
   * @param {String} contractName - contract the @args typeName belongs to
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName, enum}
   */
-function enumType (type, stateDefinitions, contractName) {
+function enumType(type, stateDefinitions, contractName) {
   var match = type.match(/enum (.*)/)
   var enumDef = getEnum(match[1], stateDefinitions, contractName)
   if (enumDef === null) {
@@ -184,7 +184,7 @@ function enumType (type, stateDefinitions, contractName) {
   * @param {String} location - location of the data (storage ref| storage pointer| memory| calldata)
   * @return {Object} returns decoded info about the current type: { storageBytes, typeName, members}
   */
-function struct (type, stateDefinitions, contractName, location) {
+function struct(type, stateDefinitions, contractName, location) {
   var match = type.match(/struct (\S*?)( storage ref| storage pointer| memory| calldata)?$/)
   if (match) {
     if (!location) {
@@ -206,7 +206,7 @@ function struct (type, stateDefinitions, contractName, location) {
   * @param {String} contractName - contract the @args typeName belongs to
   * @return {Array} - containing all value declaration of the current enum type
   */
-function getEnum (type, stateDefinitions, contractName) {
+function getEnum(type, stateDefinitions, contractName) {
   var split = type.split('.')
   if (!split.length) {
     type = contractName + '.' + type
@@ -233,7 +233,7 @@ function getEnum (type, stateDefinitions, contractName) {
   * @param {String} location - location of the data (storage ref| storage pointer| memory| calldata)
   * @return {Array} containing all members of the current struct type
   */
-function getStructMembers (type, stateDefinitions, contractName, location) {
+function getStructMembers(type, stateDefinitions, contractName, location) {
   var split = type.split('.')
   if (!split.length) {
     type = contractName + '.' + type
@@ -264,7 +264,7 @@ function getStructMembers (type, stateDefinitions, contractName, location) {
   * @param {String} fullType - type given by the AST (ex: uint[2] storage ref[2])
   * @return {String} returns the token type (used to instanciate the right decoder) (uint[2] storage ref[2] will return 'array', uint256 will return uintX)
   */
-function typeClass (fullType) {
+function typeClass(fullType) {
   fullType = util.removeLocation(fullType)
   if (fullType.lastIndexOf(']') === fullType.length - 1) {
     return 'array'
@@ -288,7 +288,7 @@ function typeClass (fullType) {
   * @param {String} location - location of the data (storage ref| storage pointer| memory| calldata)
   * @return {Object} - return the corresponding decoder or null on error
   */
-function parseType (type, stateDefinitions, contractName, location) {
+function parseType(type, stateDefinitions, contractName, location) {
   var decodeInfos = {
     'contract': address,
     'address': address,
@@ -324,7 +324,7 @@ function parseType (type, stateDefinitions, contractName, location) {
   * @param {String} location - location of the data (storage ref| storage pointer| memory| calldata)
   * @return {Array} - return an array of types item: {name, type, location}. location defines the byte offset and slot offset
   */
-function computeOffsets (types, stateDefinitions, contractName, location) {
+function computeOffsets(types, stateDefinitions, contractName, location) {
   var ret = []
   var storagelocation = {
     offset: 0,

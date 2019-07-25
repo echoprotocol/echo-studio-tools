@@ -1,6 +1,6 @@
 'use strict'
 module.exports = {
-  formatMemory: function (mem, width) {
+  formatMemory: function(mem, width) {
     var ret = {}
     if (!mem) {
       return ret
@@ -18,7 +18,7 @@ module.exports = {
     return ret
   },
 
-  tryConvertAsciiFormat: function (memorySlot) {
+  tryConvertAsciiFormat: function(memorySlot) {
     var ret = { ascii: '', raw: '' }
     for (var k = 0; k < memorySlot.length; k += 2) {
       var raw = memorySlot.substr(k, 2)
@@ -44,7 +44,7 @@ module.exports = {
    *                  if the key start with * the value is direcly appended to the inline style (which should be already inline style formatted)
    *                  used if multiple occurences of the same key is needed
    */
-  formatCss: function (css1, css2) {
+  formatCss: function(css1, css2) {
     var ret = ''
     for (var arg in arguments) {
       for (var k in arguments[arg]) {
@@ -60,7 +60,7 @@ module.exports = {
     return ret
   },
 
-  normalizeHex: function (hex) {
+  normalizeHex: function(hex) {
     if (hex.indexOf('0x') === 0) {
       hex = hex.replace('0x', '')
     }
@@ -68,7 +68,7 @@ module.exports = {
     return '0x' + hex
   },
 
-  normalizeHexAddress: function (hex) {
+  normalizeHexAddress: function(hex) {
     if (hex.indexOf('0x') === 0) hex = hex.replace('0x', '')
     if (hex.length >= 40) {
       var reg = /(.{40})$/.exec(hex)
@@ -80,7 +80,7 @@ module.exports = {
     }
   },
 
-  runInBrowser: function () {
+  runInBrowser: function() {
     return typeof window !== 'undefined'
   }
 }

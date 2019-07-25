@@ -6,7 +6,7 @@ var fcallGraph = require('./functionCallGraph')
 var AbstractAst = require('./abstractAstView')
 var algo = require('./algorithmCategories')
 
-function checksEffectsInteraction () {
+function checksEffectsInteraction() {
   this.abstractAst = new AbstractAst()
   this.visit = this.abstractAst.build_visit(
     (node) => common.isInteraction(node) || common.isEffect(node) || common.isLocalCallGraphRelevantNode(node)
@@ -15,11 +15,11 @@ function checksEffectsInteraction () {
   this.report = this.abstractAst.build_report(report)
 }
 
-checksEffectsInteraction.prototype.visit = function () { throw new Error('checksEffectsInteraction.js no visit function set upon construction') }
+checksEffectsInteraction.prototype.visit = function() { throw new Error('checksEffectsInteraction.js no visit function set upon construction') }
 
-checksEffectsInteraction.prototype.report = function () { throw new Error('checksEffectsInteraction.js no report function set upon construction') }
+checksEffectsInteraction.prototype.report = function() { throw new Error('checksEffectsInteraction.js no report function set upon construction') }
 
-function report (contracts, multipleContractsWithSameName) {
+function report(contracts, multipleContractsWithSameName) {
   var warnings = []
   var hasModifiers = contracts.some((item) => item.modifiers.length > 0)
 
@@ -48,15 +48,15 @@ function report (contracts, multipleContractsWithSameName) {
   return warnings
 }
 
-function getContext (callGraph, currentContract, func) {
+function getContext(callGraph, currentContract, func) {
   return { callGraph: callGraph, currentContract: currentContract, stateVariables: getStateVariables(currentContract, func) }
 }
 
-function getStateVariables (contract, func) {
+function getStateVariables(contract, func) {
   return contract.stateVariables.concat(func.localVariables.filter(common.isStorageVariableDeclaration))
 }
 
-function isPotentialVulnerableFunction (func, context) {
+function isPotentialVulnerableFunction(func, context) {
   var isPotentialVulnerable = false
   var interaction = false
   func.relevantNodes.forEach((node) => {
@@ -69,7 +69,7 @@ function isPotentialVulnerableFunction (func, context) {
   return isPotentialVulnerable
 }
 
-function isLocalCallWithStateChange (node, context) {
+function isLocalCallWithStateChange(node, context) {
   if (common.isLocalCallGraphRelevantNode(node)) {
     var func = fcallGraph.resolveCallGraphSymbol(context.callGraph, common.getFullQualifiedFunctionCallIdent(context.currentContract.node, node))
     return !func || (func && func.node.changesState)
@@ -77,7 +77,7 @@ function isLocalCallWithStateChange (node, context) {
   return false
 }
 
-function checkIfChangesState (startFuncName, context) {
+function checkIfChangesState(startFuncName, context) {
   return fcallGraph.analyseCallGraph(context.callGraph, startFuncName, context, (node, context) => common.isWriteOnStateVariable(node, context.stateVariables))
 }
 

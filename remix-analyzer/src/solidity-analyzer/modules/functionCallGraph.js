@@ -2,7 +2,7 @@
 
 var common = require('./staticAnalysisCommon')
 
-function buildLocalFuncCallGraphInternal (functions, nodeFilter, extractNodeIdent, extractFuncDefIdent) {
+function buildLocalFuncCallGraphInternal(functions, nodeFilter, extractNodeIdent, extractFuncDefIdent) {
   var callGraph = {}
   functions.forEach((func) => {
     var calls = func.relevantNodes
@@ -40,7 +40,7 @@ function buildLocalFuncCallGraphInternal (functions, nodeFilter, extractNodeIden
  * @contracts {list contracts} Expects as input the contract structure defined in abstractAstView.js
  * @return {map (string -> Contract Call Graph)} returns map from contract name to contract call graph
  */
-function buildGlobalFuncCallGraph (contracts) {
+function buildGlobalFuncCallGraph(contracts) {
   var callGraph = {}
   contracts.forEach((contract) => {
     var filterNodes = (node) => { return common.isLocalCallGraphRelevantNode(node) || common.isExternalDirectCall(node) }
@@ -61,11 +61,11 @@ function buildGlobalFuncCallGraph (contracts) {
  * @nodeCheck {(ASTNode, context) -> bool} applied on every relevant node in the call graph
  * @return {bool} returns map from contract name to contract call graph
  */
-function analyseCallGraph (callGraph, funcName, context, nodeCheck) {
+function analyseCallGraph(callGraph, funcName, context, nodeCheck) {
   return analyseCallGraphInternal(callGraph, funcName, context, (a, b) => a || b, nodeCheck, {})
 }
 
-function analyseCallGraphInternal (callGraph, funcName, context, combinator, nodeCheck, visited) {
+function analyseCallGraphInternal(callGraph, funcName, context, combinator, nodeCheck, visited) {
   var current = resolveCallGraphSymbol(callGraph, funcName)
 
   if (current === undefined || visited[funcName] === true) return true
@@ -75,11 +75,11 @@ function analyseCallGraphInternal (callGraph, funcName, context, combinator, nod
                         current.calls.reduce((acc, val) => combinator(acc, analyseCallGraphInternal(callGraph, val, context, combinator, nodeCheck, visited)), false))
 }
 
-function resolveCallGraphSymbol (callGraph, funcName) {
+function resolveCallGraphSymbol(callGraph, funcName) {
   return resolveCallGraphSymbolInternal(callGraph, funcName, false)
 }
 
-function resolveCallGraphSymbolInternal (callGraph, funcName, silent) {
+function resolveCallGraphSymbolInternal(callGraph, funcName, silent) {
   var current
   if (funcName.includes('.')) {
     var parts = funcName.split('.')

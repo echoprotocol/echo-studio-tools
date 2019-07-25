@@ -7,7 +7,7 @@ var TraceStepManager = require('./traceStepManager')
 var traceHelper = require('../helpers/traceHelper')
 var util = require('../util')
 
-function TraceManager (options) {
+function TraceManager(options) {
   this.web3 = options.web3
   this.isLoading = false
   this.trace = null
@@ -19,13 +19,13 @@ function TraceManager (options) {
 }
 
 // init section
-TraceManager.prototype.resolveTrace = function (tx, callback) {
+TraceManager.prototype.resolveTrace = function(tx, callback) {
   this.tx = tx
   this.init()
   if (!this.web3) callback('web3 not loaded', false)
   this.isLoading = true
   var self = this
-  this.traceRetriever.getTrace(tx.hash, function (error, result) {
+  this.traceRetriever.getTrace(tx.hash, function(error, result) {
     if (error) {
       console.log(error)
       self.isLoading = false
@@ -33,7 +33,7 @@ TraceManager.prototype.resolveTrace = function (tx, callback) {
     } else {
       if (result.structLogs.length > 0) {
         self.trace = result.structLogs
-        self.traceAnalyser.analyse(result.structLogs, tx, function (error, result) {
+        self.traceAnalyser.analyse(result.structLogs, tx, function(error, result) {
           if (error) {
             self.isLoading = false
             console.log(error)
@@ -53,21 +53,21 @@ TraceManager.prototype.resolveTrace = function (tx, callback) {
   })
 }
 
-TraceManager.prototype.init = function () {
+TraceManager.prototype.init = function() {
   this.trace = null
   this.traceCache.init()
 }
 
 // API section
-TraceManager.prototype.inRange = function (step) {
+TraceManager.prototype.inRange = function(step) {
   return this.isLoaded() && step >= 0 && step < this.trace.length
 }
 
-TraceManager.prototype.isLoaded = function () {
+TraceManager.prototype.isLoaded = function() {
   return !this.isLoading && this.trace !== null
 }
 
-TraceManager.prototype.getLength = function (callback) {
+TraceManager.prototype.getLength = function(callback) {
   if (!this.trace) {
     callback('no trace available', null)
   } else {
@@ -75,16 +75,16 @@ TraceManager.prototype.getLength = function (callback) {
   }
 }
 
-TraceManager.prototype.accumulateStorageChanges = function (index, address, storageOrigin, callback) {
+TraceManager.prototype.accumulateStorageChanges = function(index, address, storageOrigin, callback) {
   var storage = this.traceCache.accumulateStorageChanges(index, address, storageOrigin)
   callback(null, storage)
 }
 
-TraceManager.prototype.getAddresses = function (callback) {
+TraceManager.prototype.getAddresses = function(callback) {
   callback(null, this.traceCache.addresses)
 }
 
-TraceManager.prototype.getCallDataAt = function (stepIndex, callback) {
+TraceManager.prototype.getCallDataAt = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -94,7 +94,7 @@ TraceManager.prototype.getCallDataAt = function (stepIndex, callback) {
   callback(null, [this.traceCache.callsData[callDataChange]])
 }
 
-TraceManager.prototype.buildCallPath = function (stepIndex, callback) {
+TraceManager.prototype.buildCallPath = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -104,7 +104,7 @@ TraceManager.prototype.buildCallPath = function (stepIndex, callback) {
   callback(null, callsPath)
 }
 
-TraceManager.prototype.getCallStackAt = function (stepIndex, callback) {
+TraceManager.prototype.getCallStackAt = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -114,7 +114,7 @@ TraceManager.prototype.getCallStackAt = function (stepIndex, callback) {
   callback(null, call.callStack)
 }
 
-TraceManager.prototype.getStackAt = function (stepIndex, callback) {
+TraceManager.prototype.getStackAt = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -129,7 +129,7 @@ TraceManager.prototype.getStackAt = function (stepIndex, callback) {
   }
 }
 
-TraceManager.prototype.getLastCallChangeSince = function (stepIndex, callback) {
+TraceManager.prototype.getLastCallChangeSince = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -142,12 +142,12 @@ TraceManager.prototype.getLastCallChangeSince = function (stepIndex, callback) {
   }
 }
 
-TraceManager.prototype.getCurrentCalledAddressAt = function (stepIndex, callback) {
+TraceManager.prototype.getCurrentCalledAddressAt = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
   }
-  this.getLastCallChangeSince(stepIndex, function (error, resp) {
+  this.getLastCallChangeSince(stepIndex, function(error, resp) {
     if (error) {
       callback(error, null)
     } else {
@@ -160,7 +160,7 @@ TraceManager.prototype.getCurrentCalledAddressAt = function (stepIndex, callback
   })
 }
 
-TraceManager.prototype.getContractCreationCode = function (token, callback) {
+TraceManager.prototype.getContractCreationCode = function(token, callback) {
   if (this.traceCache.contractCreation[token]) {
     callback(null, this.traceCache.contractCreation[token])
   } else {
@@ -168,7 +168,7 @@ TraceManager.prototype.getContractCreationCode = function (token, callback) {
   }
 }
 
-TraceManager.prototype.getMemoryAt = function (stepIndex, callback) {
+TraceManager.prototype.getMemoryAt = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -178,7 +178,7 @@ TraceManager.prototype.getMemoryAt = function (stepIndex, callback) {
   callback(null, this.trace[lastChanges].memory)
 }
 
-TraceManager.prototype.getCurrentPC = function (stepIndex, callback) {
+TraceManager.prototype.getCurrentPC = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -186,7 +186,7 @@ TraceManager.prototype.getCurrentPC = function (stepIndex, callback) {
   callback(null, this.trace[stepIndex].pc)
 }
 
-TraceManager.prototype.getReturnValue = function (stepIndex, callback) {
+TraceManager.prototype.getReturnValue = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -198,7 +198,7 @@ TraceManager.prototype.getReturnValue = function (stepIndex, callback) {
   }
 }
 
-TraceManager.prototype.getCurrentStep = function (stepIndex, callback) {
+TraceManager.prototype.getCurrentStep = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -206,7 +206,7 @@ TraceManager.prototype.getCurrentStep = function (stepIndex, callback) {
   callback(null, this.traceCache.steps[stepIndex])
 }
 
-TraceManager.prototype.getMemExpand = function (stepIndex, callback) {
+TraceManager.prototype.getMemExpand = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -214,7 +214,7 @@ TraceManager.prototype.getMemExpand = function (stepIndex, callback) {
   callback(null, this.trace[stepIndex].memexpand ? this.trace[stepIndex].memexpand : '')
 }
 
-TraceManager.prototype.getStepCost = function (stepIndex, callback) {
+TraceManager.prototype.getStepCost = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -222,7 +222,7 @@ TraceManager.prototype.getStepCost = function (stepIndex, callback) {
   callback(null, this.trace[stepIndex].gasCost)
 }
 
-TraceManager.prototype.getRemainingGas = function (stepIndex, callback) {
+TraceManager.prototype.getRemainingGas = function(stepIndex, callback) {
   var check = this.checkRequestedStep(stepIndex)
   if (check) {
     return callback(check, null)
@@ -230,29 +230,29 @@ TraceManager.prototype.getRemainingGas = function (stepIndex, callback) {
   callback(null, this.trace[stepIndex].gas)
 }
 
-TraceManager.prototype.isCreationStep = function (stepIndex) {
+TraceManager.prototype.isCreationStep = function(stepIndex) {
   return traceHelper.isCreateInstruction(this.trace[stepIndex])
 }
 
 // step section
-TraceManager.prototype.findStepOverBack = function (currentStep) {
+TraceManager.prototype.findStepOverBack = function(currentStep) {
   return this.traceStepManager.findStepOverBack(currentStep)
 }
 
-TraceManager.prototype.findStepOverForward = function (currentStep) {
+TraceManager.prototype.findStepOverForward = function(currentStep) {
   return this.traceStepManager.findStepOverForward(currentStep)
 }
 
-TraceManager.prototype.findNextCall = function (currentStep) {
+TraceManager.prototype.findNextCall = function(currentStep) {
   return this.traceStepManager.findNextCall(currentStep)
 }
 
-TraceManager.prototype.findStepOut = function (currentStep) {
+TraceManager.prototype.findStepOut = function(currentStep) {
   return this.traceStepManager.findStepOut(currentStep)
 }
 
 // util
-TraceManager.prototype.checkRequestedStep = function (stepIndex) {
+TraceManager.prototype.checkRequestedStep = function(stepIndex) {
   if (!this.trace) {
     return 'trace not loaded'
   } else if (stepIndex >= this.trace.length) {
@@ -261,11 +261,11 @@ TraceManager.prototype.checkRequestedStep = function (stepIndex) {
   return undefined
 }
 
-TraceManager.prototype.waterfall = function (calls, stepindex, cb) {
+TraceManager.prototype.waterfall = function(calls, stepindex, cb) {
   var ret = []
   var retError = null
   for (var call in calls) {
-    calls[call].apply(this, [stepindex, function (error, result) {
+    calls[call].apply(this, [stepindex, function(error, result) {
       retError = error
       ret.push({ error: error, value: result })
     }])

@@ -2,7 +2,7 @@
 /**
  * Crawl the given AST through the function walk(ast, callback)
  */
-function AstWalker () {
+function AstWalker() {
 }
 
 /**
@@ -15,12 +15,12 @@ function AstWalker () {
  *                                         in each case, if the callback returns false it does not descend into children.
  *                                         If no callback for the current type, children are visited.
  */
-AstWalker.prototype.walk = function (ast, callback) {
+AstWalker.prototype.walk = function(ast, callback) {
   if (callback instanceof Function) {
     callback = {'*': callback}
   }
   if (!('*' in callback)) {
-    callback['*'] = function () { return true }
+    callback['*'] = function() { return true }
   }
   if (manageCallBack(ast, callback) && ast.children && ast.children.length > 0) {
     for (var k in ast.children) {
@@ -36,14 +36,14 @@ AstWalker.prototype.walk = function (ast, callback) {
  * @param {Object} sourcesList - sources list (containing root AST node)
  * @param {Function} - callback used by AstWalker to compute response
  */
-AstWalker.prototype.walkAstList = function (sourcesList, callback) {
+AstWalker.prototype.walkAstList = function(sourcesList, callback) {
   var walker = new AstWalker()
   for (var k in sourcesList) {
     walker.walk(sourcesList[k].legacyAST, callback)
   }
 }
 
-function manageCallBack (node, callback) {
+function manageCallBack(node, callback) {
   if (node.name in callback) {
     return callback[node.name](node)
   } else {

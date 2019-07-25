@@ -3,7 +3,7 @@
 var parseCode = require('./codeUtils').parseCode
 var util = require('../util')
 
-var createExpressions = function (instructions) {
+var createExpressions = function(instructions) {
   var expressions = []
   var labels = 0
   for (var i = 0; i < instructions.length; i++) {
@@ -32,7 +32,7 @@ var createExpressions = function (instructions) {
   return expressions
 }
 
-var toString = function (expr) {
+var toString = function(expr) {
   if (expr.name.slice(0, 4) === 'PUSH') {
     return util.hexConvert(expr.pushData)
   } else if (expr.name === 'JUMPDEST') {
@@ -44,7 +44,7 @@ var toString = function (expr) {
   }
 }
 
-var disassemble = function (input) {
+var disassemble = function(input) {
   var code = parseCode(util.hexToIntArray(input))
   return createExpressions(code).map(toString).join('\n')
 }

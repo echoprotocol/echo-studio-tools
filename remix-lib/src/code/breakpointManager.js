@@ -15,7 +15,7 @@ class BreakpointManager {
     * @param {Object} _debugger - type of EthDebugger
     * @return {Function} _locationToRowConverter - function implemented by editor which return a column/line position for a char source location
     */
-  constructor (_debugger, _locationToRowConverter, _jumpToCallback) {
+  constructor(_debugger, _locationToRowConverter, _jumpToCallback) {
     this.event = new EventManager()
     this.debugger = _debugger
     this.breakpoints = {}
@@ -29,7 +29,7 @@ class BreakpointManager {
     * @param {Bool} defaultToLimit - if true jump to the end of the trace if no more breakpoint found
     *
     */
-  async jumpNextBreakpoint (fromStep, defaultToLimit) {
+  async jumpNextBreakpoint(fromStep, defaultToLimit) {
     this.jump(fromStep || 0, 1, defaultToLimit)
   }
 
@@ -38,7 +38,7 @@ class BreakpointManager {
     * @param {Bool} defaultToLimit - if true jump to the start of the trace if no more breakpoint found
     *
     */
-  async jumpPreviousBreakpoint (fromStep, defaultToLimit) {
+  async jumpPreviousBreakpoint(fromStep, defaultToLimit) {
     this.jump(fromStep || 0, -1, defaultToLimit)
   }
 
@@ -48,17 +48,17 @@ class BreakpointManager {
     * @param {Bool} defaultToLimit - if true jump to the limit (end if direction is 1, beginning if direction is -1) of the trace if no more breakpoint found
     *
     */
-  async jump (fromStep, direction, defaultToLimit) {
+  async jump(fromStep, direction, defaultToLimit) {
     if (!this.locationToRowConverter) {
       console.log('row converter not provided')
       return
     }
 
-    function depthChange (step, trace) {
+    function depthChange(step, trace) {
       return trace[step].depth !== trace[step - 1].depth
     }
 
-    function hitLine (currentStep, sourceLocation, previousSourceLocation, self) {
+    function hitLine(currentStep, sourceLocation, previousSourceLocation, self) {
       // isJumpDestInstruction -> returning from a internal function call
       // depthChange -> returning from an external call
       // sourceLocation.start <= previousSourceLocation.start && ... -> previous src is contained in the current one
@@ -123,7 +123,7 @@ class BreakpointManager {
     * @param {Int} line - line number where looking for breakpoint
     * @return {Bool} return true if the given @arg fileIndex @arg line refers to a breakpoint
     */
-  hasBreakpointAtLine (fileIndex, line) {
+  hasBreakpointAtLine(fileIndex, line) {
     var filename = this.debugger.solidityProxy.fileNameFromIndex(fileIndex)
     if (filename && this.breakpoints[filename]) {
       var sources = this.breakpoints[filename]
@@ -142,7 +142,7 @@ class BreakpointManager {
     *
     * @return {Bool} true if breapoint registered
     */
-  hasBreakpoint () {
+  hasBreakpoint() {
     for (var k in this.breakpoints) {
       if (this.breakpoints[k].length) {
         return true
@@ -156,7 +156,7 @@ class BreakpointManager {
     *
     * @param {Object} sourceLocation - position of the breakpoint { file: '<file index>', row: '<line number' }
     */
-  add (sourceLocation) {
+  add(sourceLocation) {
     if (!this.breakpoints[sourceLocation.fileName]) {
       this.breakpoints[sourceLocation.fileName] = []
     }
@@ -169,7 +169,7 @@ class BreakpointManager {
     *
     * @param {Object} sourceLocation - position of the breakpoint { file: '<file index>', row: '<line number' }
     */
-  remove (sourceLocation) {
+  remove(sourceLocation) {
     if (this.breakpoints[sourceLocation.fileName]) {
       var sources = this.breakpoints[sourceLocation.fileName]
       for (var k in sources) {

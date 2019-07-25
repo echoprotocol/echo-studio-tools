@@ -8,7 +8,7 @@ var txHelper = require('./execution/txHelper')
 var EventManager = require('./eventManager')
 var executionContext = require('./execution/execution-context')
 
-function UniversalDApp (registry) {
+function UniversalDApp(registry) {
   this.event = new EventManager()
   var self = this
   self._deps = {
@@ -29,7 +29,7 @@ function UniversalDApp (registry) {
   executionContext.event.register('contextChanged', this.resetEnvironment.bind(this))
 }
 
-UniversalDApp.prototype.resetEnvironment = function () {
+UniversalDApp.prototype.resetEnvironment = function() {
   this.accounts = {}
   // TODO: most params here can be refactored away in txRunner
   this.txRunner = new TxRunner(this.accounts, {
@@ -51,17 +51,17 @@ UniversalDApp.prototype.resetEnvironment = function () {
   })
 }
 
-UniversalDApp.prototype.resetAPI = function (transactionContextAPI) {
+UniversalDApp.prototype.resetAPI = function(transactionContextAPI) {
   this.transactionContextAPI = transactionContextAPI
 }
 
-UniversalDApp.prototype.createVMAccount = function (privateKey, balance, cb) {
+UniversalDApp.prototype.createVMAccount = function(privateKey, balance, cb) {
   this._addAccount(privateKey, balance)
   privateKey = Buffer.from(privateKey, 'hex')
   cb(null, '0x' + ethJSUtil.privateToAddress(privateKey).toString('hex'))
 }
 
-UniversalDApp.prototype.newAccount = function (password, passwordPromptCb, cb) {
+UniversalDApp.prototype.newAccount = function(password, passwordPromptCb, cb) {
   var privateKey
   do {
     privateKey = crypto.randomBytes(32)
@@ -70,7 +70,7 @@ UniversalDApp.prototype.newAccount = function (password, passwordPromptCb, cb) {
   cb(null, '0x' + ethJSUtil.privateToAddress(privateKey).toString('hex'))
 }
 
-UniversalDApp.prototype._addAccount = function (privateKey, balance) {
+UniversalDApp.prototype._addAccount = function(privateKey, balance) {
   var self = this
 
   if (self.accounts) {
@@ -82,7 +82,7 @@ UniversalDApp.prototype._addAccount = function (privateKey, balance) {
     stateManager.getAccount(address, (error, account) => {
       if (error) return console.log(error)
       account.balance = balance || '0xf00000000000000001'
-      stateManager.putAccount(address, account, function cb (error) {
+      stateManager.putAccount(address, account, function cb(error) {
         if (error) console.log(error)
       })
     })
@@ -90,7 +90,7 @@ UniversalDApp.prototype._addAccount = function (privateKey, balance) {
   }
 }
 
-UniversalDApp.prototype.getAccounts = function (cb) {
+UniversalDApp.prototype.getAccounts = function(cb) {
   var self = this
 
   if (!self.accounts) {
@@ -100,7 +100,7 @@ UniversalDApp.prototype.getAccounts = function (cb) {
   cb(null, Object.keys(self.accounts))
 }
 
-UniversalDApp.prototype.getBalance = function (address, cb) {
+UniversalDApp.prototype.getBalance = function(address, cb) {
   var self = this
 
   address = ethJSUtil.stripHexPrefix(address)
@@ -109,7 +109,7 @@ UniversalDApp.prototype.getBalance = function (address, cb) {
     return cb('No accounts?')
   }
 
-  executionContext.vm().stateManager.getAccount(Buffer.from(address, 'hex'), function (err, res) {
+  executionContext.vm().stateManager.getAccount(Buffer.from(address, 'hex'), function(err, res) {
     if (err) {
       cb('Account not found')
     } else {
@@ -118,7 +118,7 @@ UniversalDApp.prototype.getBalance = function (address, cb) {
   })
 }
 
-UniversalDApp.prototype.getBalanceInEther = function (address, callback) {
+UniversalDApp.prototype.getBalanceInEther = function(address, callback) {
   var self = this
   self.getBalance(address, (error, balance) => {
     if (error) {
@@ -129,7 +129,7 @@ UniversalDApp.prototype.getBalanceInEther = function (address, callback) {
   })
 }
 
-UniversalDApp.prototype.pendingTransactionsCount = function () {
+UniversalDApp.prototype.pendingTransactionsCount = function() {
   return Object.keys(this.txRunner.pendingTxs).length
 }
 
@@ -139,7 +139,7 @@ UniversalDApp.prototype.pendingTransactionsCount = function () {
   * @param {String} data    - data to send with the transaction ( return of txFormat.buildData(...) ).
   * @param {Function} callback    - callback.
   */
-UniversalDApp.prototype.createContract = function (data, confirmationCb, continueCb, promptCb, callback) {
+UniversalDApp.prototype.createContract = function(data, confirmationCb, continueCb, promptCb, callback) {
   this.runTx({data: data, useCall: false}, confirmationCb, continueCb, promptCb, (error, txResult) => {
     // see universaldapp.js line 660 => 700 to check possible values of txResult (error case)
     callback(error, txResult)
@@ -154,26 +154,26 @@ UniversalDApp.prototype.createContract = function (data, confirmationCb, continu
   * @param {Object} funAbi    - abi definition of the function to call.
   * @param {Function} callback    - callback.
   */
-UniversalDApp.prototype.callFunction = function (to, data, funAbi, confirmationCb, continueCb, promptCb, callback) {
+UniversalDApp.prototype.callFunction = function(to, data, funAbi, confirmationCb, continueCb, promptCb, callback) {
   this.runTx({to: to, data: data, useCall: funAbi.constant}, confirmationCb, continueCb, promptCb, (error, txResult) => {
     // see universaldapp.js line 660 => 700 to check possible values of txResult (error case)
     callback(error, txResult)
   })
 }
 
-UniversalDApp.prototype.context = function () {
-  return 'blockchain';
+UniversalDApp.prototype.context = function() {
+  return 'blockchain'
 }
 
-UniversalDApp.prototype.getABI = function (contract) {
+UniversalDApp.prototype.getABI = function(contract) {
   return txHelper.sortAbiFunction(contract.abi)
 }
 
-UniversalDApp.prototype.getFallbackInterface = function (contractABI) {
+UniversalDApp.prototype.getFallbackInterface = function(contractABI) {
   return txHelper.getFallbackInterface(contractABI)
 }
 
-UniversalDApp.prototype.getInputs = function (funABI) {
+UniversalDApp.prototype.getInputs = function(funABI) {
   if (!funABI.inputs) {
     return ''
   }
@@ -187,7 +187,7 @@ UniversalDApp.prototype.getInputs = function (funABI) {
  * @param {Object} tx    - transaction.
  * @param {Function} callback    - callback.
  */
-UniversalDApp.prototype.silentRunTx = function (tx, cb) {
+UniversalDApp.prototype.silentRunTx = function(tx, cb) {
   this.txRunner.rawRun(
   tx,
   (network, tx, gasEstimation, continueTxExecution, cancelCb) => { continueTxExecution() },
@@ -196,36 +196,36 @@ UniversalDApp.prototype.silentRunTx = function (tx, cb) {
   cb)
 }
 
-UniversalDApp.prototype.runTx = function (args, confirmationCb, continueCb, promptCb, cb) {
+UniversalDApp.prototype.runTx = function(args, confirmationCb, continueCb, promptCb, cb) {
   const self = this
   async.waterfall([
-    function getGasLimit (next) {
+    function getGasLimit(next) {
       if (self.transactionContextAPI.getGasLimit) {
         return self.transactionContextAPI.getGasLimit(next)
       }
       next(null, 3000000)
     },
-    function queryValue (gasLimit, next) {
+    function queryValue(gasLimit, next) {
       if (args.value) {
         return next(null, args.value, gasLimit)
       }
       if (args.useCall || !self.transactionContextAPI.getValue) {
         return next(null, 0, gasLimit)
       }
-      self.transactionContextAPI.getValue(function (err, value) {
+      self.transactionContextAPI.getValue(function(err, value) {
         next(err, value, gasLimit)
       })
     },
-    function getAccount (value, gasLimit, next) {
+    function getAccount(value, gasLimit, next) {
       if (args.from) {
         return next(null, args.from, value, gasLimit)
       }
       if (self.transactionContextAPI.getAddress) {
-        return self.transactionContextAPI.getAddress(function (err, address) {
+        return self.transactionContextAPI.getAddress(function(err, address) {
           next(err, address, value, gasLimit)
         })
       }
-      self.getAccounts(function (err, accounts) {
+      self.getAccounts(function(err, accounts) {
         let address = accounts[0]
 
         if (err) return next(err)
@@ -233,7 +233,7 @@ UniversalDApp.prototype.runTx = function (args, confirmationCb, continueCb, prom
         next(null, address, value, gasLimit)
       })
     },
-    function runTransaction (fromAddress, value, gasLimit, next) {
+    function runTransaction(fromAddress, value, gasLimit, next) {
       var tx = { to: args.to, data: args.data.dataHex, useCall: args.useCall, from: fromAddress, value: value, gasLimit: gasLimit, timestamp: args.data.timestamp }
       var payLoad = { funAbi: args.data.funAbi, funArgs: args.data.funArgs, contractBytecode: args.data.contractBytecode, contractName: args.data.contractName, contractABI: args.data.contractABI, linkReferences: args.data.linkReferences }
       var timestamp = Date.now()
@@ -243,7 +243,7 @@ UniversalDApp.prototype.runTx = function (args, confirmationCb, continueCb, prom
 
       self.event.trigger('initiatingTransaction', [timestamp, tx, payLoad])
       self.txRunner.rawRun(tx, confirmationCb, continueCb, promptCb,
-        function (error, result) {
+        function(error, result) {
           let eventName = (tx.useCall ? 'callExecuted' : 'transactionExecuted')
           self.event.trigger(eventName, [error, tx.from, tx.to, tx.data, tx.useCall, result, timestamp, payLoad])
 

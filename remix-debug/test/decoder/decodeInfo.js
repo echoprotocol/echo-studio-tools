@@ -10,8 +10,8 @@ var remixLib = require('remix-lib')
 var compilerInput = remixLib.helpers.compiler.compilerInput
 var util = require('../../src/solidity-decoder/types/util')
 
-tape('solidity', function (t) {
-  t.test('astHelper, decodeInfo', function (st) {
+tape('solidity', function(t) {
+  t.test('astHelper, decodeInfo', function(st) {
     var output = compiler.compile(compilerInput(contracts))
     output = JSON.parse(output)
 
@@ -89,7 +89,7 @@ tape('solidity', function (t) {
   })
 })
 
-function checkDecodeInfo (st, decodeInfo, storageSlots, storageBytes, typeName) {
+function checkDecodeInfo(st, decodeInfo, storageSlots, storageBytes, typeName) {
   st.equal(decodeInfo.storageSlots, storageSlots)
   st.equal(decodeInfo.storageBytes, storageBytes)
   st.equal(decodeInfo.typeName, typeName)

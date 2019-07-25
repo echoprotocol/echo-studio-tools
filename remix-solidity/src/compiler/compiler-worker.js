@@ -2,11 +2,11 @@
 
 var solc = require('solc/wrapper')
 
-var compileJSON = function () { return '' }
+var compileJSON = function() { return '' }
 var missingInputs = []
 
-module.exports = function (self) {
-  self.addEventListener('message', function (e) {
+module.exports = function(self) {
+  self.addEventListener('message', function(e) {
     var data = e.data
     switch (data.cmd) {
       case 'loadVersion':
@@ -20,9 +20,9 @@ module.exports = function (self) {
 
         var compiler = solc(self.Module)
 
-        compileJSON = function (input) {
+        compileJSON = function(input) {
           try {
-            return compiler.compile(input, function (path) {
+            return compiler.compile(input, function(path) {
               missingInputs.push(path)
               return { 'error': 'Deferred import' }
             })

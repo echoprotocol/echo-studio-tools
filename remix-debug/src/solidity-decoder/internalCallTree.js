@@ -23,7 +23,7 @@ class InternalCallTree {
     * @param {Object} codeManager  - code manager
     * @param {Object} opts  - { includeLocalVariables }
     */
-  constructor (debuggerEvent, traceManager, solidityProxy, codeManager, opts) {
+  constructor(debuggerEvent, traceManager, solidityProxy, codeManager, opts) {
     this.includeLocalVariables = opts.includeLocalVariables
     this.event = new EventManager()
     this.solidityProxy = solidityProxy
@@ -53,7 +53,7 @@ class InternalCallTree {
     * reset tree
     *
     */
-  reset () {
+  reset() {
     /*
       scopes: map of scopes defined by range in the vmtrace {firstStep, lastStep, locals}. Keys represent the level of deepness (scopeId)
     */
@@ -75,7 +75,7 @@ class InternalCallTree {
     *
     * @param {Int} vmtraceIndex  - index on the vm trace
     */
-  findScope (vmtraceIndex) {
+  findScope(vmtraceIndex) {
     var scopes = Object.keys(this.scopeStarts)
     if (!scopes.length) {
       return null
@@ -91,9 +91,9 @@ class InternalCallTree {
     return scope
   }
 
-  extractSourceLocation (step) {
+  extractSourceLocation(step) {
     var self = this
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       self.traceManager.getCurrentCalledAddressAt(step, (error, address) => {
         if (!error) {
           self.sourceLocationTracker.getSourceLocationFromVMTraceIndex(address, step, self.solidityProxy.contracts, (error, sourceLocation) => {
@@ -111,19 +111,19 @@ class InternalCallTree {
   }
 }
 
-async function buildTree (tree, step, scopeId, isExternalCall) {
+async function buildTree(tree, step, scopeId, isExternalCall) {
   let subScope = 1
   tree.scopeStarts[step] = scopeId
   tree.scopes[scopeId] = { firstStep: step, locals: {} }
 
-  function callDepthChange (step, trace) {
+  function callDepthChange(step, trace) {
     if (step + 1 < trace.length) {
       return trace[step].depth !== trace[step + 1].depth
     }
     return false
   }
 
-  function includedSource (source, included) {
+  function includedSource(source, included) {
     return (included.start !== -1 &&
         included.length !== -1 &&
         included.file !== -1 &&
@@ -177,11 +177,11 @@ async function buildTree (tree, step, scopeId, isExternalCall) {
   return { outStep: step }
 }
 
-function createReducedTrace (tree, index) {
+function createReducedTrace(tree, index) {
   tree.reducedTrace.push(index)
 }
 
-function includeVariableDeclaration (tree, step, sourceLocation, scopeId, newLocation, previousSourceLocation) {
+function includeVariableDeclaration(tree, step, sourceLocation, scopeId, newLocation, previousSourceLocation) {
   var variableDeclaration = resolveVariableDeclaration(tree, step, sourceLocation)
   if (variableDeclaration && !tree.scopes[scopeId].locals[variableDeclaration.attributes.name]) {
     tree.traceManager.getStackAt(step, (error, stack) => {
@@ -223,7 +223,7 @@ function includeVariableDeclaration (tree, step, sourceLocation, scopeId, newLoc
   }
 }
 
-function resolveVariableDeclaration (tree, step, sourceLocation) {
+function resolveVariableDeclaration(tree, step, sourceLocation) {
   if (!tree.variableDeclarationByFile[sourceLocation.file]) {
     var ast = tree.solidityProxy.ast(sourceLocation)
     if (ast) {
@@ -236,7 +236,7 @@ function resolveVariableDeclaration (tree, step, sourceLocation) {
   return tree.variableDeclarationByFile[sourceLocation.file][sourceLocation.start + ':' + sourceLocation.length + ':' + sourceLocation.file]
 }
 
-function resolveFunctionDefinition (tree, step, sourceLocation) {
+function resolveFunctionDefinition(tree, step, sourceLocation) {
   if (!tree.functionDefinitionByFile[sourceLocation.file]) {
     var ast = tree.solidityProxy.ast(sourceLocation)
     if (ast) {
@@ -249,7 +249,7 @@ function resolveFunctionDefinition (tree, step, sourceLocation) {
   return tree.functionDefinitionByFile[sourceLocation.file][sourceLocation.start + ':' + sourceLocation.length + ':' + sourceLocation.file]
 }
 
-function extractVariableDeclarations (ast, astWalker) {
+function extractVariableDeclarations(ast, astWalker) {
   var ret = {}
   astWalker.walk(ast, (node) => {
     if (node.name === 'VariableDeclaration') {
@@ -260,7 +260,7 @@ function extractVariableDeclarations (ast, astWalker) {
   return ret
 }
 
-function extractFunctionDefinitions (ast, astWalker) {
+function extractFunctionDefinitions(ast, astWalker) {
   var ret = {}
   astWalker.walk(ast, (node) => {
     if (node.name === 'FunctionDefinition') {
@@ -271,7 +271,7 @@ function extractFunctionDefinitions (ast, astWalker) {
   return ret
 }
 
-function addParams (parameterList, tree, scopeId, states, contractName, sourceLocation, stackLength, stackPosition, dir) {
+function addParams(parameterList, tree, scopeId, states, contractName, sourceLocation, stackLength, stackPosition, dir) {
   for (var inputParam in parameterList.children) {
     var param = parameterList.children[inputParam]
     var stackDepth = stackLength + (dir * stackPosition)

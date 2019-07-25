@@ -12,7 +12,7 @@ var css = csjs`
   }
 `
 
-function BasicPanel (_name, _width, _height) {
+function BasicPanel(_name, _width, _height) {
   this.data
   this.name = _name
   this.width = _width
@@ -20,19 +20,19 @@ function BasicPanel (_name, _width, _height) {
   this.view
 }
 
-BasicPanel.prototype.update = function () {
+BasicPanel.prototype.update = function() {
   yo.update(this.view, this.render())
 }
 
-BasicPanel.prototype.hide = function () {
+BasicPanel.prototype.hide = function() {
   this.view.style.display = 'none'
 }
 
-BasicPanel.prototype.show = function () {
+BasicPanel.prototype.show = function() {
   this.view.style.display = 'block'
 }
 
-BasicPanel.prototype.render = function () {
+BasicPanel.prototype.render = function() {
   var view = yo`
     <div css=${css.container} id='container' style=${ui.formatCss({'width': this.width})}>
     <div style=${ui.formatCss(style.panel.title)}>

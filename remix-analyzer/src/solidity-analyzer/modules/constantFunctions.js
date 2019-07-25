@@ -6,7 +6,7 @@ var fcallGraph = require('./functionCallGraph')
 var AbstractAst = require('./abstractAstView')
 var algo = require('./algorithmCategories')
 
-function constantFunctions () {
+function constantFunctions() {
   this.abstractAst = new AbstractAst()
 
   this.visit = this.abstractAst.build_visit(
@@ -24,11 +24,11 @@ function constantFunctions () {
   this.report = this.abstractAst.build_report(report)
 }
 
-constantFunctions.prototype.visit = function () { throw new Error('constantFunctions.js no visit function set upon construction') }
+constantFunctions.prototype.visit = function() { throw new Error('constantFunctions.js no visit function set upon construction') }
 
-constantFunctions.prototype.report = function () { throw new Error('constantFunctions.js no report function set upon construction') }
+constantFunctions.prototype.report = function() { throw new Error('constantFunctions.js no report function set upon construction') }
 
-function report (contracts, multipleContractsWithSameName) {
+function report(contracts, multipleContractsWithSameName) {
   var warnings = []
   var hasModifiers = contracts.some((item) => item.modifiers.length > 0)
 
@@ -69,19 +69,19 @@ function report (contracts, multipleContractsWithSameName) {
   return warnings
 }
 
-function getContext (callGraph, currentContract, func) {
+function getContext(callGraph, currentContract, func) {
   return { callGraph: callGraph, currentContract: currentContract, stateVariables: getStateVariables(currentContract, func) }
 }
 
-function getStateVariables (contract, func) {
+function getStateVariables(contract, func) {
   return contract.stateVariables.concat(func.localVariables.filter(common.isStorageVariableDeclaration))
 }
 
-function checkIfShouldBeConstant (startFuncName, context) {
+function checkIfShouldBeConstant(startFuncName, context) {
   return !fcallGraph.analyseCallGraph(context.callGraph, startFuncName, context, isConstBreaker)
 }
 
-function isConstBreaker (node, context) {
+function isConstBreaker(node, context) {
   return common.isWriteOnStateVariable(node, context.stateVariables) ||
         common.isLowLevelCall(node) ||
         common.isTransfer(node) ||
@@ -93,7 +93,7 @@ function isConstBreaker (node, context) {
         common.isDeleteUnaryOperation(node)
 }
 
-function isCallOnNonConstExternalInterfaceFunction (node, context) {
+function isCallOnNonConstExternalInterfaceFunction(node, context) {
   if (common.isExternalDirectCall(node)) {
     var func = fcallGraph.resolveCallGraphSymbol(context.callGraph, common.getFullQualifiedFunctionCallIdent(context.currentContract, node))
     return !func || (func && !common.isConstantFunction(func.node.node))

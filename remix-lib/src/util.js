@@ -14,7 +14,7 @@ module.exports = {
   /*
     ints: IntArray
   */
-  hexConvert: function (ints) {
+  hexConvert: function(ints) {
     var ret = '0x'
     for (var i = 0; i < ints.length; i++) {
       var h = ints[i]
@@ -30,7 +30,7 @@ module.exports = {
   /**
    * Converts a hex string to an array of integers.
    */
-  hexToIntArray: function (hexString) {
+  hexToIntArray: function(hexString) {
     if (hexString.slice(0, 2) === '0x') {
       hexString = hexString.slice(2)
     }
@@ -44,7 +44,7 @@ module.exports = {
   /*
     ints: list of BNs
   */
-  hexListFromBNs: function (bnList) {
+  hexListFromBNs: function(bnList) {
     var ret = []
     for (var k in bnList) {
       var v = bnList[k]
@@ -60,7 +60,7 @@ module.exports = {
   /*
     ints: list of IntArrays
   */
-  hexListConvert: function (intsList) {
+  hexListConvert: function(intsList) {
     var ret = []
     for (var k in intsList) {
       ret.push(this.hexConvert(intsList[k]))
@@ -71,7 +71,7 @@ module.exports = {
   /*
     ints: ints: IntArray
   */
-  formatMemory: function (mem) {
+  formatMemory: function(mem) {
     var hexMem = this.hexConvert(mem).substr(2)
     var ret = []
     for (var k = 0; k < hexMem.length; k += 32) {
@@ -86,7 +86,7 @@ module.exports = {
     Assumes that @arg array is sorted increasingly
     return largest i such that array[i] <= target; return -1 if array[0] > target || array is empty
   */
-  findLowerBound: function (target, array) {
+  findLowerBound: function(target, array) {
     var start = 0
     var length = array.length
     while (length > 0) {
@@ -107,7 +107,7 @@ module.exports = {
     Assumes that @arg array is sorted increasingly
     return largest array[i] such that array[i] <= target; return null if array[0] > target || array is empty
   */
-  findLowerBoundValue: function (target, array) {
+  findLowerBoundValue: function(target, array) {
     var index = this.findLowerBound(target, array)
     return index >= 0 ? array[index] : null
   },
@@ -118,7 +118,7 @@ module.exports = {
     return Return i such that |array[i] - target| is smallest among all i and -1 for an empty array.
     Returns the smallest i for multiple candidates.
   */
-  findClosestIndex: function (target, array) {
+  findClosestIndex: function(target, array) {
     if (array.length === 0) {
       return -1
     }
@@ -157,7 +157,7 @@ module.exports = {
   * @param {String} value - value to sha3
   * @return {Object} - return sha3ied value
   */
-  sha3_256: function (value) {
+  sha3_256: function(value) {
     if (typeof value === 'string' && value.indexOf('0x') !== 0) {
       value = '0x' + value
     }
@@ -171,7 +171,7 @@ module.exports = {
     *
     * @return {RegEx}
     */
-  swarmHashExtraction: function () {
+  swarmHashExtraction: function() {
     return /a165627a7a72305820([0-9a-f]{64})0029$/
   },
 
@@ -183,7 +183,7 @@ module.exports = {
     *
     * @return {bool}
     */
-  compareByteCode: function (code1, code2) {
+  compareByteCode: function(code1, code2) {
     if (code1 === code2) return true
     if (code2 === '0x') return false // abstract contract. see comment
 
@@ -210,22 +210,22 @@ module.exports = {
   escapeRegExp: escapeRegExp
 }
 
-function replaceLibReference (code, pos) {
+function replaceLibReference(code, pos) {
   return code.substring(0, pos) + '0000000000000000000000000000000000000000' + code.substring(pos + 40)
 }
 
-function buildCallPath (index, rootCall) {
+function buildCallPath(index, rootCall) {
   var ret = []
   findCallInternal(index, rootCall, ret)
   return ret
 }
 
-function findCall (index, rootCall) {
+function findCall(index, rootCall) {
   var ret = buildCallPath(index, rootCall)
   return ret[ret.length - 1]
 }
 
-function findCallInternal (index, rootCall, callsPath) {
+function findCallInternal(index, rootCall, callsPath) {
   var calls = Object.keys(rootCall.calls)
   var ret = rootCall
   callsPath.push(rootCall)
@@ -240,7 +240,7 @@ function findCallInternal (index, rootCall, callsPath) {
 }
 
 /* util extracted out from remix-ide. @TODO split this file, cause it mix real util fn with solidity related stuff ... */
-function groupBy (arr, key) {
+function groupBy(arr, key) {
   return arr.reduce((sum, item) => {
     const groupByVal = item[key]
     var groupedItems = sum[groupByVal] || []
@@ -250,10 +250,10 @@ function groupBy (arr, key) {
   }, {})
 }
 
-function concatWithSeperator (list, seperator) {
+function concatWithSeperator(list, seperator) {
   return list.reduce((sum, item) => sum + item + seperator, '').slice(0, -seperator.length)
 }
 
-function escapeRegExp (str) {
+function escapeRegExp(str) {
   return str.replace(/[-[\]/{}()+?.\\^$|]/g, '\\$&')
 }

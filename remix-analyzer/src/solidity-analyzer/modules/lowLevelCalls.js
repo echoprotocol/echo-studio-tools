@@ -4,11 +4,11 @@ var categories = require('./categories')
 var common = require('./staticAnalysisCommon')
 var algo = require('./algorithmCategories')
 
-function lowLevelCalls () {
+function lowLevelCalls() {
   this.llcNodes = []
 }
 
-lowLevelCalls.prototype.visit = function (node) {
+lowLevelCalls.prototype.visit = function(node) {
   if (common.isLowLevelCallInst(node)) {
     this.llcNodes.push({node: node, type: common.lowLevelCallTypes.CALL})
   } else if (common.isLowLevelCallInst050(node)) {
@@ -26,8 +26,8 @@ lowLevelCalls.prototype.visit = function (node) {
   }
 }
 
-lowLevelCalls.prototype.report = function (compilationResults) {
-  return this.llcNodes.map(function (item, i) {
+lowLevelCalls.prototype.report = function(compilationResults) {
+  return this.llcNodes.map(function(item, i) {
     var text = ''
     var morehref = null
     switch (item.type) {

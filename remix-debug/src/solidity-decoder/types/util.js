@@ -16,7 +16,7 @@ module.exports = {
   extractLocationFromAstVariable: extractLocationFromAstVariable
 }
 
-function decodeIntFromHex (value, byteLength, signed) {
+function decodeIntFromHex(value, byteLength, signed) {
   var bigNumber = new BN(value, 16)
   if (signed) {
     bigNumber = bigNumber.fromTwos(8 * byteLength)
@@ -24,7 +24,7 @@ function decodeIntFromHex (value, byteLength, signed) {
   return bigNumber.toString(10)
 }
 
-function readFromStorage (slot, storageResolver) {
+function readFromStorage(slot, storageResolver) {
   var hexSlot = '0x' + normalizeHex(ethutil.bufferToHex(slot))
   return new Promise((resolve, reject) => {
     storageResolver.storageSlot(hexSlot, (error, slot) => {
@@ -50,7 +50,7 @@ function readFromStorage (slot, storageResolver) {
  * @param {Int} byteLength  - Length of the byte slice to extract
  * @param {Int} offsetFromLSB  - byte distance from the right end slot value to the right end of the byte slice
  */
-function extractHexByteSlice (slotValue, byteLength, offsetFromLSB) {
+function extractHexByteSlice(slotValue, byteLength, offsetFromLSB) {
   var offset = slotValue.length - 2 * offsetFromLSB - 2 * byteLength
   return slotValue.substr(offset, 2 * byteLength)
 }
@@ -62,7 +62,7 @@ function extractHexByteSlice (slotValue, byteLength, offsetFromLSB) {
  * @param {Object} storageResolver  - storage resolver
  * @param {Int} byteLength  - Length of the byte slice to extract
  */
-async function extractHexValue (location, storageResolver, byteLength) {
+async function extractHexValue(location, storageResolver, byteLength) {
   var slotvalue
   try {
     slotvalue = await readFromStorage(location.slot, storageResolver)
@@ -72,7 +72,7 @@ async function extractHexValue (location, storageResolver, byteLength) {
   return extractHexByteSlice(slotvalue, byteLength, location.offset)
 }
 
-function toBN (value) {
+function toBN(value) {
   if (value instanceof BN) {
     return value
   } else if (value.match && value.match(/^(0x)?([a-f0-9]*)$/)) {
@@ -84,19 +84,19 @@ function toBN (value) {
   return value
 }
 
-function add (value1, value2) {
+function add(value1, value2) {
   return toBN(value1).add(toBN(value2))
 }
 
-function sub (value1, value2) {
+function sub(value1, value2) {
   return toBN(value1).sub(toBN(value2))
 }
 
-function removeLocation (type) {
+function removeLocation(type) {
   return type.replace(/( storage ref| storage pointer| memory| calldata)/g, '')
 }
 
-function extractLocation (type) {
+function extractLocation(type) {
   var match = type.match(/( storage ref| storage pointer| memory| calldata)?$/)
   if (match[1] !== '') {
     return match[1].trim()
@@ -105,7 +105,7 @@ function extractLocation (type) {
   }
 }
 
-function extractLocationFromAstVariable (node) {
+function extractLocationFromAstVariable(node) {
   if (node.attributes.storageLocation !== 'default') {
     return node.attributes.storageLocation
   } else if (node.attributes.stateVariable) {
@@ -115,7 +115,7 @@ function extractLocationFromAstVariable (node) {
   }
 }
 
-function normalizeHex (hex) {
+function normalizeHex(hex) {
   hex = hex.replace('0x', '')
   if (hex.length < 64) {
     return (new Array(64 - hex.length + 1).join('0')) + hex

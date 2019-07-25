@@ -2,7 +2,7 @@
 var yo = require('yo-yo')
 var DropdownPanel = require('./DropdownPanel')
 
-function StepDetail (_parent, _traceManager) {
+function StepDetail(_parent, _traceManager) {
   this.parent = _parent
   this.traceManager = _traceManager
 
@@ -13,28 +13,28 @@ function StepDetail (_parent, _traceManager) {
   this.init()
 }
 
-StepDetail.prototype.render = function () {
+StepDetail.prototype.render = function() {
   return yo`<div id='stepdetail' >${this.basicPanel.render()}</div>`
 }
 
-StepDetail.prototype.init = function () {
+StepDetail.prototype.init = function() {
   var self = this
-  this.parent.event.register('traceUnloaded', this, function () {
+  this.parent.event.register('traceUnloaded', this, function() {
     self.detail = initDetail()
     self.basicPanel.update(self.detail)
   })
 
-  this.parent.event.register('newTraceLoaded', this, function () {
+  this.parent.event.register('newTraceLoaded', this, function() {
     self.detail = initDetail()
     self.basicPanel.update(self.detail)
   })
 
-  this.parent.event.register('indexChanged', this, function (index) {
+  this.parent.event.register('indexChanged', this, function(index) {
     if (index < 0) return
 
     self.detail['vm trace step'] = index
 
-    self.traceManager.getCurrentStep(index, function (error, step) {
+    self.traceManager.getCurrentStep(index, function(error, step) {
       if (error) {
         console.log(error)
         self.detail['execution step'] = '-'
@@ -44,7 +44,7 @@ StepDetail.prototype.init = function () {
       self.basicPanel.update(self.detail)
     })
 
-    self.traceManager.getMemExpand(index, function (error, addmem) {
+    self.traceManager.getMemExpand(index, function(error, addmem) {
       if (error) {
         console.log(error)
         self.detail['add memory'] = '-'
@@ -54,7 +54,7 @@ StepDetail.prototype.init = function () {
       self.basicPanel.update(self.detail)
     })
 
-    self.traceManager.getStepCost(index, function (error, gas) {
+    self.traceManager.getStepCost(index, function(error, gas) {
       if (error) {
         console.log(error)
         self.detail.gas = '-'
@@ -64,7 +64,7 @@ StepDetail.prototype.init = function () {
       self.basicPanel.update(self.detail)
     })
 
-    self.traceManager.getCurrentCalledAddressAt(index, function (error, address) {
+    self.traceManager.getCurrentCalledAddressAt(index, function(error, address) {
       if (error) {
         console.log(error)
         self.detail['loaded address'] = '-'
@@ -74,7 +74,7 @@ StepDetail.prototype.init = function () {
       self.basicPanel.update(self.detail)
     })
 
-    self.traceManager.getRemainingGas(index, function (error, remaingas) {
+    self.traceManager.getRemainingGas(index, function(error, remaingas) {
       if (error) {
         console.log(error)
         self.detail['remaining gas'] = '-'
@@ -88,7 +88,7 @@ StepDetail.prototype.init = function () {
 
 module.exports = StepDetail
 
-function initDetail () {
+function initDetail() {
   return {
     'vm trace step': '-',
     'execution step': '-',

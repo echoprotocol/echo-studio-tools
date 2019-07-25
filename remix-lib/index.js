@@ -37,7 +37,7 @@ if (typeof (window) !== 'undefined') {
   window.remix = modules()
 }
 
-function modules () {
+function modules() {
   return {
     code: {
       CodeManager: CodeManager,

@@ -2,7 +2,7 @@
 var ui = require('./uiHelper')
 module.exports = {
   // vmTraceIndex has to point to a CALL, CODECALL, ...
-  resolveCalledAddress: function (vmTraceIndex, trace) {
+  resolveCalledAddress: function(vmTraceIndex, trace) {
     var step = trace[vmTraceIndex]
     if (this.isCreateInstruction(step)) {
       return this.contractCreationToken(vmTraceIndex)
@@ -13,43 +13,43 @@ module.exports = {
     return undefined
   },
 
-  isCallInstruction: function (step) {
+  isCallInstruction: function(step) {
     return step.op === 'CALL' || step.op === 'CALLCODE' || step.op === 'CREATE' || step.op === 'DELEGATECALL'
   },
 
-  isCreateInstruction: function (step) {
+  isCreateInstruction: function(step) {
     return step.op === 'CREATE'
   },
 
-  isReturnInstruction: function (step) {
+  isReturnInstruction: function(step) {
     return step.op === 'RETURN'
   },
 
-  isJumpDestInstruction: function (step) {
+  isJumpDestInstruction: function(step) {
     return step.op === 'JUMPDEST'
   },
 
-  isStopInstruction: function (step) {
+  isStopInstruction: function(step) {
     return step.op === 'STOP'
   },
 
-  isRevertInstruction: function (step) {
+  isRevertInstruction: function(step) {
     return step.op === 'REVERT'
   },
 
-  isSSTOREInstruction: function (step) {
+  isSSTOREInstruction: function(step) {
     return step.op === 'SSTORE'
   },
 
-  isSHA3Instruction: function (step) {
+  isSHA3Instruction: function(step) {
     return step.op === 'SHA3'
   },
 
-  newContextStorage: function (step) {
+  newContextStorage: function(step) {
     return step.op === 'CREATE' || step.op === 'CALL'
   },
 
-  isCallToPrecompiledContract: function (index, trace) {
+  isCallToPrecompiledContract: function(index, trace) {
     // if stack empty => this is not a precompiled contract
     var step = trace[index]
     if (this.isCallInstruction(step)) {
@@ -59,11 +59,11 @@ module.exports = {
     }
   },
 
-  contractCreationToken: function (index) {
+  contractCreationToken: function(index) {
     return '(Contract Creation - Step ' + index + ')'
   },
 
-  isContractCreation: function (address) {
+  isContractCreation: function(address) {
     return address.indexOf('(Contract Creation - Step') !== -1
   }
 }

@@ -7,7 +7,7 @@ var txHelper = require('./txHelper')
   *
   */
 class EventsDecoder {
-  constructor (opt = {}) {
+  constructor(opt = {}) {
     this._api = opt.api
   }
 
@@ -18,7 +18,7 @@ class EventsDecoder {
   * @param {Object} tx - transaction object
   * @param {Function} cb - callback
   */
-  parseLogs (tx, contractName, compiledContracts, cb) {
+  parseLogs(tx, contractName, compiledContracts, cb) {
     if (tx.isCall) return cb(null, { decoded: [], raw: [] })
     this._api.resolveReceipt(tx, (error, receipt) => {
       if (error) return cb(error)
@@ -26,7 +26,7 @@ class EventsDecoder {
     })
   }
 
-  _decodeLogs (tx, receipt, contract, contracts, cb) {
+  _decodeLogs(tx, receipt, contract, contracts, cb) {
     if (!contract || !receipt) {
       return cb('cannot decode logs - contract or receipt not resolved ')
     }
@@ -36,7 +36,7 @@ class EventsDecoder {
     this._decodeEvents(tx, receipt.logs, contract, contracts, cb)
   }
 
-  _eventABI (contract) {
+  _eventABI(contract) {
     var eventABI = {}
     var abi = new ethers.utils.Interface(contract.abi)
     for (var e in abi.events) {
@@ -46,7 +46,7 @@ class EventsDecoder {
     return eventABI
   }
 
-  _eventsABI (compiledContracts) {
+  _eventsABI(compiledContracts) {
     var eventsABI = {}
     txHelper.visitContracts(compiledContracts, (contract) => {
       eventsABI[contract.name] = this._eventABI(contract.object)
@@ -54,7 +54,7 @@ class EventsDecoder {
     return eventsABI
   }
 
-  _event (hash, eventsABI) {
+  _event(hash, eventsABI) {
     for (var k in eventsABI) {
       if (eventsABI[k][hash]) {
         return eventsABI[k][hash]
@@ -63,11 +63,11 @@ class EventsDecoder {
     return null
   }
 
-  _stringifyBigNumber (value) {
+  _stringifyBigNumber(value) {
     return value._ethersType === 'BigNumber' ? value.toString() : value
   }
 
-  _stringifyEvent (value) {
+  _stringifyEvent(value) {
     if (value === null || value === undefined) return ' - '
     if (value._ethersType) value.type = value._ethersType
     if (Array.isArray(value)) {
@@ -78,7 +78,7 @@ class EventsDecoder {
     }
   }
 
-  _decodeEvents (tx, logs, contractName, compiledContracts, cb) {
+  _decodeEvents(tx, logs, contractName, compiledContracts, cb) {
     var eventsABI = this._eventsABI(compiledContracts)
     var events = []
     for (var i in logs) {

@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 /**
  * var basex = require('base-x');
  *
@@ -38,86 +38,86 @@
  * IN THE SOFTWARE.
  *
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var bytes_1 = require("./bytes");
-var properties_1 = require("./properties");
-var BaseX = /** @class */ (function () {
+Object.defineProperty(exports, '__esModule', { value: true })
+var bytes_1 = require('./bytes')
+var properties_1 = require('./properties')
+var BaseX = /** @class */ (function() {
     function BaseX(alphabet) {
-        properties_1.defineReadOnly(this, "alphabet", alphabet);
-        properties_1.defineReadOnly(this, "base", alphabet.length);
-        properties_1.defineReadOnly(this, "_alphabetMap", {});
-        properties_1.defineReadOnly(this, "_leader", alphabet.charAt(0));
+        properties_1.defineReadOnly(this, 'alphabet', alphabet)
+        properties_1.defineReadOnly(this, 'base', alphabet.length)
+        properties_1.defineReadOnly(this, '_alphabetMap', {})
+        properties_1.defineReadOnly(this, '_leader', alphabet.charAt(0))
         // pre-compute lookup table
         for (var i = 0; i < alphabet.length; i++) {
-            this._alphabetMap[alphabet.charAt(i)] = i;
+            this._alphabetMap[alphabet.charAt(i)] = i
         }
     }
-    BaseX.prototype.encode = function (value) {
-        var source = bytes_1.arrayify(value);
+    BaseX.prototype.encode = function(value) {
+        var source = bytes_1.arrayify(value)
         if (source.length === 0) {
-            return '';
+            return ''
         }
-        var digits = [0];
+        var digits = [0]
         for (var i = 0; i < source.length; ++i) {
-            var carry = source[i];
+            var carry = source[i]
             for (var j = 0; j < digits.length; ++j) {
-                carry += digits[j] << 8;
-                digits[j] = carry % this.base;
-                carry = (carry / this.base) | 0;
+                carry += digits[j] << 8
+                digits[j] = carry % this.base
+                carry = (carry / this.base) | 0
             }
             while (carry > 0) {
-                digits.push(carry % this.base);
-                carry = (carry / this.base) | 0;
+                digits.push(carry % this.base)
+                carry = (carry / this.base) | 0
             }
         }
-        var string = '';
+        var string = ''
         // deal with leading zeros
         for (var k = 0; source[k] === 0 && k < source.length - 1; ++k) {
-            string += this._leader;
+            string += this._leader
         }
         // convert digits to a string
         for (var q = digits.length - 1; q >= 0; --q) {
-            string += this.alphabet[digits[q]];
+            string += this.alphabet[digits[q]]
         }
-        return string;
-    };
-    BaseX.prototype.decode = function (value) {
+        return string
+    }
+    BaseX.prototype.decode = function(value) {
         if (typeof (value) !== 'string') {
-            throw new TypeError('Expected String');
+            throw new TypeError('Expected String')
         }
-        var bytes = [];
+        var bytes = []
         if (value.length === 0) {
-            return new Uint8Array(bytes);
+            return new Uint8Array(bytes)
         }
-        bytes.push(0);
+        bytes.push(0)
         for (var i = 0; i < value.length; i++) {
-            var byte = this._alphabetMap[value[i]];
+            var byte = this._alphabetMap[value[i]]
             if (byte === undefined) {
-                throw new Error('Non-base' + this.base + ' character');
+                throw new Error('Non-base' + this.base + ' character')
             }
-            var carry = byte;
+            var carry = byte
             for (var j = 0; j < bytes.length; ++j) {
-                carry += bytes[j] * this.base;
-                bytes[j] = carry & 0xff;
-                carry >>= 8;
+                carry += bytes[j] * this.base
+                bytes[j] = carry & 0xff
+                carry >>= 8
             }
             while (carry > 0) {
-                bytes.push(carry & 0xff);
-                carry >>= 8;
+                bytes.push(carry & 0xff)
+                carry >>= 8
             }
         }
         // deal with leading zeros
         for (var k = 0; value[k] === this._leader && k < value.length - 1; ++k) {
-            bytes.push(0);
+            bytes.push(0)
         }
-        return bytes_1.arrayify(new Uint8Array(bytes.reverse()));
-    };
-    return BaseX;
-}());
-exports.BaseX = BaseX;
-var Base32 = new BaseX("abcdefghijklmnopqrstuvwxyz234567");
-exports.Base32 = Base32;
-var Base58 = new BaseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz");
-exports.Base58 = Base58;
-//console.log(Base58.decode("Qmd2V777o5XvJbYMeMb8k2nU5f8d3ciUQ5YpYuWhzv8iDj"))
-//console.log(Base58.encode(Base58.decode("Qmd2V777o5XvJbYMeMb8k2nU5f8d3ciUQ5YpYuWhzv8iDj")))
+        return bytes_1.arrayify(new Uint8Array(bytes.reverse()))
+    }
+    return BaseX
+}())
+exports.BaseX = BaseX
+var Base32 = new BaseX('abcdefghijklmnopqrstuvwxyz234567')
+exports.Base32 = Base32
+var Base58 = new BaseX('123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz')
+exports.Base58 = Base58
+// console.log(Base58.decode("Qmd2V777o5XvJbYMeMb8k2nU5f8d3ciUQ5YpYuWhzv8iDj"))
+// console.log(Base58.encode(Base58.decode("Qmd2V777o5XvJbYMeMb8k2nU5f8d3ciUQ5YpYuWhzv8iDj")))

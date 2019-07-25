@@ -1,12 +1,12 @@
 var Web3 = require('web3')
 
-var Blocks = function (_options) {
+var Blocks = function(_options) {
   const options = _options || {}
   this.coinbase = options.coinbase || '0x0000000000000000000000000000000000000000'
   this.blockNumber = 0
 }
 
-Blocks.prototype.methods = function () {
+Blocks.prototype.methods = function() {
   return {
     eth_getBlockByNumber: this.eth_getBlockByNumber.bind(this),
     eth_gasPrice: this.eth_gasPrice.bind(this),
@@ -16,7 +16,7 @@ Blocks.prototype.methods = function () {
   }
 }
 
-Blocks.prototype.eth_getBlockByNumber = function (payload, cb) {
+Blocks.prototype.eth_getBlockByNumber = function(payload, cb) {
   let b = {
     'difficulty': '0x0',
     'extraData': '0x',
@@ -42,7 +42,7 @@ Blocks.prototype.eth_getBlockByNumber = function (payload, cb) {
   cb(null, b)
 }
 
-Blocks.prototype.eth_getBlockByHash = function (payload, cb) {
+Blocks.prototype.eth_getBlockByHash = function(payload, cb) {
   let b = {
     'difficulty': '0x0',
     'extraData': '0x',
@@ -68,15 +68,15 @@ Blocks.prototype.eth_getBlockByHash = function (payload, cb) {
   cb(null, b)
 }
 
-Blocks.prototype.eth_gasPrice = function (payload, cb) {
+Blocks.prototype.eth_gasPrice = function(payload, cb) {
   cb(null, 1)
 }
 
-Blocks.prototype.eth_coinbase = function (payload, cb) {
+Blocks.prototype.eth_coinbase = function(payload, cb) {
   cb(null, this.coinbase)
 }
 
-Blocks.prototype.eth_blockNumber = function (payload, cb) {
+Blocks.prototype.eth_blockNumber = function(payload, cb) {
   cb(null, this.blockNumber)
 }
 

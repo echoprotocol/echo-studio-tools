@@ -4,15 +4,15 @@ var RemixSim = require('../index.js')
 let web3 = new Web3()
 var assert = require('assert')
 
-describe('blocks', function () {
-  before(function () {
+describe('blocks', function() {
+  before(function() {
     let provider = new RemixSim.Provider({
       coinbase: '0x0000000000000000000000000000000000000001'
     })
     web3.setProvider(provider)
   })
 
-  it('should get block given its number', async function () {
+  it('should get block given its number', async function() {
     let block = await web3.eth.getBlock(1)
 
     let expectedBlock = {
@@ -41,12 +41,12 @@ describe('blocks', function () {
     assert.deepEqual(block, expectedBlock)
   })
 
-  it('should get gas price', async function () {
+  it('should get gas price', async function() {
     let gasPrice = await web3.eth.getGasPrice()
     assert.equal(gasPrice, 1)
   })
 
-  it('should get coinbase', async function () {
+  it('should get coinbase', async function() {
     let coinbase = await web3.eth.getCoinbase()
     assert.equal(coinbase, '0x0000000000000000000000000000000000000001')
   })

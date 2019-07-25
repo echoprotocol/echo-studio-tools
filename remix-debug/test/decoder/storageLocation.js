@@ -6,8 +6,8 @@ var contracts = require('./contracts/miscContracts')
 var remixLib = require('remix-lib')
 var compilerInput = remixLib.helpers.compiler.compilerInput
 
-tape('solidity', function (t) {
-  t.test('storage location', function (st) {
+tape('solidity', function(t) {
+  t.test('storage location', function(st) {
     var output = compiler.compile(compilerInput(contracts))
     output = JSON.parse(output)
     var stateDec = stateDecoder.extractStateVariables('contractUint', output.sources)
@@ -53,7 +53,7 @@ tape('solidity', function (t) {
   })
 })
 
-function checkLocation (st, location, slot, offset) {
+function checkLocation(st, location, slot, offset) {
   st.equal(location.offset, offset)
   st.equal(location.slot, slot)
 }

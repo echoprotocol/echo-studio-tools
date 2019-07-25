@@ -14,7 +14,7 @@ var remixCore = require('remix-core')
 var StorageResolver = remixCore.storage.StorageResolver
 var yo = require('yo-yo')
 
-function VmDebugger (_parent, _traceManager, _codeManager, _solidityProxy, _callTree) {
+function VmDebugger(_parent, _traceManager, _codeManager, _solidityProxy, _callTree) {
   this.asmCode = new CodeListView(_parent, _codeManager)
   this.stackPanel = new StackPanel(_parent, _traceManager)
   this.storagePanel = new StoragePanel(_parent, _traceManager)
@@ -28,9 +28,9 @@ function VmDebugger (_parent, _traceManager, _codeManager, _solidityProxy, _call
   /* Return values - */
   this.returnValuesPanel = new DropdownPanel('Return Value', {json: true})
   this.returnValuesPanel.data = {}
-  _parent.event.register('indexChanged', this.returnValuesPanel, function (index) {
+  _parent.event.register('indexChanged', this.returnValuesPanel, function(index) {
     var self = this
-    _traceManager.getReturnValue(index, function (error, returnValue) {
+    _traceManager.getReturnValue(index, function(error, returnValue) {
       if (error) {
         self.update([error])
       } else if (_parent.currentStepIndex === index) {
@@ -44,7 +44,7 @@ function VmDebugger (_parent, _traceManager, _codeManager, _solidityProxy, _call
 
   this.view
   var self = this
-  _parent.event.register('newTraceLoaded', this, function () {
+  _parent.event.register('newTraceLoaded', this, function() {
     var storageResolver = new StorageResolver()
     self.storagePanel.storageResolver = storageResolver
     self.solidityState.storageResolver = storageResolver
@@ -52,7 +52,7 @@ function VmDebugger (_parent, _traceManager, _codeManager, _solidityProxy, _call
     self.fullStoragesChangesPanel.storageResolver = storageResolver
     self.view.style.display = 'block'
   })
-  _parent.event.register('traceUnloaded', this, function () {
+  _parent.event.register('traceUnloaded', this, function() {
     self.view.style.display = 'none'
   })
   _parent.callTree.event.register('callTreeReady', () => {
@@ -65,7 +65,7 @@ function VmDebugger (_parent, _traceManager, _codeManager, _solidityProxy, _call
   })
 }
 
-VmDebugger.prototype.render = function () {
+VmDebugger.prototype.render = function() {
   var view = yo`<div id='vmdebugger' style='display:none'>
         <div>
             ${this.asmCode.render()}

@@ -1,18 +1,18 @@
 'use strict'
 var SourceMappingDecoder = require('./sourceMappingDecoder')
 
-function offsetToColumnConverter (compilerEvent) {
+function offsetToColumnConverter(compilerEvent) {
   this.lineBreakPositionsByContent = {}
   this.sourceMappingDecoder = new SourceMappingDecoder()
   var self = this
   if (compilerEvent) {
-    compilerEvent.register('compilationFinished', function (success, data, source) {
+    compilerEvent.register('compilationFinished', function(success, data, source) {
       self.clear()
     })
   }
 }
 
-offsetToColumnConverter.prototype.offsetToLineColumn = function (rawLocation, file, sources, asts) {
+offsetToColumnConverter.prototype.offsetToLineColumn = function(rawLocation, file, sources, asts) {
   if (!this.lineBreakPositionsByContent[file]) {
     for (var filename in asts) {
       var source = asts[filename]
@@ -25,7 +25,7 @@ offsetToColumnConverter.prototype.offsetToLineColumn = function (rawLocation, fi
   return this.sourceMappingDecoder.convertOffsetToLineColumn(rawLocation, this.lineBreakPositionsByContent[file])
 }
 
-offsetToColumnConverter.prototype.clear = function () {
+offsetToColumnConverter.prototype.clear = function() {
   this.lineBreakPositionsByContent = {}
 }
 

@@ -2,7 +2,7 @@
 var tape = require('tape')
 var txHelper = require('../src/execution/txHelper')
 
-tape('getFunction', function (st) {
+tape('getFunction', function(st) {
   st.plan(5)
   var fn = txHelper.getFunction(JSON.parse(abi), 'o((address,uint256))')
   st.equal(fn.name, 'o')

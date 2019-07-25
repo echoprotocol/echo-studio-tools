@@ -12,12 +12,12 @@ var fs = require('fs')
 var path = require('path')
 var folder = 'solidity-v0.4.24'
 
-function compile (fileName) {
+function compile(fileName) {
   var content = fs.readFileSync(path.join(__dirname, 'test-contracts/' + folder, fileName), 'utf8')
   return JSON.parse(compiler.compileStandardWrapper(compilerInput(content)))
 }
 
-test('staticAnalysisIssues.functionParameterPassingError', function (t) {
+test('staticAnalysisIssues.functionParameterPassingError', function(t) {
   // https://github.com/ethereum/remix-ide/issues/889#issuecomment-351746474
   t.plan(2)
   var res = compile('functionParameters.sol')

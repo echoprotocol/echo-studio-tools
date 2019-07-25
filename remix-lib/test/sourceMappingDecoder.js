@@ -5,8 +5,8 @@ var SourceMappingDecoder = require('../src/sourceMappingDecoder')
 var compiler = require('solc')
 var compilerInput = require('../src/helpers/compilerHelper').compilerInput
 
-tape('SourceMappingDecoder', function (t) {
-  t.test('SourceMappingDecoder.findNodeAtInstructionIndex', function (st) {
+tape('SourceMappingDecoder', function(t) {
+  t.test('SourceMappingDecoder.findNodeAtInstructionIndex', function(st) {
     var output = compiler.compile(compilerInput(contracts))
     output = JSON.parse(output)
     var sourceMappingDecoder = new SourceMappingDecoder()
@@ -21,7 +21,7 @@ tape('SourceMappingDecoder', function (t) {
   })
 
   var testSourceMapping = {}
-  t.test('sourceMappingDecoder', function (st) {
+  t.test('sourceMappingDecoder', function(st) {
     st.plan(28)
     var sourceMappingDecoder = new SourceMappingDecoder()
     console.log('test decompressAll')
@@ -75,7 +75,7 @@ tape('SourceMappingDecoder', function (t) {
     testSourceMapping[85] = result
   })
 
-  t.test('sourceMappingLineColumnConverter', function (st) {
+  t.test('sourceMappingLineColumnConverter', function(st) {
     st.plan(14)
     var sourceMappingDecoder = new SourceMappingDecoder()
     var linesbreak = sourceMappingDecoder.getLinebreakPositions(sourceMapping.source)

@@ -3,11 +3,11 @@ var ValueType = require('./ValueType')
 var util = require('./util')
 
 class Bool extends ValueType {
-  constructor () {
+  constructor() {
     super(1, 1, 'bool')
   }
 
-  decodeValue (value) {
+  decodeValue(value) {
     if (!value) {
       return false
     } else {

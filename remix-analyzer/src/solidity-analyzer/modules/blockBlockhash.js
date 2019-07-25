@@ -4,16 +4,16 @@ var categories = require('./categories')
 var common = require('./staticAnalysisCommon')
 var algo = require('./algorithmCategories')
 
-function blockBlockhash () {
+function blockBlockhash() {
   this.warningNodes = []
 }
 
-blockBlockhash.prototype.visit = function (node) {
+blockBlockhash.prototype.visit = function(node) {
   if (common.isBlockBlockHashAccess(node)) this.warningNodes.push(node)
 }
 
-blockBlockhash.prototype.report = function (compilationResults) {
-  return this.warningNodes.map(function (item, i) {
+blockBlockhash.prototype.report = function(compilationResults) {
+  return this.warningNodes.map(function(item, i) {
     return {
       warning: `use of "block.blockhash": "block.blockhash" is used to access the last 256 block hashes. 
                 A miner computes the block hash by "summing up" the information in the current block mined. 

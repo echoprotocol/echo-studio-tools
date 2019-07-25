@@ -5,7 +5,7 @@ var common = require('./staticAnalysisCommon')
 var AbstractAst = require('./abstractAstView')
 var algo = require('./algorithmCategories')
 
-function noReturn () {
+function noReturn() {
   this.abstractAst = new AbstractAst()
 
   this.visit = this.abstractAst.build_visit(
@@ -15,11 +15,11 @@ function noReturn () {
   this.report = this.abstractAst.build_report(report)
 }
 
-noReturn.prototype.visit = function () { throw new Error('noReturn.js no visit function set upon construction') }
+noReturn.prototype.visit = function() { throw new Error('noReturn.js no visit function set upon construction') }
 
-noReturn.prototype.report = function () { throw new Error('noReturn.js no report function set upon construction') }
+noReturn.prototype.report = function() { throw new Error('noReturn.js no report function set upon construction') }
 
-function report (contracts, multipleContractsWithSameName) {
+function report(contracts, multipleContractsWithSameName) {
   var warnings = []
 
   contracts.forEach((contract) => {
@@ -42,26 +42,26 @@ function report (contracts, multipleContractsWithSameName) {
   return warnings
 }
 
-function shouldReturn (func) {
+function shouldReturn(func) {
   return func.returns.length > 0
 }
 
-function hasReturnStatement (func) {
+function hasReturnStatement(func) {
   return func.relevantNodes.filter(common.isReturn).length > 0
 }
 
-function hasAssignToAllNamedReturns (func) {
+function hasAssignToAllNamedReturns(func) {
   var namedReturns = func.returns.filter((n) => n.name.length > 0).map((n) => n.name)
   var assignedVars = func.relevantNodes.filter(common.isAssignment).map(common.getEffectedVariableName)
   var diff = namedReturns.filter(e => !assignedVars.includes(e))
   return diff.length === 0
 }
 
-function hasNamedReturns (func) {
+function hasNamedReturns(func) {
   return func.returns.filter((n) => n.name.length > 0).length > 0
 }
 
-function hasNamedAndUnnamedReturns (func) {
+function hasNamedAndUnnamedReturns(func) {
   return func.returns.filter((n) => n.name.length === 0).length > 0 &&
           hasNamedReturns(func)
 }

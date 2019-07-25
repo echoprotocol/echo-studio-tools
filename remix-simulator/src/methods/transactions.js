@@ -4,7 +4,7 @@ var ethJSUtil = require('ethereumjs-util')
 var processTx = require('./txProcess.js')
 var BN = ethJSUtil.BN
 
-function hexConvert (ints) {
+function hexConvert(ints) {
   var ret = '0x'
   for (var i = 0; i < ints.length; i++) {
     var h = ints[i]
@@ -17,11 +17,11 @@ function hexConvert (ints) {
   return ret
 }
 
-var Transactions = function (accounts) {
+var Transactions = function(accounts) {
   this.accounts = accounts
 }
 
-Transactions.prototype.methods = function () {
+Transactions.prototype.methods = function() {
   return {
     eth_sendTransaction: this.eth_sendTransaction.bind(this),
     eth_getTransactionReceipt: this.eth_getTransactionReceipt.bind(this),
@@ -33,11 +33,11 @@ Transactions.prototype.methods = function () {
   }
 }
 
-Transactions.prototype.eth_sendTransaction = function (payload, cb) {
+Transactions.prototype.eth_sendTransaction = function(payload, cb) {
   processTx(this.accounts, payload, false, cb)
 }
 
-Transactions.prototype.eth_getTransactionReceipt = function (payload, cb) {
+Transactions.prototype.eth_getTransactionReceipt = function(payload, cb) {
   executionContext.echojslib().eth.getTransactionReceipt(payload.params[0], (error, receipt) => {
     if (error) {
       return cb(error)
@@ -59,11 +59,11 @@ Transactions.prototype.eth_getTransactionReceipt = function (payload, cb) {
   })
 }
 
-Transactions.prototype.eth_estimateGas = function (payload, cb) {
+Transactions.prototype.eth_estimateGas = function(payload, cb) {
   cb(null, 3000000)
 }
 
-Transactions.prototype.eth_getCode = function (payload, cb) {
+Transactions.prototype.eth_getCode = function(payload, cb) {
   let address = payload.params[0]
 
   const account = ethJSUtil.toBuffer(address)
@@ -73,11 +73,11 @@ Transactions.prototype.eth_getCode = function (payload, cb) {
   })
 }
 
-Transactions.prototype.eth_call = function (payload, cb) {
+Transactions.prototype.eth_call = function(payload, cb) {
   processTx(this.accounts, payload, true, cb)
 }
 
-Transactions.prototype.eth_getTransactionCount = function (payload, cb) {
+Transactions.prototype.eth_getTransactionCount = function(payload, cb) {
   let address = payload.params[0]
 
   executionContext.vm().stateManager.getAccount(address, (err, account) => {
@@ -89,7 +89,7 @@ Transactions.prototype.eth_getTransactionCount = function (payload, cb) {
   })
 }
 
-Transactions.prototype.eth_getTransactionByHash = function (payload, cb) {
+Transactions.prototype.eth_getTransactionByHash = function(payload, cb) {
   const address = payload.params[0]
 
   executionContext.echojslib().eth.getTransactionReceipt(address, (error, receipt) => {

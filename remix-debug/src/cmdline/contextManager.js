@@ -7,13 +7,13 @@ var DummyProvider = remixLib.vm.DummyProvider
 var init = remixLib.init
 
 class ContextManager {
-  constructor () {
+  constructor() {
     this.executionContext = executionContext
     this.web3 = this.executionContext.echojslib()
     this.event = new EventManager()
   }
 
-  initProviders () {
+  initProviders() {
     this.web3Providers = new Web3Providers()
     this.addProvider('DUMMYWEB3', new DummyProvider())
     this.switchProvider('DUMMYWEB3')
@@ -23,18 +23,18 @@ class ContextManager {
     this.switchProvider(this.executionContext.getProvider())
   }
 
-  getWeb3 () {
+  getWeb3() {
     return this.web3
   }
 
-  addProvider (type, obj) {
+  addProvider(type, obj) {
     this.web3Providers.addProvider(type, obj)
     this.event.trigger('providerAdded', [type])
   }
 
-  switchProvider (type, cb) {
+  switchProvider(type, cb) {
     var self = this
-    this.web3Providers.get(type, function (error, obj) {
+    this.web3Providers.get(type, function(error, obj) {
       if (error) {
         // console.log('provider ' + type + ' not defined')
       } else {

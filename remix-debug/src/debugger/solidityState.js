@@ -5,7 +5,7 @@ var StorageViewer = require('../storage/storageViewer')
 
 class DebuggerSolidityState {
 
-  constructor (tx, _stepManager, _traceManager, _codeManager, _solidityProxy) {
+  constructor(tx, _stepManager, _traceManager, _codeManager, _solidityProxy) {
     this.event = new EventManager()
     this.storageResolver = null
     this.stepManager = _stepManager
@@ -16,7 +16,7 @@ class DebuggerSolidityState {
     this.tx = tx
   }
 
-  init (index) {
+  init(index) {
     var self = this
     var decodeTimeout = null
     if (index < 0) {
@@ -35,7 +35,7 @@ class DebuggerSolidityState {
       window.clearTimeout(decodeTimeout)
     }
     self.event.trigger('solidityStateUpdating')
-    decodeTimeout = setTimeout(function () {
+    decodeTimeout = setTimeout(function() {
       // necessary due to some states that can crash the debugger
       try {
         self.decode(index)
@@ -46,20 +46,20 @@ class DebuggerSolidityState {
     }, 500)
   }
 
-  reset () {
+  reset() {
     this.stateVariablesByAddresses = {}
   }
 
-  decode (index) {
+  decode(index) {
     const self = this
-    self.traceManager.getCurrentCalledAddressAt(self.stepManager.currentStepIndex, function (error, address) {
+    self.traceManager.getCurrentCalledAddressAt(self.stepManager.currentStepIndex, function(error, address) {
       if (error) {
         return self.event.trigger('solidityState', [{}])
       }
       if (self.stateVariablesByAddresses[address]) {
         return self.extractStateVariables(self.stateVariablesByAddresses[address], address)
       }
-      self.solidityProxy.extractStateVariablesAt(index, function (error, stateVars) {
+      self.solidityProxy.extractStateVariablesAt(index, function(error, stateVars) {
         if (error) {
           return self.event.trigger('solidityState', [{}])
         }
@@ -69,7 +69,7 @@ class DebuggerSolidityState {
     })
   }
 
-  extractStateVariables (stateVars, address) {
+  extractStateVariables(stateVars, address) {
     const self = this
     var storageViewer = new StorageViewer({ stepIndex: self.stepManager.currentStepIndex, tx: self.tx, address: address }, self.storageResolver, self.traceManager)
     stateDecoder.decodeState(stateVars, storageViewer).then((result) => {

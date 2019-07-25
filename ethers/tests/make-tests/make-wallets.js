@@ -1,19 +1,18 @@
-'use strict';
+'use strict'
 
-var fs = require('fs');
-var path = require('path');
+var fs = require('fs')
+var path = require('path')
 
-var utils = require('../utils.js');
+var utils = require('../utils.js')
 
 function prefixAddress(address) {
     if (address.substring(0, 2) !== '0x') {
-        address = '0x' + address;
+        address = '0x' + address
     }
-    return address.toLowerCase();
+    return address.toLowerCase()
 }
 
-
-var Output = [];
+var Output = []
 
 /*
 Output.push({
@@ -39,17 +38,17 @@ var privateKeys = {
 var mnemonics = {
     '0x15db397ed5f682acb22b0afc6c8de4cdfbda7cbc': 'debris glass rich exotic window other film slow expose flight either wealth',
     '0x012363d61bdc53d0290a0f25e9c89f8257550fb8': 'service basket parent alcohol fault similar survey twelve hockey cloud walk panel'
-};
+}
 
-var walletPath = path.join(__dirname, 'test-wallets');
+var walletPath = path.join(__dirname, 'test-wallets')
 fs.readdirSync(walletPath).forEach(function(filename) {
-    var data = require(path.join(walletPath, filename));
+    var data = require(path.join(walletPath, filename))
 
-    var name = filename.substring(0, filename.length - 5).split('-')[1];
+    var name = filename.substring(0, filename.length - 5).split('-')[1]
 
     // The password is the last segment of the filename
-    var password = filename.substring(0, filename.length - 5).split('-');
-    password = password[password.length - 1];
+    var password = filename.substring(0, filename.length - 5).split('-')
+    password = password[password.length - 1]
 
     if (data.ethaddr) {
         Output.push({
@@ -58,9 +57,8 @@ fs.readdirSync(walletPath).forEach(function(filename) {
             json: JSON.stringify(data),
             name: name,
             password: password,
-            privateKey: privateKeys[prefixAddress(data.ethaddr)],
-        });
-
+            privateKey: privateKeys[prefixAddress(data.ethaddr)]
+        })
     } else {
         Output.push({
             type: 'secret-storage',
@@ -69,9 +67,9 @@ fs.readdirSync(walletPath).forEach(function(filename) {
             mnemonic: mnemonics[prefixAddress(data.address)] || '',
             name: name,
             password: password,
-            privateKey: privateKeys[prefixAddress(data.address)],
-        });
+            privateKey: privateKeys[prefixAddress(data.address)]
+        })
     }
-});
+})
 
-utils.saveTests('wallets', Output);
+utils.saveTests('wallets', Output)

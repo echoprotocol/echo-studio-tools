@@ -1,7 +1,7 @@
 'use strict'
 var codeUtils = require('./codeUtils')
 
-function CodeResolver (options) {
+function CodeResolver(options) {
   this.web3 = options.web3
 
   this.bytecodeByAddress = {} // bytes code by contract addesses
@@ -9,13 +9,13 @@ function CodeResolver (options) {
   this.instructionsIndexByBytesOffset = {} // mapping between bytes offset and instructions index.
 }
 
-CodeResolver.prototype.clear = function () {
+CodeResolver.prototype.clear = function() {
   this.bytecodeByAddress = {}
   this.instructionsByAddress = {}
   this.instructionsIndexByBytesOffset = {}
 }
 
-CodeResolver.prototype.resolveCode = function (address, callBack) {
+CodeResolver.prototype.resolveCode = function(address, callBack) {
   var cache = this.getExecutingCodeFromCache(address)
   if (cache) {
     callBack(address, cache)
@@ -23,13 +23,13 @@ CodeResolver.prototype.resolveCode = function (address, callBack) {
   }
 
   var self = this
-  this.loadCode(address, function (code) {
+  this.loadCode(address, function(code) {
     callBack(address, self.cacheExecutingCode(address, code))
   })
 }
 
-CodeResolver.prototype.loadCode = function (address, callback) {
-  this.web3.eth.getCode(address, function (error, result) {
+CodeResolver.prototype.loadCode = function(address, callback) {
+  this.web3.eth.getCode(address, function(error, result) {
     if (error) {
       console.log(error)
     } else {
@@ -38,7 +38,7 @@ CodeResolver.prototype.loadCode = function (address, callback) {
   })
 }
 
-CodeResolver.prototype.cacheExecutingCode = function (address, hexCode) {
+CodeResolver.prototype.cacheExecutingCode = function(address, hexCode) {
   var codes = this.formatCode(hexCode)
   this.bytecodeByAddress[address] = hexCode
   this.instructionsByAddress[address] = codes.code
@@ -46,7 +46,7 @@ CodeResolver.prototype.cacheExecutingCode = function (address, hexCode) {
   return this.getExecutingCodeFromCache(address)
 }
 
-CodeResolver.prototype.formatCode = function (hexCode) {
+CodeResolver.prototype.formatCode = function(hexCode) {
   var code = codeUtils.nameOpCodes(Buffer.from(hexCode.substring(2), 'hex'))
   return {
     code: code[0],
@@ -54,7 +54,7 @@ CodeResolver.prototype.formatCode = function (hexCode) {
   }
 }
 
-CodeResolver.prototype.getExecutingCodeFromCache = function (address) {
+CodeResolver.prototype.getExecutingCodeFromCache = function(address) {
   if (this.instructionsByAddress[address]) {
     return {
       instructions: this.instructionsByAddress[address],
@@ -66,7 +66,7 @@ CodeResolver.prototype.getExecutingCodeFromCache = function (address) {
   }
 }
 
-CodeResolver.prototype.getInstructionIndex = function (address, pc) {
+CodeResolver.prototype.getInstructionIndex = function(address, pc) {
   return this.getExecutingCodeFromCache(address).instructionsIndexByBytesOffset[pc]
 }
 

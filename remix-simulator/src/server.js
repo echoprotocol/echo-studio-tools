@@ -6,11 +6,11 @@ const Provider = require('./provider')
 const log = require('./utils/logs.js')
 
 class Server {
-  constructor (options) {
+  constructor(options) {
     this.provider = new Provider(options)
   }
 
-  start (host, port) {
+  start(host, port) {
     expressWs(app)
 
     app.use(bodyParser.urlencoded({extended: true}))
@@ -30,7 +30,7 @@ class Server {
     })
 
     app.ws('/', (ws, req) => {
-      ws.on('message', function (msg) {
+      ws.on('message', function(msg) {
         this.provider.sendAsync(JSON.parse(msg), (err, jsonResponse) => {
           if (err) {
             return ws.send(JSON.stringify({error: err}))

@@ -28,7 +28,7 @@ var css = csjs`
   }
 `
 
-function Ethdebugger (opts) {
+function Ethdebugger(opts) {
   this.opts = opts || {}
   if (!this.opts.compilationResult) this.opts.compilationResult = () => { return null }
 
@@ -50,22 +50,22 @@ function Ethdebugger (opts) {
   var callTree = new InternalCallTree(this.event, this.traceManager, this.solidityProxy, this.codeManager, { includeLocalVariables: true })
   this.callTree = callTree // TODO: currently used by browser solidity, we should improve the API
 
-  this.event.register('indexChanged', this, function (index) {
+  this.event.register('indexChanged', this, function(index) {
     self.codeManager.resolveStep(index, self.tx)
   })
 
   this.txBrowser = new TxBrowser(this)
-  this.txBrowser.event.register('newTxLoading', this, function () {
+  this.txBrowser.event.register('newTxLoading', this, function() {
     self.unLoad()
   })
-  this.txBrowser.event.register('newTraceRequested', this, function (blockNumber, txIndex, tx) {
+  this.txBrowser.event.register('newTraceRequested', this, function(blockNumber, txIndex, tx) {
     self.startDebugging(blockNumber, txIndex, tx)
   })
-  this.txBrowser.event.register('unloadRequested', this, function (blockNumber, txIndex, tx) {
+  this.txBrowser.event.register('unloadRequested', this, function(blockNumber, txIndex, tx) {
     self.unLoad()
   })
   this.stepManager = new StepManager(this, this.traceManager)
-  this.stepManager.event.register('stepChanged', this, function (stepIndex) {
+  this.stepManager.event.register('stepChanged', this, function(stepIndex) {
     self.stepChanged(stepIndex)
   })
   this.vmDebugger = new VmDebugger(this, this.traceManager, this.codeManager, this.solidityProxy, callTree)
@@ -79,22 +79,22 @@ function Ethdebugger (opts) {
   })
 }
 
-Ethdebugger.prototype.setBreakpointManager = function (breakpointManager) {
+Ethdebugger.prototype.setBreakpointManager = function(breakpointManager) {
   this.breakpointManager = breakpointManager
 }
 
-Ethdebugger.prototype.web3 = function () {
+Ethdebugger.prototype.web3 = function() {
   return global.web3
 }
 
-Ethdebugger.prototype.addProvider = function (type, obj) {
+Ethdebugger.prototype.addProvider = function(type, obj) {
   this.web3Providers.addProvider(type, obj)
   this.event.trigger('providerAdded', [type])
 }
 
-Ethdebugger.prototype.switchProvider = function (type) {
+Ethdebugger.prototype.switchProvider = function(type) {
   var self = this
-  this.web3Providers.get(type, function (error, obj) {
+  this.web3Providers.get(type, function(error, obj) {
     if (error) {
       console.log('provider ' + type + ' not defined')
     } else {
@@ -112,7 +112,7 @@ Ethdebugger.prototype.switchProvider = function (type) {
   })
 }
 
-Ethdebugger.prototype.setCompilationResult = function (compilationResult) {
+Ethdebugger.prototype.setCompilationResult = function(compilationResult) {
   if (compilationResult && compilationResult.sources && compilationResult.contracts) {
     this.solidityProxy.reset(compilationResult)
   } else {
@@ -120,7 +120,7 @@ Ethdebugger.prototype.setCompilationResult = function (compilationResult) {
   }
 }
 
-Ethdebugger.prototype.debug = function (tx) {
+Ethdebugger.prototype.debug = function(tx) {
   this.setCompilationResult(this.opts.compilationResult())
   if (tx instanceof Object) {
     this.txBrowser.load(tx.hash)
@@ -129,7 +129,7 @@ Ethdebugger.prototype.debug = function (tx) {
   }
 }
 
-Ethdebugger.prototype.render = function () {
+Ethdebugger.prototype.render = function() {
   var view = yo`<div>
         <div class="${css.innerShift}">
           ${this.txBrowser.render()}
@@ -144,19 +144,19 @@ Ethdebugger.prototype.render = function () {
   return view
 }
 
-Ethdebugger.prototype.unLoad = function () {
+Ethdebugger.prototype.unLoad = function() {
   this.traceManager.init()
   this.codeManager.clear()
   this.stepManager.reset()
   this.event.trigger('traceUnloaded')
 }
 
-Ethdebugger.prototype.stepChanged = function (stepIndex) {
+Ethdebugger.prototype.stepChanged = function(stepIndex) {
   this.currentStepIndex = stepIndex
   this.event.trigger('indexChanged', [stepIndex])
 }
 
-Ethdebugger.prototype.startDebugging = function (blockNumber, txIndex, tx) {
+Ethdebugger.prototype.startDebugging = function(blockNumber, txIndex, tx) {
   if (this.traceManager.isLoading) {
     return
   }
@@ -166,7 +166,7 @@ Ethdebugger.prototype.startDebugging = function (blockNumber, txIndex, tx) {
   console.log('loading trace...')
   this.tx = tx
   var self = this
-  this.traceManager.resolveTrace(tx, function (error, result) {
+  this.traceManager.resolveTrace(tx, function(error, result) {
     console.log('trace loaded ' + result)
     if (result) {
       self.statusMessage = ''

@@ -6,7 +6,7 @@ var EventManager = remixLib.EventManager
 var yo = require('yo-yo')
 var util = remixLib.util
 
-function StepManager (_parent, _traceManager) {
+function StepManager(_parent, _traceManager) {
   this.event = new EventManager()
   this.parent = _parent
   this.traceManager = _traceManager
@@ -14,8 +14,8 @@ function StepManager (_parent, _traceManager) {
   this.solidityMode = false
 
   var self = this
-  this.parent.event.register('newTraceLoaded', this, function () {
-    self.traceManager.getLength(function (error, length) {
+  this.parent.event.register('newTraceLoaded', this, function() {
+    self.traceManager.getLength(function(error, length) {
       if (error) {
         console.log(error)
       } else {
@@ -28,7 +28,7 @@ function StepManager (_parent, _traceManager) {
   this.slider = new Slider(this.traceManager, (step) => {
     return this.solidityMode ? this.resolveToReducedTrace(step, 0) : step
   })
-  this.slider.event.register('moved', this, function (step) {
+  this.slider.event.register('moved', this, function(step) {
     self.sliderMoved(step)
   })
 
@@ -46,22 +46,22 @@ function StepManager (_parent, _traceManager) {
   })
 
   this.buttonNavigator = new ButtonNavigator(_parent, this.traceManager)
-  this.buttonNavigator.event.register('stepIntoBack', this, function () {
+  this.buttonNavigator.event.register('stepIntoBack', this, function() {
     self.stepIntoBack()
   })
-  this.buttonNavigator.event.register('stepIntoForward', this, function () {
+  this.buttonNavigator.event.register('stepIntoForward', this, function() {
     self.stepIntoForward()
   })
-  this.buttonNavigator.event.register('stepOverBack', this, function () {
+  this.buttonNavigator.event.register('stepOverBack', this, function() {
     self.stepOverBack()
   })
-  this.buttonNavigator.event.register('stepOverForward', this, function () {
+  this.buttonNavigator.event.register('stepOverForward', this, function() {
     self.stepOverForward()
   })
-  this.buttonNavigator.event.register('jumpOut', this, function () {
+  this.buttonNavigator.event.register('jumpOut', this, function() {
     self.jumpOut()
   })
-  this.buttonNavigator.event.register('jumpToException', this, function (exceptionIndex) {
+  this.buttonNavigator.event.register('jumpToException', this, function(exceptionIndex) {
     self.jumpTo(exceptionIndex)
   })
   this.buttonNavigator.event.register('jumpNextBreakpoint', (exceptionIndex) => {
@@ -72,7 +72,7 @@ function StepManager (_parent, _traceManager) {
   })
 }
 
-StepManager.prototype.resolveToReducedTrace = function (value, incr) {
+StepManager.prototype.resolveToReducedTrace = function(value, incr) {
   if (this.parent.callTree.reducedTrace.length) {
     var nextSource = util.findClosestIndex(value, this.parent.callTree.reducedTrace)
     nextSource = nextSource + incr
@@ -86,7 +86,7 @@ StepManager.prototype.resolveToReducedTrace = function (value, incr) {
   return value
 }
 
-StepManager.prototype.render = function () {
+StepManager.prototype.render = function() {
   return (
   yo`<div>
         ${this.slider.render()}
@@ -95,22 +95,22 @@ StepManager.prototype.render = function () {
   )
 }
 
-StepManager.prototype.reset = function () {
+StepManager.prototype.reset = function() {
   this.slider.setValue(0)
   this.currentStepIndex = 0
   this.buttonNavigator.reset()
 }
 
-StepManager.prototype.init = function () {
+StepManager.prototype.init = function() {
   this.slider.setValue(0)
   this.changeState(0)
 }
 
-StepManager.prototype.newTraceAvailable = function () {
+StepManager.prototype.newTraceAvailable = function() {
   this.init()
 }
 
-StepManager.prototype.jumpTo = function (step) {
+StepManager.prototype.jumpTo = function(step) {
   if (!this.traceManager.inRange(step)) {
     return
   }
@@ -118,14 +118,14 @@ StepManager.prototype.jumpTo = function (step) {
   this.changeState(step)
 }
 
-StepManager.prototype.sliderMoved = function (step) {
+StepManager.prototype.sliderMoved = function(step) {
   if (!this.traceManager.inRange(step)) {
     return
   }
   this.changeState(step)
 }
 
-StepManager.prototype.stepIntoForward = function () {
+StepManager.prototype.stepIntoForward = function() {
   if (!this.traceManager.isLoaded()) {
     return
   }
@@ -142,7 +142,7 @@ StepManager.prototype.stepIntoForward = function () {
   this.changeState(step)
 }
 
-StepManager.prototype.stepIntoBack = function () {
+StepManager.prototype.stepIntoBack = function() {
   if (!this.traceManager.isLoaded()) {
     return
   }
@@ -159,7 +159,7 @@ StepManager.prototype.stepIntoBack = function () {
   this.changeState(step)
 }
 
-StepManager.prototype.stepOverForward = function () {
+StepManager.prototype.stepOverForward = function() {
   if (!this.traceManager.isLoaded()) {
     return
   }
@@ -171,7 +171,7 @@ StepManager.prototype.stepOverForward = function () {
   this.changeState(step)
 }
 
-StepManager.prototype.stepOverBack = function () {
+StepManager.prototype.stepOverBack = function() {
   if (!this.traceManager.isLoaded()) {
     return
   }
@@ -183,7 +183,7 @@ StepManager.prototype.stepOverBack = function () {
   this.changeState(step)
 }
 
-StepManager.prototype.jumpOut = function () {
+StepManager.prototype.jumpOut = function() {
   if (!this.traceManager.isLoaded()) {
     return
   }
@@ -195,7 +195,7 @@ StepManager.prototype.jumpOut = function () {
   this.changeState(step)
 }
 
-StepManager.prototype.changeState = function (step) {
+StepManager.prototype.changeState = function(step) {
   this.currentStepIndex = step
   this.buttonNavigator.stepChanged(step)
   this.event.trigger('stepChanged', [step])

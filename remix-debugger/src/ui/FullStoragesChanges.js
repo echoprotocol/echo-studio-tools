@@ -4,7 +4,7 @@ var remixCore = require('remix-core')
 var StorageViewer = remixCore.storage.StorageViewer
 var yo = require('yo-yo')
 
-function FullStoragesChanges (_parent, _traceManager) {
+function FullStoragesChanges(_parent, _traceManager) {
   this.storageResolver = null
   this.parent = _parent
   this.traceManager = _traceManager
@@ -15,7 +15,7 @@ function FullStoragesChanges (_parent, _traceManager) {
   this.init()
 }
 
-FullStoragesChanges.prototype.render = function () {
+FullStoragesChanges.prototype.render = function() {
   var view = yo`<div id='fullstorageschangespanel' >${this.basicPanel.render()}</div>`
   if (!this.view) {
     this.view = view
@@ -23,25 +23,25 @@ FullStoragesChanges.prototype.render = function () {
   return view
 }
 
-FullStoragesChanges.prototype.init = function () {
+FullStoragesChanges.prototype.init = function() {
   var self = this
-  this.parent.event.register('newTraceLoaded', this, function (length) {
+  this.parent.event.register('newTraceLoaded', this, function(length) {
     self.panels = []
-    self.traceManager.getAddresses(function (error, addresses) {
+    self.traceManager.getAddresses(function(error, addresses) {
       if (!error) {
         self.addresses = addresses
         self.basicPanel.update({})
       }
     })
 
-    self.traceManager.getLength(function (error, length) {
+    self.traceManager.getLength(function(error, length) {
       if (!error) {
         self.traceLength = length
       }
     })
   })
 
-  this.parent.event.register('indexChanged', this, function (index) {
+  this.parent.event.register('indexChanged', this, function(index) {
     if (index < 0) return
     if (self.parent.currentStepIndex !== index) return
     if (!self.storageResolver) return
@@ -55,7 +55,7 @@ FullStoragesChanges.prototype.init = function () {
           tx: self.parent.tx,
           address: address
         }, self.storageResolver, self.traceManager)
-        storageViewer.storageRange(function (error, result) {
+        storageViewer.storageRange(function(error, result) {
           if (!error) {
             storageJSON[address] = result
             self.basicPanel.update(storageJSON)

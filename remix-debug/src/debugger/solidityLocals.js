@@ -6,7 +6,7 @@ var StorageViewer = require('../storage/storageViewer')
 
 class DebuggerSolidityLocals {
 
-  constructor (tx, _stepManager, _traceManager, _internalTreeCall) {
+  constructor(tx, _stepManager, _traceManager, _internalTreeCall) {
     this.event = new EventManager()
     this.stepManager = _stepManager
     this.internalTreeCall = _internalTreeCall
@@ -15,7 +15,7 @@ class DebuggerSolidityLocals {
     this.tx = tx
   }
 
-  init (sourceLocation) {
+  init(sourceLocation) {
     const self = this
     var decodeTimeout = null
     if (!this.storageResolver) {
@@ -25,12 +25,12 @@ class DebuggerSolidityLocals {
       window.clearTimeout(decodeTimeout)
     }
     self.event.trigger('solidityLocalsUpdating')
-    decodeTimeout = setTimeout(function () {
+    decodeTimeout = setTimeout(function() {
       self.decode(sourceLocation)
     }, 500)
   }
 
-  decode (sourceLocation) {
+  decode(sourceLocation) {
     const self = this
     self.event.trigger('solidityLocalsMessage', [''])
     self.traceManager.waterfall([

@@ -2,7 +2,7 @@
 var ValueType = require('./ValueType')
 
 class Enum extends ValueType {
-  constructor (enumDef) {
+  constructor(enumDef) {
     var storageBytes = 0
     var length = enumDef.children.length
     while (length > 1) {
@@ -13,7 +13,7 @@ class Enum extends ValueType {
     this.enumDef = enumDef
   }
 
-  decodeValue (value) {
+  decodeValue(value) {
     if (!value) {
       return this.enumDef.children[0].attributes.name
     } else {

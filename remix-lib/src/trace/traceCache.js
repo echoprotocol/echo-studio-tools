@@ -1,11 +1,11 @@
 'use strict'
 var helper = require('../util')
 
-function TraceCache () {
+function TraceCache() {
   this.init()
 }
 
-TraceCache.prototype.init = function () {
+TraceCache.prototype.init = function() {
   // ...Changes contains index in the vmtrace of the corresponding changes
 
   this.returnValues = {}
@@ -22,22 +22,22 @@ TraceCache.prototype.init = function () {
   this.sstore = {} // all sstore occurence in the trace
 }
 
-TraceCache.prototype.pushSteps = function (index, currentCallIndex) {
+TraceCache.prototype.pushSteps = function(index, currentCallIndex) {
   this.steps[index] = currentCallIndex
 }
 
-TraceCache.prototype.pushCallDataChanges = function (value, calldata) {
+TraceCache.prototype.pushCallDataChanges = function(value, calldata) {
   this.callDataChanges.push(value)
   this.callsData[value] = calldata
 }
 
-TraceCache.prototype.pushMemoryChanges = function (value) {
+TraceCache.prototype.pushMemoryChanges = function(value) {
   this.memoryChanges.push(value)
 }
 
 // outOfGas has been removed because gas left logging is apparently made differently
 // in the vm/geth/eth. TODO add the error property (with about the error in all clients)
-TraceCache.prototype.pushCall = function (step, index, address, callStack, reverted) {
+TraceCache.prototype.pushCall = function(step, index, address, callStack, reverted) {
   var validReturnStep = step.op === 'RETURN' || step.op === 'STOP'
   if (validReturnStep || reverted) {
     if (this.currentCall) {
@@ -66,11 +66,11 @@ TraceCache.prototype.pushCall = function (step, index, address, callStack, rever
   }
 }
 
-TraceCache.prototype.pushReturnValue = function (step, value) {
+TraceCache.prototype.pushReturnValue = function(step, value) {
   this.returnValues[step] = value
 }
 
-TraceCache.prototype.pushContractCreationFromMemory = function (index, token, trace, lastMemoryChange) {
+TraceCache.prototype.pushContractCreationFromMemory = function(index, token, trace, lastMemoryChange) {
   var memory = trace[lastMemoryChange].memory
   var stack = trace[index].stack
   var offset = 2 * parseInt(stack[stack.length - 2], 16)
@@ -78,16 +78,16 @@ TraceCache.prototype.pushContractCreationFromMemory = function (index, token, tr
   this.contractCreation[token] = '0x' + memory.join('').substr(offset, size)
 }
 
-TraceCache.prototype.pushContractCreation = function (token, code) {
+TraceCache.prototype.pushContractCreation = function(token, code) {
   this.contractCreation[token] = code
 }
 
-TraceCache.prototype.resetStoreChanges = function (index, address, key, value) {
+TraceCache.prototype.resetStoreChanges = function(index, address, key, value) {
   this.sstore = {}
   this.storageChanges = []
 }
 
-TraceCache.prototype.pushStoreChanges = function (index, address, key, value) {
+TraceCache.prototype.pushStoreChanges = function(index, address, key, value) {
   this.sstore[index] = {
     'address': address,
     'key': key,
@@ -97,7 +97,7 @@ TraceCache.prototype.pushStoreChanges = function (index, address, key, value) {
   this.storageChanges.push(index)
 }
 
-TraceCache.prototype.accumulateStorageChanges = function (index, address, storage) {
+TraceCache.prototype.accumulateStorageChanges = function(index, address, storage) {
   var ret = Object.assign({}, storage)
   for (var k in this.storageChanges) {
     var changesIndex = this.storageChanges[k]

@@ -2,7 +2,7 @@
 var util = require('./util')
 
 class ValueType {
-  constructor (storageSlots, storageBytes, typeName) {
+  constructor(storageSlots, storageBytes, typeName) {
     this.storageSlots = storageSlots
     this.storageBytes = storageBytes
     this.typeName = typeName
@@ -16,7 +16,7 @@ class ValueType {
     * @param {Object} storageResolver  - resolve storage queries
     * @return {Object} - decoded value
     */
-  async decodeFromStorage (location, storageResolver) {
+  async decodeFromStorage(location, storageResolver) {
     try {
       var value = await util.extractHexValue(location, storageResolver, this.storageBytes)
       return {
@@ -40,7 +40,7 @@ class ValueType {
     * @param {String} - memory
     * @return {Object} - decoded value
     */
-  async decodeFromStack (stackDepth, stack, memory) {
+  async decodeFromStack(stackDepth, stack, memory) {
     var value
     if (stackDepth >= stack.length) {
       value = this.decodeValue('')
@@ -60,7 +60,7 @@ class ValueType {
     * @return {String} - memory
     * @return {Object} - decoded value
     */
-  decodeFromMemory (offset, memory) {
+  decodeFromMemory(offset, memory) {
     var value = memory.substr(2 * offset, 64)
     return {
       value: this.decodeValue(value),

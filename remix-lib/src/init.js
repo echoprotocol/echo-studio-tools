@@ -2,7 +2,7 @@
 var Web3 = require('web3')
 
 module.exports = {
-  loadWeb3: function (url) {
+  loadWeb3: function(url) {
     if (!url) url = 'http://localhost:8545'
     var web3 = new Web3()
     web3.setProvider(new web3.providers.HttpProvider(url))
@@ -10,22 +10,22 @@ module.exports = {
     return web3
   },
 
-  extendWeb3: function (web3) {
+  extendWeb3: function(web3) {
     this.extend(web3)
   },
 
-  setProvider: function (web3, url) {
+  setProvider: function(web3, url) {
     web3.setProvider(new web3.providers.HttpProvider(url))
   },
 
-  web3DebugNode: function (network) {
+  web3DebugNode: function(network) {
     if (web3DebugNodes[network]) {
       return this.loadWeb3(web3DebugNodes[network])
     }
     return null
   },
 
-  extend: function (web3) {
+  extend: function(web3) {
     if (!web3._extend) {
       return
     }

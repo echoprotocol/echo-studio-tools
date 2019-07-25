@@ -1,12 +1,12 @@
 'use strict'
 var traceHelper = require('../helpers/traceHelper')
 
-function TraceAnalyser (_cache) {
+function TraceAnalyser(_cache) {
   this.traceCache = _cache
   this.trace = null
 }
 
-TraceAnalyser.prototype.analyse = function (trace, tx, callback) {
+TraceAnalyser.prototype.analyse = function(trace, tx, callback) {
   this.trace = trace
   this.traceCache.pushStoreChanges(0, tx.to)
   var context = {
@@ -30,7 +30,7 @@ TraceAnalyser.prototype.analyse = function (trace, tx, callback) {
   callback(null, true)
 }
 
-TraceAnalyser.prototype.buildReturnValues = function (index, step) {
+TraceAnalyser.prototype.buildReturnValues = function(index, step) {
   if (traceHelper.isReturnInstruction(step)) {
     var offset = 2 * parseInt(step.stack[step.stack.length - 1], 16)
     var size = 2 * parseInt(step.stack[step.stack.length - 2], 16)
@@ -39,7 +39,7 @@ TraceAnalyser.prototype.buildReturnValues = function (index, step) {
   }
 }
 
-TraceAnalyser.prototype.buildCalldata = function (index, step, tx, newContext) {
+TraceAnalyser.prototype.buildCalldata = function(index, step, tx, newContext) {
   var calldata = ''
   if (index === 0) {
     calldata = tx.input
@@ -65,13 +65,13 @@ TraceAnalyser.prototype.buildCalldata = function (index, step, tx, newContext) {
   }
 }
 
-TraceAnalyser.prototype.buildMemory = function (index, step) {
+TraceAnalyser.prototype.buildMemory = function(index, step) {
   if (step.memory) {
     this.traceCache.pushMemoryChanges(index)
   }
 }
 
-TraceAnalyser.prototype.buildStorage = function (index, step, context) {
+TraceAnalyser.prototype.buildStorage = function(index, step, context) {
   if (traceHelper.newContextStorage(step) && !traceHelper.isCallToPrecompiledContract(index, this.trace)) {
     var calledAddress = traceHelper.resolveCalledAddress(index, this.trace)
     if (calledAddress) {
@@ -92,7 +92,7 @@ TraceAnalyser.prototype.buildStorage = function (index, step, context) {
   return context
 }
 
-TraceAnalyser.prototype.buildDepth = function (index, step, tx, callStack, context) {
+TraceAnalyser.prototype.buildDepth = function(index, step, tx, callStack, context) {
   if (traceHelper.isCallInstruction(step) && !traceHelper.isCallToPrecompiledContract(index, this.trace)) {
     var newAddress
     if (traceHelper.isCreateInstruction(step)) {

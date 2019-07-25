@@ -4,14 +4,14 @@ var util = require('./util')
 var ethutil = require('ethereumjs-util')
 
 class Mapping extends RefType {
-  constructor (underlyingTypes, location, fullType) {
+  constructor(underlyingTypes, location, fullType) {
     super(1, 32, fullType, 'storage')
     this.keyType = underlyingTypes.keyType
     this.valueType = underlyingTypes.valueType
     this.initialDecodedState = null
   }
 
-  async decodeFromStorage (location, storageResolver) {
+  async decodeFromStorage(location, storageResolver) {
     var corrections = this.valueType.members ? this.valueType.members.map((value) => { return value.storagelocation }) : []
     if (!this.initialDecodedState) { // cache the decoded initial storage
       var mappingsInitialPreimages
@@ -34,7 +34,7 @@ class Mapping extends RefType {
     }
   }
 
-  decodeFromMemoryInternal (offset, memory) {
+  decodeFromMemoryInternal(offset, memory) {
     // mappings can only exist in storage and not in memory
     // so this should never be called
     return {
@@ -44,7 +44,7 @@ class Mapping extends RefType {
     }
   }
 
-  async decodeMappingsLocation (preimages, location, storageResolver) {
+  async decodeMappingsLocation(preimages, location, storageResolver) {
     var mapSlot = util.normalizeHex(ethutil.bufferToHex(location.slot))
     if (!preimages[mapSlot]) {
       return {}
@@ -63,7 +63,7 @@ class Mapping extends RefType {
   }
 }
 
-function getMappingLocation (key, position) {
+function getMappingLocation(key, position) {
   // mapping storage location decribed at http://solidity.readthedocs.io/en/develop/miscellaneous.html#layout-of-state-variables-in-storage
   // > the value corresponding to a mapping key k is located at keccak256(k . p) where . is concatenation.
 
@@ -78,7 +78,7 @@ function getMappingLocation (key, position) {
   return mappingStorageLocation
 }
 
-function concatTypedArrays (a, b) { // a, b TypedArray of same type
+function concatTypedArrays(a, b) { // a, b TypedArray of same type
   let c = new (a.constructor)(a.length + b.length)
   c.set(a, 0)
   c.set(b, a.length)

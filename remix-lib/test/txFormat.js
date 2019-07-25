@@ -9,7 +9,7 @@ var executionContext = require('../src/execution/execution-context')
 var solidityVersion = 'v0.5.4+commit.9549d8ff'
 
 /* tape *********************************************************** */
-tape('load compiler ' + solidityVersion, function (t) {
+tape('load compiler ' + solidityVersion, function(t) {
   compiler.loadRemoteVersion(solidityVersion, (error, solcSnapshot) => {
     if (error) console.log(error)
     console.warn('testing *txFormat* against', solidityVersion)
@@ -19,13 +19,13 @@ tape('load compiler ' + solidityVersion, function (t) {
 })
 
 var context
-tape('ContractParameters - (TxFormat.buildData) - format input parameters', function (t) {
+tape('ContractParameters - (TxFormat.buildData) - format input parameters', function(t) {
   var output = compiler.compile(compilerInput(uintContract))
   output = JSON.parse(output)
   var contract = output.contracts['test.sol']['uintContractTest']
   context = { output, contract }
 
-  t.test('(TxFormat.buildData)', function (st) {
+  t.test('(TxFormat.buildData)', function(st) {
     st.plan(3)
     testWithInput(st, '123123, "0xf7a10e525d4b168f45f74db1b61f63d3e7619ea8", "34"', '000000000000000000000000000000000000000000000000000000000001e0f3000000000000000000000000f7a10e525d4b168f45f74db1b61f63d3e7619ea80000000000000000000000000000000000000000000000000000000000000022')
     testWithInput(st, '"123123" , 0xf7a10e525d4b168f45f74db1b61f63d3e7619ea8,   654   ', '000000000000000000000000000000000000000000000000000000000001e0f3000000000000000000000000f7a10e525d4b168f45f74db1b61f63d3e7619ea8000000000000000000000000000000000000000000000000000000000000028e')
@@ -34,7 +34,7 @@ tape('ContractParameters - (TxFormat.buildData) - format input parameters', func
   })
 })
 
-function testWithInput (st, params, expected) {
+function testWithInput(st, params, expected) {
   txFormat.buildData('uintContractTest', context.contract, context.output.contracts, true, context.contract.abi[0], params, (error, data) => {
     if (error) { return st.fails(error) }
     console.log(data)
@@ -48,7 +48,7 @@ function testWithInput (st, params, expected) {
 
 /* tape *********************************************************** */
 
-tape('ContractParameters - (TxFormat.buildData) - link Libraries', function (t) {
+tape('ContractParameters - (TxFormat.buildData) - link Libraries', function(t) {
   executionContext.setContext('vm')
   var compileData = compiler.compile(compilerInput(deploySimpleLib))
 
@@ -65,7 +65,7 @@ tape('ContractParameters - (TxFormat.buildData) - link Libraries', function (t) 
     })
   } // fake
 
-  t.test('(TxFormat.buildData and link library (standard way))', function (st) {
+  t.test('(TxFormat.buildData and link library (standard way))', function(st) {
     st.plan(6)
     var output = JSON.parse(compileData)
     var contract = output.contracts['test.sol']['testContractLinkLibrary']
@@ -73,7 +73,7 @@ tape('ContractParameters - (TxFormat.buildData) - link Libraries', function (t) 
     testLinkLibrary(st, fakeDeployedContracts, callbackDeployLibraries)
   })
 
-  t.test('(TxFormat.encodeConstructorCallAndLinkLibraries and link library (standard way))', function (st) {
+  t.test('(TxFormat.encodeConstructorCallAndLinkLibraries and link library (standard way))', function(st) {
     st.plan(12)
     var output = JSON.parse(compileData)
     var contract = output.contracts['test.sol']['testContractLinkLibrary']
@@ -82,7 +82,7 @@ tape('ContractParameters - (TxFormat.buildData) - link Libraries', function (t) 
   })
 })
 
-function testLinkLibrary (st, fakeDeployedContracts, callbackDeployLibraries) {
+function testLinkLibrary(st, fakeDeployedContracts, callbackDeployLibraries) {
   var deployMsg = ['creation of library test.sol:lib1 pending...',
   'creation of library test.sol:lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2_lib2 pending...']
   txFormat.buildData('testContractLinkLibrary', context.contract, context.output.contracts, true, context.contract.abi[0], '', (error, data) => {
@@ -102,7 +102,7 @@ function testLinkLibrary (st, fakeDeployedContracts, callbackDeployLibraries) {
   }, callbackDeployLibraries)
 }
 
-function testLinkLibrary2 (st, callbackDeployLibraries) {
+function testLinkLibrary2(st, callbackDeployLibraries) {
   var librariesReference = {
     'test.sol': {
       'lib1': '0xf7a10e525d4b168f45f74db1b61f63d3e7619e11',
@@ -146,14 +146,14 @@ function testLinkLibrary2 (st, callbackDeployLibraries) {
 
 /* tape *********************************************************** */
 
-tape('EncodeParameter', function (t) {
-  t.test('(TxFormat.encodeFunctionCall)', function (st) {
+tape('EncodeParameter', function(t) {
+  t.test('(TxFormat.encodeFunctionCall)', function(st) {
     st.plan(1)
     encodeFunctionCallTest(st)
   })
 })
 
-function encodeFunctionCallTest (st) {
+function encodeFunctionCallTest(st) {
   var output = compiler.compile(compilerInput(encodeFunctionCall))
   output = JSON.parse(output)
   var contract = output.contracts['test.sol']['testContractLinkLibrary']
@@ -165,8 +165,8 @@ function encodeFunctionCallTest (st) {
 
 /* *********************************************************** */
 
-tape('test fallback function', function (t) {
-  t.test('(fallback)', function (st) {
+tape('test fallback function', function(t) {
+  t.test('(fallback)', function(st) {
     st.plan(2)
     var output = compiler.compile(compilerInput(fallbackFunction))
     output = JSON.parse(output)
@@ -176,14 +176,14 @@ tape('test fallback function', function (t) {
   })
 })
 
-tape('test abiEncoderV2', function (t) {
+tape('test abiEncoderV2', function(t) {
   var functionId = '0x56d89238'
   var encodedData = '0x000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000170000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000042ed123b0bd8203c2700000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000090746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f746573745f737472696e675f00000000000000000000000000000000'
   var value1 = '1'
   var value2 = '1234567890123456789543'
   var value3 = 'test_string_test_string_test_string_test_string_test_string_test_string_test_string_test_string_test_string_test_string_test_string_test_string_'
   var decodedData = `[${value1}, ${value2}, "${value3}"], 23`
-  t.test('(abiEncoderV2)', function (st) {
+  t.test('(abiEncoderV2)', function(st) {
     st.plan(2)
     var output = compiler.compile(compilerInput(abiEncoderV2))
     output = JSON.parse(output)
@@ -198,8 +198,8 @@ tape('test abiEncoderV2', function (t) {
   })
 })
 
-tape('test abiEncoderV2 array of tuple', function (t) {
-  t.test('(abiEncoderV2)', function (st) {
+tape('test abiEncoderV2 array of tuple', function(t) {
+  t.test('(abiEncoderV2)', function(st) {
     /*
     {
 	    "685e37ad": "addStructs((uint256,string))",

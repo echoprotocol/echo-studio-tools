@@ -3,9 +3,9 @@ var init = require('./init')
 var sauce = require('./sauce')
 
 module.exports = {
-  beforeEach: function (browser, done) {
+  beforeEach: function(browser, done) {
     try {
-      init(browser, function () {
+      init(browser, function() {
         done()
       })
     } catch (e) {
@@ -15,7 +15,7 @@ module.exports = {
     }
   },
 
-  'vmdebugger': function (browser) {
+  'vmdebugger': function(browser) {
     loadTraceNotFound(browser)
     .click('#unload')
     loadTrace(browser)
@@ -33,15 +33,15 @@ module.exports = {
   tearDown: sauce
 }
 
-function loadTraceNotFound (browser) {
+function loadTraceNotFound(browser) {
   browser
     .clearValue('#txinput')
     .setValue('#txinput', '0x20ef65b8b186ca942zcccd634f37074dde49b541c27994fc7596740ef44cfd51')
     .click('#load')
     .click('#txinfo .title')
-    .execute(function () {
+    .execute(function() {
       return document.querySelector('#txinfo .dropdownpanel .dropdownrawcontent').innerHTML
-    }, [], function (result) {
+    }, [], function(result) {
       console.log(result.value)
       if (result.value.indexOf('not found') === -1) {
         browser.assert.fail(' txinput panel does not contain <not found> ', 'info about error', '')
@@ -50,15 +50,15 @@ function loadTraceNotFound (browser) {
   return browser
 }
 
-function loadTrace (browser) {
+function loadTrace(browser) {
   browser
     .clearValue('#txinput')
     .setValue('#txinput', '0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51')
     .click('#load')
     .click('#txinfo .title')
-    .execute(function () {
+    .execute(function() {
       return document.querySelector('#txinfo .dropdownpanel .dropdownrawcontent').innerHTML
-    }, [], function (result) {
+    }, [], function(result) {
       if (result.value.indexOf('0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51') === -1) {
         browser.assert.fail(' txinput panel does not contain 0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51 ', 'info about error', '')
       }
@@ -68,7 +68,7 @@ function loadTrace (browser) {
   return browser
 }
 
-function panels (browser) {
+function panels(browser) {
   browser
     .clearValue('#txinput')
     .setValue('#txinput', '0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51')
@@ -91,7 +91,7 @@ function panels (browser) {
   return browser
 }
 
-function slider (browser) {
+function slider(browser) {
   browser
     .clearValue('#txinput')
     .setValue('#txinput', '0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51')
@@ -120,7 +120,7 @@ function slider (browser) {
   return browser
 }
 
-function stepping (browser) {
+function stepping(browser) {
   browser
     .clearValue('#txinput')
     .setValue('#txinput', '0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51')
@@ -156,7 +156,7 @@ function stepping (browser) {
   return browser
 }
 
-function stepdetail (browser) {
+function stepdetail(browser) {
   browser
     .clearValue('#txinput')
     .setValue('#txinput', '0x20ef65b8b186ca942fcccd634f37074dde49b541c27994fc7596740ef44cfd51')

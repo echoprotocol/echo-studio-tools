@@ -16,7 +16,7 @@ var css = csjs`
     max-height: 250px;
   }
 `
-function CodeListView (_parent, _codeManager) {
+function CodeListView(_parent, _codeManager) {
   this.event = new EventManager()
   this.parent = _parent
   this.codeManager = _codeManager
@@ -34,19 +34,19 @@ function CodeListView (_parent, _codeManager) {
   this.init()
 }
 
-CodeListView.prototype.render = function () {
+CodeListView.prototype.render = function() {
   return yo`<div id='asmcodes' >${this.basicPanel.render({height: style.instructionsList.height})}</div>`
 }
 
-CodeListView.prototype.init = function () {
+CodeListView.prototype.init = function() {
   var self = this
   this.codeManager.event.register('changed', this, this.changed)
-  this.parent.event.register('traceUnloaded', this, function () {
+  this.parent.event.register('traceUnloaded', this, function() {
     self.changed([], '', -1)
   })
 }
 
-CodeListView.prototype.indexChanged = function (index) {
+CodeListView.prototype.indexChanged = function(index) {
   if (index >= 0) {
     if (this.itemSelected) {
       this.itemSelected.removeAttribute('selected')
@@ -65,7 +65,7 @@ CodeListView.prototype.indexChanged = function (index) {
   }
 }
 
-CodeListView.prototype.changed = function (code, address, index) {
+CodeListView.prototype.changed = function(code, address, index) {
   if (this.address !== address) {
     this.code = code
     this.address = address
@@ -75,9 +75,9 @@ CodeListView.prototype.changed = function (code, address, index) {
   this.indexChanged(index)
 }
 
-CodeListView.prototype.renderAssemblyItems = function () {
+CodeListView.prototype.renderAssemblyItems = function() {
   if (this.code) {
-    var codeView = this.code.map(function (item, i) {
+    var codeView = this.code.map(function(item, i) {
       return yo`<div key=${i} value=${i}><span>${item}</span></div>`
     })
     return yo`<div class=${css.instructions} id='asmitems' ref='itemsList'>

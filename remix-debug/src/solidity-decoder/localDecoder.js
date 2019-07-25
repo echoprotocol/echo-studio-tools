@@ -1,6 +1,6 @@
 'use strict'
 
-async function solidityLocals (vmtraceIndex, internalTreeCall, stack, memory, storageResolver, currentSourceLocation) {
+async function solidityLocals(vmtraceIndex, internalTreeCall, stack, memory, storageResolver, currentSourceLocation) {
   var scope = internalTreeCall.findScope(vmtraceIndex)
   if (!scope) {
     var error = { 'message': 'Can\'t display locals. reason: compilation result might not have been provided' }
@@ -28,7 +28,7 @@ async function solidityLocals (vmtraceIndex, internalTreeCall, stack, memory, st
   return locals
 }
 
-function formatMemory (memory) {
+function formatMemory(memory) {
   if (memory instanceof Array) {
     memory = memory.join('').replace(/0x/g, '')
   }

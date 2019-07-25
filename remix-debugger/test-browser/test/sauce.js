@@ -1,6 +1,6 @@
 const https = require('https')
 
-module.exports = function sauce (callback) {
+module.exports = function sauce(callback) {
   const currentTest = this.client.currentTest
   const username = this.client.options.username
   const sessionId = this.client.capabilities['webdriver.remote.sessionid']
@@ -23,13 +23,13 @@ module.exports = function sauce (callback) {
 
   const requestPath = `/rest/v1/${username}/jobs/${sessionId}`
 
-  function responseCallback (res) {
+  function responseCallback(res) {
     res.setEncoding('utf8')
     console.log('Response: ', res.statusCode, JSON.stringify(res.headers))
-    res.on('data', function onData (chunk) {
+    res.on('data', function onData(chunk) {
       console.log('BODY: ' + chunk)
     })
-    res.on('end', function onEnd () {
+    res.on('end', function onEnd() {
       console.info('Finished updating saucelabs')
       callback()
     })
@@ -49,7 +49,7 @@ module.exports = function sauce (callback) {
       }
     }, responseCallback)
 
-    req.on('error', function onError (e) {
+    req.on('error', function onError(e) {
       console.log('problem with request: ' + e.message)
     })
     req.write(data)

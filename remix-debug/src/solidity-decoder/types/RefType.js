@@ -2,7 +2,7 @@
 var util = require('./util')
 
 class RefType {
-  constructor (storageSlots, storageBytes, typeName, location) {
+  constructor(storageSlots, storageBytes, typeName, location) {
     this.location = location
     this.storageSlots = storageSlots
     this.storageBytes = storageBytes
@@ -19,7 +19,7 @@ class RefType {
     * @param {Object} - storageResolver
     * @return {Object} decoded value
     */
-  async decodeFromStack (stackDepth, stack, memory, storageResolver) {
+  async decodeFromStack(stackDepth, stack, memory, storageResolver) {
     if (stack.length - 1 < stackDepth) {
       return {
         error: '<decoding failed - stack underflow ' + stackDepth + '>',
@@ -56,7 +56,7 @@ class RefType {
     * @param {String} memory - memory
     * @return {Object} decoded value
     */
-  decodeFromMemory (offset, memory) {
+  decodeFromMemory(offset, memory) {
     offset = memory.substr(2 * offset, 64)
     offset = parseInt(offset, 16)
     return this.decodeFromMemoryInternal(offset, memory)
@@ -67,7 +67,7 @@ class RefType {
     *
     * @return {Bool} - return true if the type is defined in the storage
     */
-  isInStorage () {
+  isInStorage() {
     return this.location.indexOf('storage') === 0
   }
 
@@ -76,7 +76,7 @@ class RefType {
     *
     * @return {Bool} - return true if the type is defined in the memory
     */
-  isInMemory () {
+  isInMemory() {
     return this.location.indexOf('memory') === 0
   }
 }

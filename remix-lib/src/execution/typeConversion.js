@@ -14,7 +14,7 @@ module.exports = {
   stringify: stringify
 }
 
-function stringify (v) {
+function stringify(v) {
   try {
     if (v instanceof Array) {
       var ret = []

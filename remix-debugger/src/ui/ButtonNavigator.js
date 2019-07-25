@@ -36,7 +36,7 @@ var css = csjs`
   }
 `
 
-function ButtonNavigator (_parent, _traceManager) {
+function ButtonNavigator(_parent, _traceManager) {
   this.event = new EventManager()
   this.intoBackDisabled = true
   this.overBackDisabled = true
@@ -89,23 +89,23 @@ function ButtonNavigator (_parent, _traceManager) {
 
 module.exports = ButtonNavigator
 
-ButtonNavigator.prototype.render = function () {
+ButtonNavigator.prototype.render = function() {
   var self = this
   var view = yo`<div class="${css.buttons}">
     <div class="${css.stepButtons}">
-      <button id='overback' title='Step over back' class='${css.navigator} ${css.stepButton} fa fa-reply' onclick=${function () { self.event.trigger('stepOverBack') }} disabled=${this.overBackDisabled} ></button>
-      <button id='intoback' title='Step back' class='${css.navigator} ${css.stepButton} fa fa-level-up' onclick=${function () { self.event.trigger('stepIntoBack') }} disabled=${this.intoBackDisabled} ></button>
-      <button id='intoforward' title='Step into'  class='${css.navigator} ${css.stepButton} fa fa-level-down' onclick=${function () { self.event.trigger('stepIntoForward') }} disabled=${this.intoForwardDisabled} ></button>
-      <button id='overforward' title='Step over forward' class='${css.navigator} ${css.stepButton} fa fa-share' onclick=${function () { self.event.trigger('stepOverForward') }} disabled=${this.overForwardDisabled} ></button>
+      <button id='overback' title='Step over back' class='${css.navigator} ${css.stepButton} fa fa-reply' onclick=${function() { self.event.trigger('stepOverBack') }} disabled=${this.overBackDisabled} ></button>
+      <button id='intoback' title='Step back' class='${css.navigator} ${css.stepButton} fa fa-level-up' onclick=${function() { self.event.trigger('stepIntoBack') }} disabled=${this.intoBackDisabled} ></button>
+      <button id='intoforward' title='Step into'  class='${css.navigator} ${css.stepButton} fa fa-level-down' onclick=${function() { self.event.trigger('stepIntoForward') }} disabled=${this.intoForwardDisabled} ></button>
+      <button id='overforward' title='Step over forward' class='${css.navigator} ${css.stepButton} fa fa-share' onclick=${function() { self.event.trigger('stepOverForward') }} disabled=${this.overForwardDisabled} ></button>
     </div>
 
     <div class="${css.jumpButtons}">
-      <button id='jumppreviousbreakpoint' title='Jump to the previous breakpoint' class='${css.navigator} ${css.jumpButton} fa fa-step-backward' onclick=${function () { self.event.trigger('jumpPreviousBreakpoint') }} disabled=${this.jumpPreviousBreakpointDisabled} ></button>
-      <button id='jumpout' title='Jump out' class='${css.navigator} ${css.jumpButton} fa fa-eject' onclick=${function () { self.event.trigger('jumpOut') }} disabled=${this.jumpOutDisabled} ></button>
-      <button id='jumpnextbreakpoint' title='Jump to the next breakpoint' class='${css.navigator} ${css.jumpButton} fa fa-step-forward' onclick=${function () { self.event.trigger('jumpNextBreakpoint') }} disabled=${this.jumpNextBreakpointDisabled} ></button>
+      <button id='jumppreviousbreakpoint' title='Jump to the previous breakpoint' class='${css.navigator} ${css.jumpButton} fa fa-step-backward' onclick=${function() { self.event.trigger('jumpPreviousBreakpoint') }} disabled=${this.jumpPreviousBreakpointDisabled} ></button>
+      <button id='jumpout' title='Jump out' class='${css.navigator} ${css.jumpButton} fa fa-eject' onclick=${function() { self.event.trigger('jumpOut') }} disabled=${this.jumpOutDisabled} ></button>
+      <button id='jumpnextbreakpoint' title='Jump to the next breakpoint' class='${css.navigator} ${css.jumpButton} fa fa-step-forward' onclick=${function() { self.event.trigger('jumpNextBreakpoint') }} disabled=${this.jumpNextBreakpointDisabled} ></button>
     </div>
     <div id='reverted' style="display:none">
-      <button id='jumptoexception' title='Jump to exception' class='${css.navigator} ${css.button} fa fa-exclamation-triangle' onclick=${function () { self.event.trigger('jumpToException', [self.revertionPoint]) }} disabled=${this.jumpOutDisabled} >
+      <button id='jumptoexception' title='Jump to exception' class='${css.navigator} ${css.button} fa fa-exclamation-triangle' onclick=${function() { self.event.trigger('jumpToException', [self.revertionPoint]) }} disabled=${this.jumpOutDisabled} >
       </button>
       <span>State changes made during this call will be reverted.</span>
       <span id='outofgas' style="display:none">This call will run out of gas.</span>
@@ -118,7 +118,7 @@ ButtonNavigator.prototype.render = function () {
   return view
 }
 
-ButtonNavigator.prototype.reset = function () {
+ButtonNavigator.prototype.reset = function() {
   this.intoBackDisabled = true
   this.overBackDisabled = true
   this.intoForwardDisabled = true
@@ -129,7 +129,7 @@ ButtonNavigator.prototype.reset = function () {
   resetWarning(this)
 }
 
-ButtonNavigator.prototype.stepChanged = function (step) {
+ButtonNavigator.prototype.stepChanged = function(step) {
   this.intoBackDisabled = step <= 0
   this.overBackDisabled = step <= 0
   if (!this.traceManager) {
@@ -137,7 +137,7 @@ ButtonNavigator.prototype.stepChanged = function (step) {
     this.overForwardDisabled = true
   } else {
     var self = this
-    this.traceManager.getLength(function (error, length) {
+    this.traceManager.getLength(function(error, length) {
       if (error) {
         self.reset()
         console.log(error)
@@ -155,7 +155,7 @@ ButtonNavigator.prototype.stepChanged = function (step) {
   this.updateAll()
 }
 
-ButtonNavigator.prototype.updateAll = function () {
+ButtonNavigator.prototype.updateAll = function() {
   this.updateDisabled('intoback', this.intoBackDisabled)
   this.updateDisabled('overback', this.overBackDisabled)
   this.updateDisabled('overforward', this.overForwardDisabled)
@@ -166,7 +166,7 @@ ButtonNavigator.prototype.updateAll = function () {
   this.updateDisabled('jumppreviousbreakpoint', this.jumpPreviousBreakpointDisabled)
 }
 
-ButtonNavigator.prototype.updateDisabled = function (id, disabled) {
+ButtonNavigator.prototype.updateDisabled = function(id, disabled) {
   if (disabled) {
     document.getElementById(id).setAttribute('disabled', true)
   } else {
@@ -174,7 +174,7 @@ ButtonNavigator.prototype.updateDisabled = function (id, disabled) {
   }
 }
 
-function resetWarning (self) {
+function resetWarning(self) {
   self.view.querySelector('#reverted #outofgas').style.display = 'none'
   self.view.querySelector('#reverted #parenthasthrown').style.display = 'none'
   self.view.querySelector('#reverted').style.display = 'none'

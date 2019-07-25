@@ -12,7 +12,7 @@ if (typeof (window) !== 'undefined') {
   window.remix = modules()
 }
 
-function modules () {
+function modules() {
   return {
     ui: {
       Debugger: Debugger,

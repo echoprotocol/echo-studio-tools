@@ -53,7 +53,7 @@ var css = csjs`
   }
 `
 
-function DropdownPanel (_name, _opts) {
+function DropdownPanel(_name, _opts) {
   this.event = new EventManager()
   if (!_opts) {
     _opts = {}
@@ -67,7 +67,7 @@ function DropdownPanel (_name, _opts) {
   this.view
 }
 
-DropdownPanel.prototype.setMessage = function (message) {
+DropdownPanel.prototype.setMessage = function(message) {
   if (this.view) {
     this.view.querySelector('.dropdownpanel .dropdownrawcontent').style.display = 'none'
     this.view.querySelector('.dropdownpanel .dropdowncontent').style.display = 'none'
@@ -76,7 +76,7 @@ DropdownPanel.prototype.setMessage = function (message) {
   }
 }
 
-DropdownPanel.prototype.setLoading = function () {
+DropdownPanel.prototype.setLoading = function() {
   if (this.view) {
     this.view.querySelector('.dropdownpanel .dropdownrawcontent').style.display = 'none'
     this.view.querySelector('.dropdownpanel .dropdowncontent').style.display = 'none'
@@ -85,13 +85,13 @@ DropdownPanel.prototype.setLoading = function () {
   }
 }
 
-DropdownPanel.prototype.setUpdating = function () {
+DropdownPanel.prototype.setUpdating = function() {
   if (this.view) {
     this.view.querySelector('.dropdownpanel .dropdowncontent').style.color = styles.appProperties.greyedText_color
   }
 }
 
-DropdownPanel.prototype.update = function (_data, _header) {
+DropdownPanel.prototype.update = function(_data, _header) {
   if (this.view) {
     this.view.querySelector('.dropdownpanel .fa-refresh').style.display = 'none'
     this.view.querySelector('.dropdownpanel .dropdowncontent').style.display = 'block'
@@ -106,14 +106,14 @@ DropdownPanel.prototype.update = function (_data, _header) {
   }
 }
 
-DropdownPanel.prototype.setContent = function (node) {
+DropdownPanel.prototype.setContent = function(node) {
   if (this.view) {
     var parent = this.view.querySelector('.dropdownpanel div.dropdowncontent')
     parent.replaceChild(node, parent.firstElementChild)
   }
 }
 
-DropdownPanel.prototype.render = function (overridestyle) {
+DropdownPanel.prototype.render = function(overridestyle) {
   var content = yo`<div>Empty</div>`
   if (this.json) {
     content = this.treeView.render({})
@@ -134,9 +134,9 @@ DropdownPanel.prototype.render = function (overridestyle) {
       }
     </style>
     <div class="${css.title} title">
-      <div class="${css.icon} fa fa-caret-right" onclick=${function () { self.toggle() }} ></div>
-      <div class="${css.name}" onclick=${function () { self.toggle() }} >${this.name}</div><span class="${css.nameDetail}" onclick=${function () { self.toggle() }} ></span>
-      <div onclick=${function () { self.copyClipboard() }} title='raw' class="${css.eyeButton} btn fa fa-clipboard"></div>
+      <div class="${css.icon} fa fa-caret-right" onclick=${function() { self.toggle() }} ></div>
+      <div class="${css.name}" onclick=${function() { self.toggle() }} >${this.name}</div><span class="${css.nameDetail}" onclick=${function() { self.toggle() }} ></span>
+      <div onclick=${function() { self.copyClipboard() }} title='raw' class="${css.eyeButton} btn fa fa-clipboard"></div>
     </div>
     <div class='dropdownpanel' style='display:none'>
       <i class="${css.refresh} fa fa-refresh" aria-hidden="true"></i>
@@ -151,12 +151,12 @@ DropdownPanel.prototype.render = function (overridestyle) {
   return view
 }
 
-DropdownPanel.prototype.copyClipboard = function () {
+DropdownPanel.prototype.copyClipboard = function() {
   var content = this.view.querySelector('.dropdownpanel .dropdownrawcontent')
   if (content) copy(content.innerText ? content.innerText : content.textContent)
 }
 
-DropdownPanel.prototype.toggle = function () {
+DropdownPanel.prototype.toggle = function() {
   var el = this.view.querySelector('.dropdownpanel')
   var caret = this.view.querySelector('.title').firstElementChild
   if (el.style.display === '') {
@@ -170,7 +170,7 @@ DropdownPanel.prototype.toggle = function () {
   }
 }
 
-DropdownPanel.prototype.hide = function () {
+DropdownPanel.prototype.hide = function() {
   if (this.view) {
     var caret = this.view.querySelector('.title').firstElementChild
     var el = this.view.querySelector('.dropdownpanel')
@@ -180,7 +180,7 @@ DropdownPanel.prototype.hide = function () {
   }
 }
 
-DropdownPanel.prototype.show = function () {
+DropdownPanel.prototype.show = function() {
   if (this.view) {
     var caret = this.view.querySelector('.title').firstElementChild
     var el = this.view.querySelector('.dropdownpanel')
@@ -190,7 +190,7 @@ DropdownPanel.prototype.show = function () {
   }
 }
 
-DropdownPanel.prototype.message = function (message) {
+DropdownPanel.prototype.message = function(message) {
   if (this.view) {
     var mes = this.view.querySelector('.dropdownpanel .message')
     mes.innerText = message

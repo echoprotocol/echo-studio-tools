@@ -2,8 +2,8 @@
 var tape = require('tape')
 var util = require('../src/util')
 
-tape('Util', function (t) {
-  t.test('lowerbound', function (st) {
+tape('Util', function(t) {
+  t.test('lowerbound', function(st) {
     st.plan(7)
     var array = [2, 5, 8, 9, 45, 56, 78]
     var lowerBound = util.findLowerBound(10, array)
@@ -30,7 +30,7 @@ tape('Util', function (t) {
   })
 })
 
-tape('util.groupBy on valid input', function (t) {
+tape('util.groupBy on valid input', function(t) {
   t.plan(1)
 
   var result = util.groupBy([
@@ -53,7 +53,7 @@ tape('util.groupBy on valid input', function (t) {
   t.deepEqual(result, expectedResult)
 })
 
-tape('util.concatWithSeperator valid output', function (t) {
+tape('util.concatWithSeperator valid output', function(t) {
   t.plan(4)
   t.notEqual(util.concatWithSeperator(['a', 'b', 'c'], ','), 'a, b, c', 'Concat with comma should not produce spaces')
   t.equal(util.concatWithSeperator(['a', 'b', 'c'], ','), 'a,b,c', 'Concat with comma should not produce spaces')
@@ -61,7 +61,7 @@ tape('util.concatWithSeperator valid output', function (t) {
   t.equal(util.concatWithSeperator(['a', 'b', 'c'], '+'), 'a+b+c', 'Concat with plus')
 })
 
-tape('util.escapeRegExp', function (t) {
+tape('util.escapeRegExp', function(t) {
   t.plan(3)
   var original = 'function (uint256) returns (bool)'
   t.equal(util.escapeRegExp('abcd'), 'abcd', 'String with no regex')
@@ -69,7 +69,7 @@ tape('util.escapeRegExp', function (t) {
   t.ok(new RegExp(util.escapeRegExp(original)).test(original), 'should still test for original string')
 })
 
-tape('util.compareByteCode', function (t) {
+tape('util.compareByteCode', function(t) {
   t.plan(1)
   var address = 'c2a9cef5420203c2672f0e4325cca774893cca98'
   var nullAddress = '0000000000000000000000000000000000000000'

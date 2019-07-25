@@ -8,7 +8,7 @@ var remixLib = require('remix-lib')
 var util = remixLib.util
 var algo = require('./algorithmCategories')
 
-function similarVariableNames () {
+function similarVariableNames() {
   this.abstractAst = new AbstractAst()
 
   this.visit = this.abstractAst.build_visit(
@@ -18,11 +18,11 @@ function similarVariableNames () {
   this.report = this.abstractAst.build_report(report)
 }
 
-similarVariableNames.prototype.visit = function () { throw new Error('similarVariableNames.js no visit function set upon construction') }
+similarVariableNames.prototype.visit = function() { throw new Error('similarVariableNames.js no visit function set upon construction') }
 
-similarVariableNames.prototype.report = function () { throw new Error('similarVariableNames.js no report function set upon construction') }
+similarVariableNames.prototype.report = function() { throw new Error('similarVariableNames.js no report function set upon construction') }
 
-function report (contracts, multipleContractsWithSameName) {
+function report(contracts, multipleContractsWithSameName) {
   var warnings = []
   var hasModifiers = contracts.some((item) => item.modifiers.length > 0)
 
@@ -52,7 +52,7 @@ function report (contracts, multipleContractsWithSameName) {
   return warnings
 }
 
-function findSimilarVarNames (vars) {
+function findSimilarVarNames(vars) {
   var similar = []
   var comb = {}
   vars.map((varName1) => vars.map((varName2) => {
@@ -65,17 +65,17 @@ function findSimilarVarNames (vars) {
   return similar
 }
 
-function isCommonPrefixedVersion (varName1, varName2) {
+function isCommonPrefixedVersion(varName1, varName2) {
   return (varName1.startsWith('_') && varName1.slice(1) === varName2) || (varName2.startsWith('_') && varName2.slice(1) === varName1)
 }
 
-function isCommonNrSuffixVersion (varName1, varName2) {
+function isCommonNrSuffixVersion(varName1, varName2) {
   var ref = '^' + util.escapeRegExp(varName1.slice(0, -1)) + '[0-9]*$'
 
   return varName2.match(ref) != null
 }
 
-function getFunctionVariables (contract, func) {
+function getFunctionVariables(contract, func) {
   return contract.stateVariables.concat(func.localVariables)
 }
 

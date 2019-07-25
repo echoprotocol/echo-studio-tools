@@ -1,6 +1,6 @@
 'use strict'
 
-function eventManager () {
+function eventManager() {
   this.registered = {}
   this.anonymous = {}
 }
@@ -13,7 +13,7 @@ function eventManager () {
    * @param {Object or Func} obj - object that will listen on this event
    * @param {Func} func         - function of the listeners that will be executed
 */
-eventManager.prototype.unregister = function (eventName, obj, func) {
+eventManager.prototype.unregister = function(eventName, obj, func) {
   if (!this.registered[eventName]) {
     return
   }
@@ -36,7 +36,7 @@ eventManager.prototype.unregister = function (eventName, obj, func) {
    * @param {Object or Func} obj - object that will listen on this event
    * @param {Func} func         - function of the listeners that will be executed
 */
-eventManager.prototype.register = function (eventName, obj, func) {
+eventManager.prototype.register = function(eventName, obj, func) {
   if (!this.registered[eventName]) {
     this.registered[eventName] = []
   }
@@ -57,7 +57,7 @@ eventManager.prototype.register = function (eventName, obj, func) {
    * @param {String} eventName  - the event name
    * @param {Array}j - argument that will be passed to the executed function.
 */
-eventManager.prototype.trigger = function (eventName, args) {
+eventManager.prototype.trigger = function(eventName, args) {
   if (!this.registered[eventName]) {
     return
   }

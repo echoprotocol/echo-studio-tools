@@ -2,7 +2,7 @@
 var ethers = require('ethers')
 
 module.exports = {
-  makeFullTypeDefinition: function (typeDef) {
+  makeFullTypeDefinition: function(typeDef) {
     if (typeDef && typeDef.type.indexOf('tuple') === 0 && typeDef.components) {
       var innerTypes = typeDef.components.map((innerType) => { return this.makeFullTypeDefinition(innerType) })
       return `tuple(${innerTypes.join(',')})${this.extractSize(typeDef.type)}`
@@ -10,7 +10,7 @@ module.exports = {
     return typeDef.type
   },
 
-  encodeParams: function (funABI, args) {
+  encodeParams: function(funABI, args) {
     var types = []
     if (funABI.inputs && funABI.inputs.length) {
       for (var i = 0; i < funABI.inputs.length; i++) {
@@ -28,18 +28,18 @@ module.exports = {
     return abiCoder.encode(types, args)
   },
 
-  encodeFunctionId: function (funABI) {
+  encodeFunctionId: function(funABI) {
     if (funABI.type === 'fallback') return '0x'
     var abi = new ethers.utils.Interface([funABI])
     abi = abi.functions[funABI.name]
     return abi.sighash
   },
 
-  sortAbiFunction: function (contractabi) {
+  sortAbiFunction: function(contractabi) {
     // Sorts the list of ABI entries. Constant functions will appear first,
     // followed by non-constant functions. Within those t wo groupings, functions
     // will be sorted by their names.
-    return contractabi.sort(function (a, b) {
+    return contractabi.sort(function(a, b) {
       if (a.constant === true && b.constant !== true) {
         return 1
       } else if (b.constant === true && a.constant !== true) {
@@ -55,7 +55,7 @@ module.exports = {
     })
   },
 
-  getConstructorInterface: function (abi) {
+  getConstructorInterface: function(abi) {
     var funABI = { 'name': '', 'inputs': [], 'type': 'constructor', 'outputs': [] }
     if (typeof abi === 'string') {
       try {
@@ -76,7 +76,7 @@ module.exports = {
     return funABI
   },
 
-  serializeInputs: function (fnAbi) {
+  serializeInputs: function(fnAbi) {
     var serialized = '('
     if (fnAbi.inputs && fnAbi.inputs.length) {
       serialized += fnAbi.inputs.map((input) => { return input.type }).join(',')
@@ -85,12 +85,12 @@ module.exports = {
     return serialized
   },
 
-  extractSize: function (type) {
+  extractSize: function(type) {
     var size = type.match(/([a-zA-Z0-9])(\[.*\])/)
     return size ? size[2] : ''
   },
 
-  getFunction: function (abi, fnName) {
+  getFunction: function(abi, fnName) {
     for (var i = 0; i < abi.length; i++) {
       var fn = abi[i]
       if (fn.type === 'function' && fnName === fn.name + '(' + fn.inputs.map((value) => {
@@ -107,7 +107,7 @@ module.exports = {
     return null
   },
 
-  getFallbackInterface: function (abi) {
+  getFallbackInterface: function(abi) {
     for (var i = 0; i < abi.length; i++) {
       if (abi[i].type === 'fallback') {
         return abi[i]
@@ -143,7 +143,7 @@ module.exports = {
     }
   },
 
-  inputParametersDeclarationToString: function (abiinputs) {
+  inputParametersDeclarationToString: function(abiinputs) {
     var inputs = (abiinputs || []).map((inp) => inp.type + ' ' + inp.name)
     return inputs.join(', ')
   }

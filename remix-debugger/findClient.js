@@ -32,12 +32,12 @@ if (process.argv.length > 2) {
   console.log('neither eth or geth has been found in your system')
 }
 
-function runEth () {
+function runEth() {
   console.log('starting eth...')
   process.exit(20)
 }
 
-function runGeth () {
+function runGeth() {
   console.log('starting geth...')
   process.exit(21)
 }

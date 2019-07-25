@@ -1,15 +1,15 @@
-'use strict';
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = require("../constants");
-var errors = __importStar(require("../errors"));
-var bignumber_1 = require("./bignumber");
+'use strict'
+var __importStar = (this && this.__importStar) || function(mod) {
+    if (mod && mod.__esModule) return mod
+    var result = {}
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k]
+    result['default'] = mod
+    return result
+}
+Object.defineProperty(exports, '__esModule', { value: true })
+var constants_1 = require('../constants')
+var errors = __importStar(require('../errors'))
+var bignumber_1 = require('./bignumber')
 var names = [
     'wei',
     'kwei',
@@ -17,157 +17,156 @@ var names = [
     'Gwei',
     'szabo',
     'finney',
-    'ether',
-];
-var unitInfos = {};
+    'ether'
+]
+var unitInfos = {}
 function _getUnitInfo(value) {
     return {
         decimals: value.length - 1,
         tenPower: bignumber_1.bigNumberify(value)
-    };
+    }
 }
 // Build cache of common units
-(function () {
+(function() {
     // Cache the common units
-    var value = '1';
-    names.forEach(function (name) {
-        var info = _getUnitInfo(value);
-        unitInfos[name.toLowerCase()] = info;
-        unitInfos[String(info.decimals)] = info;
-        value += '000';
-    });
-})();
+    var value = '1'
+    names.forEach(function(name) {
+        var info = _getUnitInfo(value)
+        unitInfos[name.toLowerCase()] = info
+        unitInfos[String(info.decimals)] = info
+        value += '000'
+    })
+})()
 function getUnitInfo(name) {
     // Try the cache
-    var info = unitInfos[String(name).toLowerCase()];
+    var info = unitInfos[String(name).toLowerCase()]
     if (!info && typeof (name) === 'number' && parseInt(String(name)) == name && name >= 0 && name <= 256) {
-        var value = '1';
+        var value = '1'
         for (var i = 0; i < name; i++) {
-            value += '0';
+            value += '0'
         }
-        info = _getUnitInfo(value);
+        info = _getUnitInfo(value)
     }
     // Make sure we got something
     if (!info) {
-        errors.throwError('invalid unitType', errors.INVALID_ARGUMENT, { argument: 'name', value: name });
+        errors.throwError('invalid unitType', errors.INVALID_ARGUMENT, { argument: 'name', value: name })
     }
-    return info;
+    return info
 }
 // Some environments have issues with RegEx that contain back-tracking, so we cannot
 // use them.
 function commify(value) {
-    var comps = String(value).split('.');
+    var comps = String(value).split('.')
     if (comps.length > 2 || !comps[0].match(/^-?[0-9]*$/) || (comps[1] && !comps[1].match(/^[0-9]*$/)) || value === '.' || value === '-.') {
-        errors.throwError('invalid value', errors.INVALID_ARGUMENT, { argument: 'value', value: value });
+        errors.throwError('invalid value', errors.INVALID_ARGUMENT, { argument: 'value', value: value })
     }
     // Make sure we have at least one whole digit (0 if none)
-    var whole = comps[0];
-    var negative = '';
+    var whole = comps[0]
+    var negative = ''
     if (whole.substring(0, 1) === '-') {
-        negative = '-';
-        whole = whole.substring(1);
+        negative = '-'
+        whole = whole.substring(1)
     }
     // Make sure we have at least 1 whole digit with no leading zeros
     while (whole.substring(0, 1) === '0') {
-        whole = whole.substring(1);
+        whole = whole.substring(1)
     }
     if (whole === '') {
-        whole = '0';
+        whole = '0'
     }
-    var suffix = '';
+    var suffix = ''
     if (comps.length === 2) {
-        suffix = '.' + (comps[1] || '0');
+        suffix = '.' + (comps[1] || '0')
     }
-    var formatted = [];
+    var formatted = []
     while (whole.length) {
         if (whole.length <= 3) {
-            formatted.unshift(whole);
-            break;
-        }
-        else {
-            var index = whole.length - 3;
-            formatted.unshift(whole.substring(index));
-            whole = whole.substring(0, index);
+            formatted.unshift(whole)
+            break
+        }        else {
+            var index = whole.length - 3
+            formatted.unshift(whole.substring(index))
+            whole = whole.substring(0, index)
         }
     }
-    return negative + formatted.join(',') + suffix;
+    return negative + formatted.join(',') + suffix
 }
-exports.commify = commify;
+exports.commify = commify
 function formatUnits(value, unitType) {
-    var unitInfo = getUnitInfo(unitType);
+    var unitInfo = getUnitInfo(unitType)
     // Make sure wei is a big number (convert as necessary)
-    value = bignumber_1.bigNumberify(value);
-    var negative = value.lt(constants_1.Zero);
+    value = bignumber_1.bigNumberify(value)
+    var negative = value.lt(constants_1.Zero)
     if (negative) {
-        value = value.mul(constants_1.NegativeOne);
+        value = value.mul(constants_1.NegativeOne)
     }
-    var fraction = value.mod(unitInfo.tenPower).toString();
+    var fraction = value.mod(unitInfo.tenPower).toString()
     while (fraction.length < unitInfo.decimals) {
-        fraction = '0' + fraction;
+        fraction = '0' + fraction
     }
     // Strip training 0
-    fraction = fraction.match(/^([0-9]*[1-9]|0)(0*)/)[1];
-    var whole = value.div(unitInfo.tenPower).toString();
-    value = whole + '.' + fraction;
+    fraction = fraction.match(/^([0-9]*[1-9]|0)(0*)/)[1]
+    var whole = value.div(unitInfo.tenPower).toString()
+    value = whole + '.' + fraction
     if (negative) {
-        value = '-' + value;
+        value = '-' + value
     }
-    return value;
+    return value
 }
-exports.formatUnits = formatUnits;
+exports.formatUnits = formatUnits
 function parseUnits(value, unitType) {
     if (unitType == null) {
-        unitType = 18;
+        unitType = 18
     }
-    var unitInfo = getUnitInfo(unitType);
+    var unitInfo = getUnitInfo(unitType)
     if (typeof (value) !== 'string' || !value.match(/^-?[0-9.,]+$/)) {
-        errors.throwError('invalid decimal value', errors.INVALID_ARGUMENT, { arg: 'value', value: value });
+        errors.throwError('invalid decimal value', errors.INVALID_ARGUMENT, { arg: 'value', value: value })
     }
     if (unitInfo.decimals === 0) {
-        return bignumber_1.bigNumberify(value);
+        return bignumber_1.bigNumberify(value)
     }
     // Is it negative?
-    var negative = (value.substring(0, 1) === '-');
+    var negative = (value.substring(0, 1) === '-')
     if (negative) {
-        value = value.substring(1);
+        value = value.substring(1)
     }
     if (value === '.') {
-        errors.throwError('missing value', errors.INVALID_ARGUMENT, { arg: 'value', value: value });
+        errors.throwError('missing value', errors.INVALID_ARGUMENT, { arg: 'value', value: value })
     }
     // Split it into a whole and fractional part
-    var comps = value.split('.');
+    var comps = value.split('.')
     if (comps.length > 2) {
-        errors.throwError('too many decimal points', errors.INVALID_ARGUMENT, { arg: 'value', value: value });
+        errors.throwError('too many decimal points', errors.INVALID_ARGUMENT, { arg: 'value', value: value })
     }
-    var whole = comps[0], fraction = comps[1];
+    var whole = comps[0], fraction = comps[1]
     if (!whole) {
-        whole = '0';
+        whole = '0'
     }
     if (!fraction) {
-        fraction = '0';
+        fraction = '0'
     }
     // Prevent underflow
     if (fraction.length > unitInfo.decimals) {
-        errors.throwError('underflow occurred', errors.NUMERIC_FAULT, { operation: 'division', fault: "underflow" });
+        errors.throwError('underflow occurred', errors.NUMERIC_FAULT, { operation: 'division', fault: 'underflow' })
     }
     // Fully pad the string with zeros to get to wei
     while (fraction.length < unitInfo.decimals) {
-        fraction += '0';
+        fraction += '0'
     }
-    var wholeValue = bignumber_1.bigNumberify(whole);
-    var fractionValue = bignumber_1.bigNumberify(fraction);
-    var wei = (wholeValue.mul(unitInfo.tenPower)).add(fractionValue);
+    var wholeValue = bignumber_1.bigNumberify(whole)
+    var fractionValue = bignumber_1.bigNumberify(fraction)
+    var wei = (wholeValue.mul(unitInfo.tenPower)).add(fractionValue)
     if (negative) {
-        wei = wei.mul(constants_1.NegativeOne);
+        wei = wei.mul(constants_1.NegativeOne)
     }
-    return wei;
+    return wei
 }
-exports.parseUnits = parseUnits;
+exports.parseUnits = parseUnits
 function formatEther(wei) {
-    return formatUnits(wei, 18);
+    return formatUnits(wei, 18)
 }
-exports.formatEther = formatEther;
+exports.formatEther = formatEther
 function parseEther(ether) {
-    return parseUnits(ether, 18);
+    return parseUnits(ether, 18)
 }
-exports.parseEther = parseEther;
+exports.parseEther = parseEther

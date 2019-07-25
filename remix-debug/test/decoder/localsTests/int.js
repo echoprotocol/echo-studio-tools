@@ -12,12 +12,12 @@ var InternalCallTree = require('../../../src/solidity-decoder/internalCallTree')
 var EventManager = remixLib.EventManager
 var helper = require('./helper')
 
-module.exports = function (st, vm, privateKey, contractBytecode, compilationResult, cb) {
-  vmCall.sendTx(vm, {nonce: 0, privateKey: privateKey}, null, 0, contractBytecode, function (error, txHash) {
+module.exports = function(st, vm, privateKey, contractBytecode, compilationResult, cb) {
+  vmCall.sendTx(vm, {nonce: 0, privateKey: privateKey}, null, 0, contractBytecode, function(error, txHash) {
     if (error) {
       st.fail(error)
     } else {
-      vm.web3.eth.getTransaction(txHash, function (error, tx) {
+      vm.web3.eth.getTransaction(txHash, function(error, tx) {
         if (error) {
           st.fail(error)
         } else {
@@ -68,7 +68,7 @@ module.exports = function (st, vm, privateKey, contractBytecode, compilationResu
               st.fail(e.message)
             }
 
-            helper.decodeLocals(st, 95, traceManager, callTree, function (locals) {
+            helper.decodeLocals(st, 95, traceManager, callTree, function(locals) {
               st.equals(Object.keys(locals).length, 16)
               st.equals(locals['ui8'].value, '130')
               st.equals(locals['ui16'].value, '456')
@@ -87,7 +87,7 @@ module.exports = function (st, vm, privateKey, contractBytecode, compilationResu
               st.equals(locals['ishrink'].value, '2')
             })
 
-            helper.decodeLocals(st, 171, traceManager, callTree, function (locals) {
+            helper.decodeLocals(st, 171, traceManager, callTree, function(locals) {
               try {
                 st.equals(locals['ui8'].value, '123')
                 st.equals(Object.keys(locals).length, 1)

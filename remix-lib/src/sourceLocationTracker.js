@@ -7,7 +7,7 @@ var util = require('./util')
 /**
  * Process the source code location for the current executing bytecode
  */
-function SourceLocationTracker (_codeManager) {
+function SourceLocationTracker(_codeManager) {
   this.codeManager = _codeManager
   this.event = new EventManager()
   this.sourceMappingDecoder = new SourceMappingDecoder()
@@ -22,9 +22,9 @@ function SourceLocationTracker (_codeManager) {
  * @param {Object} contractDetails - AST of compiled contracts
  * @param {Function} cb - callback function
  */
-SourceLocationTracker.prototype.getSourceLocationFromInstructionIndex = function (address, index, contracts, cb) {
+SourceLocationTracker.prototype.getSourceLocationFromInstructionIndex = function(address, index, contracts, cb) {
   var self = this
-  extractSourceMap(this, this.codeManager, address, contracts, function (error, sourceMap) {
+  extractSourceMap(this, this.codeManager, address, contracts, function(error, sourceMap) {
     if (error) {
       cb(error)
     } else {
@@ -41,11 +41,11 @@ SourceLocationTracker.prototype.getSourceLocationFromInstructionIndex = function
  * @param {Object} contractDetails - AST of compiled contracts
  * @param {Function} cb - callback function
  */
-SourceLocationTracker.prototype.getSourceLocationFromVMTraceIndex = function (address, vmtraceStepIndex, contracts, cb) {
+SourceLocationTracker.prototype.getSourceLocationFromVMTraceIndex = function(address, vmtraceStepIndex, contracts, cb) {
   var self = this
-  extractSourceMap(this, this.codeManager, address, contracts, function (error, sourceMap) {
+  extractSourceMap(this, this.codeManager, address, contracts, function(error, sourceMap) {
     if (!error) {
-      self.codeManager.getInstructionIndex(address, vmtraceStepIndex, function (error, index) {
+      self.codeManager.getInstructionIndex(address, vmtraceStepIndex, function(error, index) {
         if (error) {
           cb(error)
         } else {
@@ -58,11 +58,11 @@ SourceLocationTracker.prototype.getSourceLocationFromVMTraceIndex = function (ad
   })
 }
 
-SourceLocationTracker.prototype.clearCache = function () {
+SourceLocationTracker.prototype.clearCache = function() {
   this.sourceMapByAddress = {}
 }
 
-function getSourceMap (address, code, contracts) {
+function getSourceMap(address, code, contracts) {
   var isCreation = helper.isContractCreation(address)
   var bytes
   for (var file in contracts) {
@@ -76,10 +76,10 @@ function getSourceMap (address, code, contracts) {
   return null
 }
 
-function extractSourceMap (self, codeManager, address, contracts, cb) {
+function extractSourceMap(self, codeManager, address, contracts, cb) {
   if (self.sourceMapByAddress[address]) return cb(null, self.sourceMapByAddress[address])
 
-  codeManager.getCode(address, function (error, result) {
+  codeManager.getCode(address, function(error, result) {
     if (!error) {
       var sourceMap = getSourceMap(address, result.bytecode, contracts)
       if (sourceMap) {

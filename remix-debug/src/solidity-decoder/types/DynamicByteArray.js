@@ -6,11 +6,11 @@ var BN = require('ethereumjs-util').BN
 var RefType = require('./RefType')
 
 class DynamicByteArray extends RefType {
-  constructor (location) {
+  constructor(location) {
     super(1, 32, 'bytes', location)
   }
 
-  async decodeFromStorage (location, storageResolver) {
+  async decodeFromStorage(location, storageResolver) {
     var value = '0x0'
     try {
       value = await util.extractHexValue(location, storageResolver, this.storageBytes)
@@ -65,7 +65,7 @@ class DynamicByteArray extends RefType {
     }
   }
 
-  decodeFromMemoryInternal (offset, memory) {
+  decodeFromMemoryInternal(offset, memory) {
     offset = 2 * offset
     var length = memory.substr(offset, 64)
     length = 2 * parseInt(length, 16)

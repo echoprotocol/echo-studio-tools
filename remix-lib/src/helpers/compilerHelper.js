@@ -2,7 +2,7 @@ module.exports = {
   compilerInput: compilerInput
 }
 
-function compilerInput (contracts) {
+function compilerInput(contracts) {
   return JSON.stringify({
     language: 'Solidity',
     sources: {

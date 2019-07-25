@@ -1,81 +1,81 @@
-module.exports = function (browser, callback) {
+module.exports = function(browser, callback) {
   extendBrowser(browser)
   browser
     .url('http://127.0.0.1:8080')
-    .injectScript('test-browser/resources/insertTestWeb3.js', function () {
+    .injectScript('test-browser/resources/insertTestWeb3.js', function() {
       // wait for the script to load test web3...
-      setTimeout(function () {
+      setTimeout(function() {
         callback()
       }, 5000)
     })
 }
 
-function extendBrowser (browser) {
-  browser.multipleClick = function (id, time) {
+function extendBrowser(browser) {
+  browser.multipleClick = function(id, time) {
     for (var k = 0; k < time; k++) {
       browser.click(id)
     }
     return browser
   }
 
-  browser.assertCurrentSelectedItem = function (expected) {
-    browser.execute(function (id) {
+  browser.assertCurrentSelectedItem = function(expected) {
+    browser.execute(function(id) {
       var node = document.querySelector('#asmcodes div div[selected="selected"] span')
       return node.innerText
-    }, [''], function (returnValue) {
+    }, [''], function(returnValue) {
       browser.assert.equal(returnValue.value, expected)
     })
     return browser
   }
 
-  browser.retrieveInnerText = function (selector, callback) {
-    browser.execute(function (selector) {
+  browser.retrieveInnerText = function(selector, callback) {
+    browser.execute(function(selector) {
       var node = document.querySelector(selector)
       return node ? node.innerText : ''
-    }, [selector], function (returnValue) {
+    }, [selector], function(returnValue) {
       callback(returnValue.value)
     })
     return browser
   }
 
-  browser.assertStepDetail = function (vmtracestepinfo, stepinfo, addmemoryinfo, gasinfo, remaininggasinfo, loadedaddressinfo) {
+  browser.assertStepDetail = function(vmtracestepinfo, stepinfo, addmemoryinfo, gasinfo, remaininggasinfo, loadedaddressinfo) {
     assertPanel('#stepdetail', browser, ['vmtracestep:' + vmtracestepinfo, 'executionstep:' + stepinfo, 'addmemory:' + addmemoryinfo, 'gas:' + gasinfo, 'remaininggas:' + remaininggasinfo, 'loadedaddress:' + loadedaddressinfo])
     return browser
   }
 
-  browser.assertStack = function (value) {
+  browser.assertStack = function(value) {
     return assertPanel('#stackpanel', browser, value)
   }
 
-  browser.assertStorageChanges = function (value) {
+  browser.assertStorageChanges = function(value) {
     return assertPanel('#storagepanel', browser, value)
   }
 
-  browser.assertMemory = function (value) {
+  browser.assertMemory = function(value) {
     return assertPanel('#memorypanel', browser, value)
   }
 
-  browser.assertCallData = function (value) {
+  browser.assertCallData = function(value) {
     return assertPanel('#calldatapanel', browser, value)
   }
 
-  browser.assertCallStack = function (value) {
+  browser.assertCallStack = function(value) {
     return assertPanel('#callstackpanel', browser, value)
   }
 
-  browser.assertStackValue = function (index, value) {
+  browser.assertStackValue = function(index, value) {
     return assertPanelValue('#stackpanel', browser, index, value)
   }
 
-  browser.assertStorageChangesValue = function (index, value) {
+  browser.assertStorageChangesValue = function(index, value) {
     return assertPanelValue('#storagepanel', browser, index, value)
   }
 
-  browser.assertMemoryValue = function (index, value) {
+  browser.assertMemoryValue = function(index, value) {
     return assertPanelValue('#memorypanel', browser, index, value)
   }
 
-  browser.assertCallStackValue = function (index, value) {
+  browser.assertCallStackValue = function(index, value) {
     return assertPanelValue('#callstackpanel', browser, index, value)
   }
 
@@ -134,9 +134,9 @@ browser.fireEvent = function (el, key, times, callback) {
 */
 }
 
-function assertPanel (id, browser, value) {
+function assertPanel(id, browser, value) {
   var selector = '.dropdownpanel div.dropdowncontent ul'
-  browser.execute(function (id, selector) {
+  browser.execute(function(id, selector) {
     var el = document.getElementById(id.replace('#', '').replace('.', ''))
     var node = el.querySelector(selector)
     var ret = []
@@ -146,8 +146,8 @@ function assertPanel (id, browser, value) {
       }
     }
     return ret
-  }, [id, selector], function (returnValues) {
-    value.map(function (item, index) {
+  }, [id, selector], function(returnValues) {
+    value.map(function(item, index) {
       if (returnValues.value.length) {
         var testValue = returnValues.value[index].replace(/\r\n/g, '').replace(/\t/g, '').replace(/\s/g, '')
         browser.assert.equal(testValue, value[index])
@@ -159,12 +159,12 @@ function assertPanel (id, browser, value) {
   return browser
 }
 
-function assertPanelValue (id, browser, index, value) {
+function assertPanelValue(id, browser, index, value) {
   var selector = id + ' .dropdownpanel .dropdowncontent ul'
-  browser.execute(function (id, index) {
+  browser.execute(function(id, index) {
     var node = document.querySelector(id)
     return node.children[index].innerText
-  }, [selector, index], function (returnValues) {
+  }, [selector, index], function(returnValues) {
     var testValue = returnValues.value.replace(/\r\n/g, '').replace(/\t/g, '').replace(/\s/g, '')
     browser.assert.equal(testValue, value)
   })

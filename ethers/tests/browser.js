@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
     account: require('./test-account'),
@@ -9,5 +9,5 @@ module.exports = {
     providers: require('./test-providers'),
     utils: require('./test-utils'),
     wallet: require('./test-wallet'),
-    wordlists: require('./test-wordlists'),
+    wordlists: require('./test-wordlists')
 }

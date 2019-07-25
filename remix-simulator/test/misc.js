@@ -4,13 +4,13 @@ var RemixSim = require('../index.js')
 let web3 = new Web3()
 var assert = require('assert')
 
-describe('Misc', function () {
-  before(function () {
+describe('Misc', function() {
+  before(function() {
     let provider = new RemixSim.Provider()
     web3.setProvider(provider)
   })
 
-  it('should get correct remix simulator version', async function (done) {
+  it('should get correct remix simulator version', async function(done) {
     web3._requestManager.send({method: 'web3_clientVersion', params: []}, (err, version) => {
       if (err) {
         throw new Error(err)
@@ -21,7 +21,7 @@ describe('Misc', function () {
     })
   })
 
-  it('should get protocol version', async function () {
+  it('should get protocol version', async function() {
     web3._requestManager.send({method: 'eth_protocolVersion', params: []}, (err, result) => {
       if (err) {
         throw new Error(err)
@@ -30,22 +30,22 @@ describe('Misc', function () {
     })
   })
 
-  it('should get if is syncing', async function () {
+  it('should get if is syncing', async function() {
     let isSyncing = await web3.eth.isSyncing()
     assert.equal(isSyncing, false)
   })
 
-  it('should get if is mining', async function () {
+  it('should get if is mining', async function() {
     let isMining = await web3.eth.isMining()
     assert.equal(isMining, false)
   })
 
-  it('should get hashrate', async function () {
+  it('should get hashrate', async function() {
     let hashrate = await web3.eth.getHashrate()
     assert.equal(hashrate, 0)
   })
 
-  it('should get result of a sha3', async function () {
+  it('should get result of a sha3', async function() {
     web3._requestManager.send({method: 'web3_sha3', params: ['0x68656c6c6f20776f726c64']}, (err, result) => {
       if (err) {
         throw new Error(err)

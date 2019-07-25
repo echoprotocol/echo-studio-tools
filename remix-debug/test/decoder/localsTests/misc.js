@@ -10,12 +10,12 @@ var helper = require('./helper')
 var TraceManager = remixLib.trace.TraceManager
 var CodeManager = remixLib.code.CodeManager
 
-module.exports = function (st, vm, privateKey, contractBytecode, compilationResult, cb) {
-  vmCall.sendTx(vm, {nonce: 0, privateKey: privateKey}, null, 0, contractBytecode, function (error, txHash) {
+module.exports = function(st, vm, privateKey, contractBytecode, compilationResult, cb) {
+  vmCall.sendTx(vm, {nonce: 0, privateKey: privateKey}, null, 0, contractBytecode, function(error, txHash) {
     if (error) {
       st.fail(error)
     } else {
-      vm.web3.eth.getTransaction(txHash, function (error, tx) {
+      vm.web3.eth.getTransaction(txHash, function(error, tx) {
         if (error) {
           st.fail(error)
         } else {
@@ -31,7 +31,7 @@ module.exports = function (st, vm, privateKey, contractBytecode, compilationResu
             st.fail(error)
           })
           callTree.event.register('callTreeReady', (scopes, scopeStarts) => {
-            helper.decodeLocals(st, 73, traceManager, callTree, function (locals) {
+            helper.decodeLocals(st, 73, traceManager, callTree, function(locals) {
               try {
                 st.equals(locals['boolFalse'].value, false)
                 st.equals(locals['boolTrue'].value, true)
@@ -55,7 +55,7 @@ module.exports = function (st, vm, privateKey, contractBytecode, compilationResu
               }
             })
 
-            helper.decodeLocals(st, 7, traceManager, callTree, function (locals) {
+            helper.decodeLocals(st, 7, traceManager, callTree, function(locals) {
               try {
                 // st.equals(Object.keys(locals).length, 0)
                 st.equals(0, 0)

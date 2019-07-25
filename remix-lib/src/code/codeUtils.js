@@ -2,7 +2,7 @@
 var opcodes = require('./opcodes')
 
 module.exports = {
-  nameOpCodes: function (raw) {
+  nameOpCodes: function(raw) {
     var pushData = ''
     var codeMap = {}
     var code = []
@@ -30,7 +30,7 @@ module.exports = {
    * Parses code as a list of integers into a list of objects containing
    * information about the opcode.
    */
-  parseCode: function (raw) {
+  parseCode: function(raw) {
     var code = []
     for (var i = 0; i < raw.length; i++) {
       var opcode = opcodes(raw[i], true)
@@ -50,17 +50,17 @@ module.exports = {
     return code
   },
 
-  pad: function (num, size) {
+  pad: function(num, size) {
     var s = num + ''
     while (s.length < size) s = '0' + s
     return s
   },
 
-  log: function (num, base) {
+  log: function(num, base) {
     return Math.log(num) / Math.log(base)
   },
 
-  roundLog: function (num, base) {
+  roundLog: function(num, base) {
     return Math.ceil(this.log(num, base))
   }
 }

@@ -1,7 +1,7 @@
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-var bytes_1 = require("./bytes");
-///////////////////////////////
+'use strict'
+Object.defineProperty(exports, '__esModule', { value: true })
+var bytes_1 = require('./bytes')
+// /////////////////////////////
 /*
 declare class Buffer implements ArrayLike<number> {
     constructor(data: any, encoding?: string);
@@ -11,11 +11,11 @@ declare class Buffer implements ArrayLike<number> {
 }
 */
 function decode(textData) {
-    return bytes_1.arrayify(new Uint8Array(Buffer.from(textData, 'base64')));
+    return bytes_1.arrayify(new Uint8Array(Buffer.from(textData, 'base64')))
 }
-exports.decode = decode;
-;
+exports.decode = decode
+
 function encode(data) {
-    return Buffer.from(bytes_1.arrayify(data)).toString('base64');
+    return Buffer.from(bytes_1.arrayify(data)).toString('base64')
 }
-exports.encode = encode;
+exports.encode = encode

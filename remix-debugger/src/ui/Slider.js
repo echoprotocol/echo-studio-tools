@@ -4,7 +4,7 @@ var EventManager = remixLib.EventManager
 var yo = require('yo-yo')
 
 class Slider {
-  constructor (_traceManager, _stepOverride) {
+  constructor(_traceManager, _stepOverride) {
     this.event = new EventManager()
     this.traceManager = _traceManager
     this.max
@@ -16,7 +16,7 @@ class Slider {
     this.previousValue = null
   }
 
-  render () {
+  render() {
     var self = this
     var view = yo`<div>
         <input
@@ -26,8 +26,8 @@ class Slider {
           min=0
           max=${this.max}
           value=0
-          onchange=${function () { self.onChange() }}
-          oninput=${function () { self.onChange() }}
+          onchange=${function() { self.onChange() }}
+          oninput=${function() { self.onChange() }}
           disabled=${this.disabled} />
       </div>`
     if (!this.view) {
@@ -36,7 +36,7 @@ class Slider {
     return view
   }
 
-  init (length) {
+  init(length) {
     var slider = this.view.querySelector('#slider')
     slider.setAttribute('max', length - 1)
     this.max = length - 1
@@ -45,7 +45,7 @@ class Slider {
     this.setValue(0)
   }
 
-  onChange (event) {
+  onChange(event) {
     var value = parseInt(this.view.querySelector('#slider').value)
     if (this.stepOverride) {
       var correctedValue = this.stepOverride(value)
@@ -59,11 +59,11 @@ class Slider {
     this.event.trigger('moved', [value])
   }
 
-  setValue (value) {
+  setValue(value) {
     this.view.querySelector('#slider').value = value
   }
 
-  updateDisabled (disabled) {
+  updateDisabled(disabled) {
     if (disabled) {
       this.view.querySelector('#slider').setAttribute('disabled', true)
     } else {
