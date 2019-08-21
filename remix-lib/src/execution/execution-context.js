@@ -60,7 +60,10 @@ function ExecutionContext() {
         echojslib.extension.subscribeSwitchAccount(async (data) => {
           self.event.trigger('switchAccount', [data])
         })
-       })
+       }).catch((e) => {
+          console.log(e);
+          self.event.trigger('bridgePermissionError')
+	   })
     } else {
       // TODO
     }

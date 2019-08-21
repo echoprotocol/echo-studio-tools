@@ -96,7 +96,7 @@ class TxRunner {
     } else {
       let options
       switch (contractMethod) {
-        case echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT: {
+        case echojslib.constants.OPERATIONS_IDS.CONTRACT_CREATE: {
           options = {
             fee: { // optional, default fee asset: 1.3.0, amount: will be calculated
                 asset_id: feeAsset
@@ -108,7 +108,7 @@ class TxRunner {
           }
           break
         }
-        case echojslib.constants.OPERATIONS_IDS.CALL_CONTRACT: {
+        case echojslib.constants.OPERATIONS_IDS.CONTRACT_CALL: {
           options = {
             fee: { // optional, default fee asset: 1.3.0, amount: will be calculated
                 asset_id: feeAsset
@@ -163,21 +163,23 @@ class TxRunner {
        registrar: from,
        value: { asset_id: amountAsset, amount: value ? value : 0 }, // transfer asset to contract
        code: data
-     }
+	 } 
+
      switch (contractMethod) {
-       case echojslib.constants.OPERATIONS_IDS.CREATE_CONTRACT: {
+       case echojslib.constants.OPERATIONS_IDS.CONTRACT_CREATE: {
          options.eth_accuracy = ethAccuracy
          break
        }
-       case echojslib.constants.OPERATIONS_IDS.CALL_CONTRACT: {
+       case echojslib.constants.OPERATIONS_IDS.CONTRACT_CALL: {
          options.callee = to
          break
        }
-     }
+	 }	 
+	 
      tr.addOperation(contractMethod, options)
 
      tr.signWithBridge()
-     .then((result) => {
+     .then((result) => {		 
        return result.broadcast()
      })
      .then((result) => {
@@ -188,7 +190,7 @@ class TxRunner {
          callback(null, result)
        })
      })
-     .catch((error) => {
+     .catch((error) => {       
        callback(error)
      })
    }

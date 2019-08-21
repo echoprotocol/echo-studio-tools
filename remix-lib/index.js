@@ -28,6 +28,7 @@ var BreakpointManager = require('./src/code/breakpointManager')
 var TraceManager = require('./src/trace/traceManager')
 
 var UniversalDApp = require('./src/universalDapp')
+var echojslib = require('echojs-lib')
 
 if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
   module.exports = modules()
@@ -74,6 +75,7 @@ function modules() {
       txRunner: txRunner,
       typeConversion: typeConversion
     },
-    UniversalDApp: UniversalDApp
+    UniversalDApp: UniversalDApp,
+    echojslib: echojslib
   }
 }
