@@ -1,7 +1,7 @@
 {
   "name": "echo-studio-tools",
   "description": "Echo Studio Tools is a suite of tools to interact with the Echo blockchain in order to debug transactions, stored in this Git repository.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/echoprotocol/echo-studio-tools.git"
