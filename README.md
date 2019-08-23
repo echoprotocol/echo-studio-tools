@@ -1,63 +1,84 @@
-# Remix
+# Echo Studio Tools
 
-[![Join the chat at https://gitter.im/ethereum/remix](https://badges.gitter.im/ethereum/remix.svg)](https://gitter.im/ethereum/remix?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![CircleCI](https://circleci.com/gh/ethereum/remix/tree/master.svg?style=svg)](https://circleci.com/gh/ethereum/remix/tree/master)
-[![Documentation Status](https://readthedocs.org/projects/docs/badge/?version=latest)](https://remix-ide.readthedocs.io/en/latest/index.html)
+![Travis (.com) branch](https://img.shields.io/travis/com/echoprotocol/echo-studio-tools/master?label=build%20master)
+![Travis (.com) branch](https://img.shields.io/travis/com/echoprotocol/echo-studio-tools/develop?label=build%20develop)
 
-Ethereum tools for the web.
+**Echo Studio Tools** is a suite of tools to interact with the [Echo](https://echo.org) blockchain in order to debug transactions, stored in this Git repository. A Echo Studio is available [here](https://github.com/echoprotocol/echo-studio), and its source code is part of this repository.
 
-*Are you looking for the Remix IDE? Follow [this link](https://github.com/ethereum/remix-ide)!*
+## Installation Prerequisites
 
-+ [What is Remix?](#what-is-remix)
-+ [How to use Remix?](#how-to-use)
-+ [Modules](#modules)
-+ [Contributing guidelines](#contributing)
+Before installing, [download and install Node.js](https://nodejs.org/en/download/).
+Node.js 8.x.x or higher is required.
 
-## <a name="what-is-remix"></a>What is Remix?
+## Install Echo Studio from github source:
 
-**Remix** is a suite of tools to interact with the Ethereum blockchain in order to debug transactions, stored in this Git repository. A Remix transaction Web debugger is available [here](http://remix.ethereum.org), and its source code is part of this repository.
+Use the following steps to install the wallet from github source:
 
-The **Remix IDE** is an IDE for Solidity dApp developers, powered by Remix. The Remix IDE repository **is available [here](https://github.com/ethereum/remix-ide)**, and an online version is available at https://remix.ethereum.org.
+Clone the git repository:
 
-For more, check out the [Remix documentation on ReadTheDocs](https://remix-ide.readthedocs.io/en/latest/index.html).
+```bash
+git clone https://github.com/echoprotocol/echo-studio-tools.git
+```
 
-## <a name="how-to-use"></a>How to use Remix
+Go into the `echo-studio-tools` repository:
 
-### Prerequisites
+```bash
+cd echo-studio-tools
+```
 
-To use Remix tools, you'll need to connect to an Ethereum node. You can do that using [the Mist browser](https://github.com/ethereum/mist), or by connecting to your local Ethereum node (`geth`, or `eth`). *Note: connecting to `geth` does not work through https.*
+Use the package manager [npm](https://www.npmjs.com/) to install dependencies:
 
-+ Using `geth`: `geth --rpc --rpcapi 'web3,eth,debug' --rpcport 8545 --rpccorsdomain '*'`.
+```bash
+npm install
+```
 
-+ Using `eth`: `eth -j --rpccorsdomain '*'`
+Bootstrap the packages in the repository:
 
-**DO NOT DO EXECUTE THESE COMMANDS IF `geth`/`eth` STORES YOUR PRIVATE KEYS**, as any external system might be able to access your node's RPC server!
+```bash
+npm run bootstrap
+```
 
-Those commands will run the RPC server on `localhost:8545`, which is the default URL that Remix will connect to. This instance should **only** be used for debugging purposes. Never use features that could have an impact on your keys: do not unlock any keys, do not use this instance together with the wallet, do not activate the admin `web3` API.
 
-### Run the debugger
+## <a name="modules"></a>Echo Studio Tools Modules
 
-See [here](remix-debugger/README.md) how to install, run and use the debugger locally.
+Echo Studio Tools is built out of several different modules:
 
-The debugger itself contains several controls that allow stepping over the trace and seeing the current state of a selected step.
-
-## <a name="modules"></a>Remix Modules
-
-Remix is built out of several different modules:
-
-+ [`remix-analyzer`](remix-analyzer/README.md)
-+ [`remix-solidity`](remix-solidity/README.md) provides Solidity analysis and decoding functions.
-+ [`remix-lib`](remix-lib/README.md)
-+ [`remix-debug`](remix-debug/README.md) allo debuggin transaction.
-+ [`remix-tests`](remix-tests/README.md) provides unit testing for solidity.
-+ [`remix-astwalker`](remix-tests/README.md) provides a tool for parsing solidity AST.
-+ [`remix-url-resolver`](remix-url-resolver/README.md) provides helpers for resolving external content (github, swarm, ipfs, ...).
-+ [`remixd`](https://github.com/ethereum/remixd/tree/master) CLI which allow accessing local element from Remix IDE (see https://remix-ide.readthedocs.io/en/latest/remixd.html)
++ [`echo-analyzer`](remix-analyzer/README.md)
++ [`echo-solidity`](remix-solidity/README.md) provides Solidity analysis and decoding functions.
++ [`echo-lib`](remix-lib/README.md)
++ [`echo-debug`](remix-debug/README.md) allo debuggin transaction.
++ [`echo-tests`](remix-tests/README.md) provides unit testing for solidity.
++ [`echo-astwalker`](remix-tests/README.md) provides a tool for parsing solidity AST.
++ [`echo-url-resolver`](remix-url-resolver/README.md) provides helpers for resolving external content (github, swarm, ipfs, ...).
 
 Each generally has their own npm package and test suite, as well as basic documentation.
 
 ## Contributing
 
-Everyone is very welcome to contribute on the codebase of Remix. Please reach us in [Gitter](https://gitter.im/ethereum/remix).
+Read our [Contributing Guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements.
 
-For more information on the contributing procedure, see [CONTRIBUTING.md](CONTRIBUTING.md). For more information on running and developing the Remix debugger, see [the debugger README.md](remix-debugging/README.md).
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2019 ECHO DEVELOPMENT LTD
+
+Copyright (c) 2016-2018 Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

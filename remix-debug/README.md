@@ -1,6 +1,6 @@
-# `remix-debug`
+# `echo-debug`
 
-remix-debug wrap other remix-* libraries and can be used to debug Ethereum transactions.
+echo-debug wrap other echo-* libraries and can be used to debug Ethereum transactions.
 
 + [Installation](#installation)
 + [Development](#development)
@@ -9,14 +9,14 @@ remix-debug wrap other remix-* libraries and can be used to debug Ethereum trans
 
 
 ```bash
-npm install remix-debug
+npm install echo-debug
 ```
 
 ## Development
 
 ```javascript
-var Debugger = require('remix-debug').EthDebugger
-var BreakpointManager = require('remix-debug').BreakpointManager
+var Debugger = require('echo-debug').EthDebugger
+var BreakpointManager = require('echo-debug').BreakpointManager
 
 var debugger = new Debugger({
   compilationResult: () => {
@@ -230,3 +230,32 @@ return True if the storage at @arg address is complete
 `function isComplete(address)` :
 return all the possible mappings locations for the current context (cached) do not return state changes during the current transaction
 
+## Contributing
+
+Read our [Contributing Guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements.
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2019 ECHO DEVELOPMENT LTD
+
+Copyright (c) 2018 Remix Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

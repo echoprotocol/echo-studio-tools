@@ -1,18 +1,18 @@
-Remix-Tests
+Echo-Tests
 ---
 
-> Tests for the Ethereum tool suite [Remix](https://github.com/ethereum/remix)
+> Tests for the [Echo Studio Tools](https://github.com/echoprotocol/echo-studio-tools) suite.
 
 ### Installation
 
-`npm -g install remix-tests`
+`npm -g install echo-tests`
 
 ### Test structure
 
 Example test file:
 ```Javascript
 pragma solidity ^0.4.7;
-import "remix_tests.sol"; // injected by remix-tests
+import "echo_tests.sol"; // injected by echo-tests
 import "./simple_storage.sol";
 
 contract MyTest {
@@ -41,8 +41,6 @@ contract MyTest {
 }
 ```
 
-See also: example [Su Squares contract](https://github.com/su-squares/ethereum-contract/tree/e542f37d4f8f6c7b07d90a6554424268384a4186) and [https://travis-ci.org/su-squares/ethereum-contract/builds/446186067](Travis build) that uses remix-tests for continuous integration testing.
-
 Available special functions:
 * `beforeEach()` - runs before each test
 * `beforeAll()` - runs before all tests
@@ -61,28 +59,27 @@ Available special functions:
 
 It is quite common that a contract need to be tested in different situation.
 Especially being able to set before hand the sender account (`msg.sender`) used for a specific tests suite enable quite a lot a new test use cases.
-please checkout https://github.com/ethereum/remix/blob/master/remix-tests/tests/various_sender/sender_test.sol for an example.
 note that `TestsAccounts` is filled with all the accounts available in `web3.eth.accounts()`.
 
 ### Command Line
 
-Remix-Tests will assume the tests will files whose name end with `"_test.sol"`. e.g `simple_storage_test.sol`
+Echo-Tests will assume the tests will files whose name end with `"_test.sol"`. e.g `simple_storage_test.sol`
 
 Usage:
 
-* A directory with tests files `remix-tests examples/`
-* A test file `remix-tests examples/simple_storage_test.sol`
+* A directory with tests files `echo-tests examples/`
+* A test file `echo-tests examples/simple_storage_test.sol`
 
 ### Library
 
 Importing the library:
 ```Javascript
-const RemixTests = require('remix-tests');
+const EchoTests = require('echo-tests');
 ```
 
 Running a single test object:
 ```Javascript
-remixTests.runTest(contractName, contractObj, testCallback, resultsCallback)
+echoTests.runTest(contractName, contractObj, testCallback, resultsCallback)
 ```
 params:
 `testName` - `string` name of the test
@@ -100,7 +97,7 @@ params:
 
 Running a set of tests given the sourcecode:
 ```Javascript
-remixTests.runTestSources(contractSources, testCallback, resultCallback, finalCallback, importFileCb);
+echoTests.runTestSources(contractSources, testCallback, resultCallback, finalCallback, importFileCb);
 ```
 params:
 `contractSources` - `object` -> `filename => { content: source }`
@@ -117,10 +114,32 @@ params:
 `finalCallback(err)` - called when all tests finish running.
 `importCb(url, cb)`
 
-## Contribute
+## Contributing
 
-Please feel free! Open an issue or a pull request. Please conform to [`standard`](https://standardjs.com/) for code styles, and make sure that you add any relevant tests.
+Read our [Contributing Guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements.
 
 ## License
 
-[MIT](LICENSE.md) © 2018 Remix Team
+The MIT License (MIT)
+
+Copyright (c) 2019 ECHO DEVELOPMENT LTD
+
+Copyright (c) 2018 Remix Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

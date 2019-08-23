@@ -1,5 +1,29 @@
 {
+  "name": "echo-studio-tools",
+  "description": "Echo Studio Tools is a suite of tools to interact with the Echo blockchain in order to debug transactions, stored in this Git repository.",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/echoprotocol/echo-studio-tools.git"
+  },
+  "keywords": [
+    "echo",
+    "studio",
+    "echo-studio",
+    "echo-studio-tools",
+    "solidity",
+    "compiler"
+  ],
+  "author": {
+    "name": "PixelPlex, Inc.",
+    "email": "info@pixelplex.io",
+    "url": "https://pixelplex.io"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/echoprotocol/echo-studio-tools/issues"
+  },
+  "homepage": "https://github.com/echoprotocol/echo-studio-tools",
   "devDependencies": {
     "gulp": "^3.9.1",
     "lerna": "^2.10.2"
