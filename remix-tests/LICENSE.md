@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2019 ECHO DEVELOPMENT LTD
+Copyright (c) 2019 Echo Technological Solutions LLC
 
 Copyright (c) 2018 Remix Team
 
