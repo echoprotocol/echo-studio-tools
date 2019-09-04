@@ -101,7 +101,7 @@ export function getAddress(address: string): string {
 		return address;
 	}
 
-	if (!/^1\.(2|14)\.(([1-9]\d*)|0)$/.test(address)) {
+	if (!/^1\.(2|9)\.(([1-9]\d*)|0)$/.test(address)) {
 		errors.throwError('invalid address', errors.INVALID_ARGUMENT, { arg: 'address', value: address });
 	}
 	
